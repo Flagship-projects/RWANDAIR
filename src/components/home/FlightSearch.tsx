@@ -21,20 +21,20 @@ export function FlightSearch() {
       <div className="mx-auto max-w-shell">
         <form
           onSubmit={handleSubmit}
-          className="rounded-2xl border border-line bg-ink-soft/90 shadow-2xl shadow-black/40 backdrop-blur-xl"
+          className="rounded-2xl border border-line bg-paper-bright/95 shadow-2xl shadow-blue-900/15 backdrop-blur-xl"
         >
-          <div className="flex flex-wrap items-center gap-2 border-b border-line px-6 pt-5 pb-3 text-fluid-xs uppercase tracking-wideish text-paper/60">
+          <div className="flex flex-wrap items-center gap-2 border-b border-line px-6 pt-5 pb-3 text-fluid-xs uppercase tracking-wideish text-ink/50">
             <button
               type="button"
               onClick={() => setTrip("return")}
-              className={`focus-ring rounded-full px-4 py-1.5 transition-colors ${trip === "return" ? "bg-paper text-ink" : "hover:text-paper"}`}
+              className={`focus-ring rounded-full px-4 py-1.5 transition-colors ${trip === "return" ? "bg-blue-500 text-white" : "hover:text-ink"}`}
             >
               Round trip
             </button>
             <button
               type="button"
               onClick={() => setTrip("oneway")}
-              className={`focus-ring rounded-full px-4 py-1.5 transition-colors ${trip === "oneway" ? "bg-paper text-ink" : "hover:text-paper"}`}
+              className={`focus-ring rounded-full px-4 py-1.5 transition-colors ${trip === "oneway" ? "bg-blue-500 text-white" : "hover:text-ink"}`}
             >
               One way
             </button>
