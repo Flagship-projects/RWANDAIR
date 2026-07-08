@@ -62,10 +62,12 @@ const config: Config = {
         sans: ["var(--font-sans)", "sans-serif"],
       },
       fontSize: {
-        "fluid-xs": "clamp(0.75rem, 0.7rem + 0.2vw, 0.875rem)",
-        "fluid-sm": "clamp(0.9rem, 0.85rem + 0.2vw, 1.05rem)",
-        "fluid-body": "clamp(1rem, 0.95rem + 0.25vw, 1.2rem)",
-        "fluid-lg": "clamp(1.25rem, 1.1rem + 0.6vw, 1.75rem)",
+        // Body-level scale — kept deliberately small (~10–14px)
+        "fluid-xs": "clamp(0.625rem, 0.6rem + 0.12vw, 0.7rem)",
+        "fluid-sm": "clamp(0.7rem, 0.66rem + 0.16vw, 0.8rem)",
+        "fluid-body": "clamp(0.78rem, 0.74rem + 0.2vw, 0.9rem)",
+        "fluid-lg": "clamp(0.95rem, 0.85rem + 0.35vw, 1.25rem)",
+        // Headers — large, editorial (unchanged)
         "fluid-h3": "clamp(1.75rem, 1.4rem + 1.5vw, 2.75rem)",
         "fluid-h2": "clamp(2.5rem, 1.9rem + 2.6vw, 4.5rem)",
         "fluid-h1": "clamp(3rem, 2rem + 4.5vw, 7rem)",
