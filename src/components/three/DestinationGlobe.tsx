@@ -236,9 +236,24 @@ function Globe() {
 }
 
 export function DestinationGlobe() {
+  const wrapRef = useRef<HTMLDivElement>(null);
+  const [inView, setInView] = useState(true);
+
+  useEffect(() => {
+    const el = wrapRef.current;
+    if (!el) return;
+    const io = new IntersectionObserver(
+      ([entry]) => setInView(entry.isIntersecting),
+      { rootMargin: "120px" }
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
+
   return (
-    <div className="relative mx-auto aspect-square w-full max-w-[620px] lg:aspect-auto lg:h-[560px]">
+    <div ref={wrapRef} className="relative mx-auto aspect-square w-full max-w-[620px] lg:aspect-auto lg:h-[560px]">
       <Canvas
+        frameloop={inView ? "always" : "never"}
         camera={{ position: [0, 0.2, 10], fov: 30 }}
         gl={{ antialias: true, alpha: true, powerPreference: "low-power" }}
         dpr={[1, 2]}
