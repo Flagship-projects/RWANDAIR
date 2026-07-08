@@ -1,12 +1,12 @@
 "use client";
 
-import { Suspense, useMemo, useRef, useState } from "react";
+import { Suspense, useEffect, useMemo, useRef, useState } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
 import { Html, QuadraticBezierLine, OrbitControls } from "@react-three/drei";
 import * as THREE from "three";
 import { destinations, type Destination } from "@/lib/data";
 
-const RADIUS = 2.4;
+const RADIUS = 2.15;
 
 function toVector(lat: number, lon: number, r = RADIUS) {
   const phi = (90 - lat) * (Math.PI / 180);
@@ -18,37 +18,179 @@ function toVector(lat: number, lon: number, r = RADIUS) {
   );
 }
 
+/* ----------------------- sample land mask into dot cloud ------------------ */
+
+function useLandPoints() {
+  const [positions, setPositions] = useState<Float32Array | null>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+    const img = new Image();
+    img.src = "/assets/globe/earth-water.png";
+    img.onload = () => {
+      const cw = 600;
+      const ch = 300;
+      const canvas = document.createElement("canvas");
+      canvas.width = cw;
+      canvas.height = ch;
+      const ctx = canvas.getContext("2d", { willReadFrequently: true });
+      if (!ctx) return;
+      ctx.drawImage(img, 0, 0, cw, ch);
+      const data = ctx.getImageData(0, 0, cw, ch).data;
+
+      const N = 26000; // fibonacci samples over the sphere
+      const golden = Math.PI * (3 - Math.sqrt(5));
+      const pts: number[] = [];
+      const r = RADIUS + 0.015;
+
+      for (let i = 0; i < N; i++) {
+        const y = 1 - (i / (N - 1)) * 2; // 1 .. -1
+        const ring = Math.sqrt(Math.max(0, 1 - y * y));
+        const theta = golden * i;
+        const x = Math.cos(theta) * ring;
+        const z = Math.sin(theta) * ring;
+
+        const lat = Math.asin(y) * (180 / Math.PI);
+        const lon = Math.atan2(z, x) * (180 / Math.PI);
+
+        // equirectangular UV -> mask pixel
+        const u = (lon + 180) / 360;
+        const v = (90 - lat) / 180;
+        const px = Math.min(cw - 1, Math.max(0, Math.floor(u * cw)));
+        const py = Math.min(ch - 1, Math.max(0, Math.floor(v * ch)));
+        const brightness = data[(py * cw + px) * 4];
+
+        // land = dark in this mask
+        if (brightness < 100) {
+          const p = toVector(lat, lon, r);
+          pts.push(p.x, p.y, p.z);
+        }
+      }
+      if (!cancelled) setPositions(new Float32Array(pts));
+    };
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  return positions;
+}
+
+/* --------------------------- round sprite for dots ------------------------ */
+
+function useDotTexture() {
+  return useMemo(() => {
+    const s = 64;
+    const c = document.createElement("canvas");
+    c.width = c.height = s;
+    const ctx = c.getContext("2d")!;
+    const g = ctx.createRadialGradient(s / 2, s / 2, 0, s / 2, s / 2, s / 2);
+    g.addColorStop(0, "rgba(255,255,255,1)");
+    g.addColorStop(0.55, "rgba(255,255,255,1)");
+    g.addColorStop(1, "rgba(255,255,255,0)");
+    ctx.fillStyle = g;
+    ctx.beginPath();
+    ctx.arc(s / 2, s / 2, s / 2, 0, Math.PI * 2);
+    ctx.fill();
+    const t = new THREE.CanvasTexture(c);
+    t.needsUpdate = true;
+    return t;
+  }, []);
+}
+
+/* ------------------------------ atmosphere glow --------------------------- */
+
+function Atmosphere() {
+  const material = useMemo(
+    () =>
+      new THREE.ShaderMaterial({
+        transparent: true,
+        blending: THREE.AdditiveBlending,
+        side: THREE.BackSide,
+        depthWrite: false,
+        uniforms: { uColor: { value: new THREE.Color("#2a8fe0") } },
+        vertexShader: `
+          varying vec3 vNormal;
+          void main() {
+            vNormal = normalize(normalMatrix * normal);
+            gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+          }
+        `,
+        fragmentShader: `
+          varying vec3 vNormal;
+          uniform vec3 uColor;
+          void main() {
+            float intensity = pow(0.66 - dot(vNormal, vec3(0.0, 0.0, 1.0)), 3.0);
+            gl_FragColor = vec4(uColor, 1.0) * intensity;
+          }
+        `,
+      }),
+    []
+  );
+  return (
+    <mesh material={material}>
+      <sphereGeometry args={[RADIUS * 1.22, 48, 48]} />
+    </mesh>
+  );
+}
+
+/* ---------------------------------- globe --------------------------------- */
+
 function Globe() {
   const groupRef = useRef<THREE.Group>(null);
   const [active, setActive] = useState<Destination | null>(null);
   const hub = destinations.find((d) => d.hub)!;
   const hubPos = useMemo(() => toVector(hub.lat, hub.lon), [hub]);
+  const landPositions = useLandPoints();
+  const dotTexture = useDotTexture();
 
   useFrame((_, delta) => {
-    if (groupRef.current) groupRef.current.rotation.y += delta * 0.05;
+    if (groupRef.current) groupRef.current.rotation.y += delta * 0.045;
   });
 
   return (
-    <group ref={groupRef}>
+    <group ref={groupRef} rotation={[0.35, 0, 0.1]}>
+      {/* ocean sphere */}
       <mesh>
         <sphereGeometry args={[RADIUS, 64, 64]} />
         <meshStandardMaterial
-          color="#00305f"
-          emissive="#0050a0"
-          emissiveIntensity={0.35}
-          roughness={0.85}
-          metalness={0.1}
-          wireframe={false}
+          color="#013a72"
+          emissive="#01213f"
+          emissiveIntensity={0.6}
+          roughness={0.65}
+          metalness={0.15}
         />
       </mesh>
-      <mesh>
-        <sphereGeometry args={[RADIUS + 0.004, 48, 48]} />
-        <meshBasicMaterial color="#20a0e0" wireframe transparent opacity={0.18} />
-      </mesh>
 
+      {/* land dots */}
+      {landPositions && (
+        <points>
+          <bufferGeometry>
+            <bufferAttribute
+              attach="attributes-position"
+              args={[landPositions, 3]}
+              count={landPositions.length / 3}
+            />
+          </bufferGeometry>
+          <pointsMaterial
+            size={0.045}
+            sizeAttenuation
+            map={dotTexture}
+            alphaTest={0.4}
+            transparent
+            color="#aede8c"
+            depthWrite
+          />
+        </points>
+      )}
+
+      <Atmosphere />
+
+      {/* routes + destination markers */}
       {destinations.map((d) => {
         const pos = toVector(d.lat, d.lon);
         const isHub = !!d.hub;
+        const isActive = active?.code === d.code;
         return (
           <group key={d.code}>
             {!isHub && (
@@ -60,12 +202,12 @@ function Globe() {
                   .add(hubPos)
                   .multiplyScalar(0.5)
                   .normalize()
-                  .multiplyScalar(RADIUS + 0.75)
+                  .multiplyScalar(RADIUS + 0.32)
                   .toArray()}
-                color={active?.code === d.code ? "#f7c623" : "#20a0e0"}
-                lineWidth={active?.code === d.code ? 1.8 : 0.7}
+                color={isActive ? "#f7c623" : "#8fd0f5"}
+                lineWidth={isActive ? 2 : 0.8}
                 transparent
-                opacity={active?.code === d.code ? 0.95 : 0.32}
+                opacity={isActive ? 0.95 : 0.4}
               />
             )}
             <mesh
@@ -76,12 +218,12 @@ function Globe() {
               }}
               onPointerOut={() => setActive((cur) => (cur?.code === d.code ? null : cur))}
             >
-              <sphereGeometry args={[isHub ? 0.045 : 0.03, 12, 12]} />
+              <sphereGeometry args={[isHub ? 0.055 : 0.03, 16, 16]} />
               <meshBasicMaterial color={isHub ? "#f7c623" : "#ffffff"} />
             </mesh>
-            {active?.code === d.code && (
-              <Html position={pos} center distanceFactor={7} className="pointer-events-none">
-                <div className="whitespace-nowrap rounded-md border border-line bg-white px-3 py-1.5 text-xs uppercase tracking-wideish text-ink shadow-lg">
+            {isActive && (
+              <Html position={pos} center distanceFactor={6.5} className="pointer-events-none">
+                <div className="whitespace-nowrap rounded-md border border-line bg-white px-3 py-1.5 text-[11px] uppercase tracking-wideish text-ink shadow-lg">
                   {d.city}, {d.country}
                 </div>
               </Html>
@@ -95,23 +237,24 @@ function Globe() {
 
 export function DestinationGlobe() {
   return (
-    <div className="relative aspect-square w-full max-w-[560px] mx-auto lg:aspect-auto lg:h-[520px]">
+    <div className="relative mx-auto aspect-square w-full max-w-[620px] lg:aspect-auto lg:h-[560px]">
       <Canvas
-        camera={{ position: [0, 0.4, 6.2], fov: 42 }}
-        gl={{ antialias: true, powerPreference: "low-power" }}
-        dpr={[1, 1.75]}
+        camera={{ position: [0, 0.2, 10], fov: 30 }}
+        gl={{ antialias: true, alpha: true, powerPreference: "low-power" }}
+        dpr={[1, 2]}
       >
-        <ambientLight intensity={0.9} />
-        <directionalLight position={[4, 3, 5]} intensity={1.1} />
+        <ambientLight intensity={0.75} />
+        <directionalLight position={[5, 3, 5]} intensity={1.6} color="#eaf4ff" />
+        <directionalLight position={[-6, -2, -4]} intensity={0.35} color="#2a8fe0" />
         <Suspense fallback={null}>
           <Globe />
         </Suspense>
         <OrbitControls
           enablePan={false}
           enableZoom={false}
-          minPolarAngle={Math.PI / 2.6}
-          maxPolarAngle={Math.PI / 1.6}
-          rotateSpeed={0.35}
+          minPolarAngle={Math.PI / 2.8}
+          maxPolarAngle={Math.PI / 1.7}
+          rotateSpeed={0.4}
         />
       </Canvas>
     </div>
