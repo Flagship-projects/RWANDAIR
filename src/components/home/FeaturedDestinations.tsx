@@ -1,48 +1,198 @@
 "use client";
 
-import { SectionHeading } from "@/components/ui/SectionHeading";
-import { useScrollReveal } from "@/lib/motion";
+import { useEffect, useRef, useState } from "react";
+import Image from "next/image";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { ensureGsapRegistered } from "@/lib/motion";
 
-const featured = [
-  { city: "Nairobi", country: "Kenya", note: "East Africa's business gateway" },
-  { city: "Lagos", country: "Nigeria", note: "West Africa's commercial hub" },
-  { city: "Johannesburg", country: "South Africa", note: "Southern Africa connector" },
-  { city: "Dubai", country: "United Arab Emirates", note: "Long-haul link to the Gulf" },
-  { city: "London", country: "United Kingdom", note: "RwandAir's European gateway" },
-  { city: "Accra", country: "Ghana", note: "West African coastal capital" },
+type Region = "East Africa" | "West Africa" | "Southern Africa" | "Europe" | "Middle East";
+
+type Featured = {
+  city: string;
+  country: string;
+  code: string;
+  region: Region;
+  note: string;
+  /** Optional cinematic photo; falls back to a brand gradient when absent. */
+  image?: string;
+};
+
+const featured: Featured[] = [
+  { city: "Nairobi", country: "Kenya", code: "NBO", region: "East Africa", note: "East Africa's business gateway" },
+  { city: "Lagos", country: "Nigeria", code: "LOS", region: "West Africa", note: "West Africa's commercial hub" },
+  { city: "Johannesburg", country: "South Africa", code: "JNB", region: "Southern Africa", note: "The Southern Africa connector" },
+  { city: "Dubai", country: "United Arab Emirates", code: "DXB", region: "Middle East", note: "Long-haul link to the Gulf" },
+  { city: "London", country: "United Kingdom", code: "LHR", region: "Europe", note: "RwandAir's European gateway" },
+  { city: "Accra", country: "Ghana", code: "ACC", region: "West Africa", note: "West African coastal capital" },
 ];
 
+const gradients: Record<Region, string> = {
+  "East Africa": "linear-gradient(135deg,#00305f 0%,#0050a0 55%,#20a0e0 100%)",
+  "West Africa": "linear-gradient(135deg,#0050a0 0%,#6ea02b 65%,#e8a600 100%)",
+  "Southern Africa": "linear-gradient(135deg,#001b39 0%,#00305f 55%,#0050a0 100%)",
+  Europe: "linear-gradient(135deg,#243a58 0%,#0050a0 60%,#7fccef 100%)",
+  "Middle East": "linear-gradient(135deg,#00305f 0%,#0050a0 50%,#e8a600 100%)",
+};
+
 export function FeaturedDestinations() {
-  const ref = useScrollReveal<HTMLDivElement>({ selector: ".reveal-item", start: "top 80%" });
+  const rootRef = useRef<HTMLDivElement>(null);
+  const trackRef = useRef<HTMLDivElement>(null);
+  const barRef = useRef<HTMLDivElement>(null);
+  const [current, setCurrent] = useState(0);
+  const [reduced, setReduced] = useState(false);
+
+  useEffect(() => {
+    ensureGsapRegistered();
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      setReduced(true);
+      return;
+    }
+    const root = rootRef.current;
+    const track = trackRef.current;
+    if (!root || !track) return;
+
+    const panels = Array.from(track.querySelectorAll<HTMLElement>("[data-panel]"));
+
+    const ctx = gsap.context(() => {
+      const distance = () => track.scrollWidth - window.innerWidth;
+
+      const tween = gsap.to(track, {
+        x: () => -distance(),
+        ease: "none",
+        scrollTrigger: {
+          trigger: root,
+          start: "top top",
+          end: "bottom bottom",
+          scrub: 1,
+          invalidateOnRefresh: true,
+          onUpdate: (self) => {
+            // Rack-focus + parallax: the centred panel is crisp and forward,
+            // neighbours drift and recede — each destination its own moment.
+            const vw = window.innerWidth;
+            let nearest = 0;
+            let best = Infinity;
+            panels.forEach((el, i) => {
+              const rect = el.getBoundingClientRect();
+              const d = (rect.left + rect.width / 2 - vw / 2) / vw;
+              const media = el.querySelector<HTMLElement>("[data-media]");
+              if (media) media.style.transform = `translate3d(${d * -60}px,0,0) scale(1.12)`;
+              const inner = el.querySelector<HTMLElement>("[data-inner]");
+              if (inner) {
+                inner.style.transform = `translate3d(${d * 90}px,0,0)`;
+                inner.style.opacity = String(gsap.utils.clamp(0.25, 1, 1 - Math.abs(d) * 1.1));
+              }
+              if (Math.abs(d) < best) {
+                best = Math.abs(d);
+                nearest = i;
+              }
+            });
+            setCurrent(nearest);
+            if (barRef.current) barRef.current.style.transform = `scaleX(${self.progress})`;
+          },
+        },
+      });
+
+      return () => {
+        tween.scrollTrigger?.kill();
+        tween.kill();
+      };
+    }, root);
+
+    return () => ctx.revert();
+  }, []);
+
+  /* ------- reduced-motion / no-JS fallback: a clean vertical list ------- */
+  if (reduced) {
+    return (
+      <section id="featured" className="border-t border-line py-section-lg">
+        <div className="mx-auto max-w-shell px-gutter">
+          <p className="mb-4 text-fluid-xs uppercase tracking-wideish text-blue-500">Featured routes</p>
+          <h2 className="text-fluid-h2 font-display font-light tracking-tightest text-ink">Where the dream takes you</h2>
+          <div className="mt-12 grid grid-cols-1 divide-y divide-line border-t border-line sm:grid-cols-2 sm:divide-x sm:divide-y-0 lg:grid-cols-3">
+            {featured.map((f, i) => (
+              <a key={f.city} href="#book" className="group flex flex-col gap-8 px-2 py-10 sm:px-8">
+                <span className="font-display text-fluid-lg text-ink/25">{String(i + 1).padStart(2, "0")}</span>
+                <div>
+                  <h3 className="font-display text-fluid-h3 font-light tracking-tightest text-ink">{f.city}</h3>
+                  <p className="mt-3 text-fluid-sm text-ink/55">{f.country} — {f.note}</p>
+                </div>
+              </a>
+            ))}
+          </div>
+        </div>
+      </section>
+    );
+  }
 
   return (
-    <section className="border-t border-line py-section-lg" ref={ref}>
-      <div className="mx-auto max-w-shell px-gutter">
-        <SectionHeading
-          eyebrow="Featured routes"
-          title="Where the dream takes you"
-          className="reveal-item"
-        />
-
-        <div className="mt-16 grid grid-cols-1 divide-y divide-line border-t border-line sm:grid-cols-2 sm:divide-x sm:divide-y-0 lg:grid-cols-3">
-          {featured.map((f, i) => (
-            <a
-              key={f.city}
-              href="#book"
-              className="reveal-item group relative flex flex-col justify-between gap-10 border-b border-line px-2 py-10 transition-colors duration-300 hover:bg-blue-50 sm:border-b-0 sm:px-8"
-            >
-              <span className="font-display text-fluid-lg text-ink/25">{String(i + 1).padStart(2, "0")}</span>
-              <div>
-                <h3 className="font-display text-fluid-h3 font-light leading-none tracking-tightest text-ink transition-transform duration-500 ease-premium group-hover:-translate-y-1 group-hover:text-blue-500">
-                  {f.city}
-                </h3>
-                <p className="mt-3 text-fluid-sm text-ink/55">{f.country} — {f.note}</p>
+    <section id="featured" className="relative bg-paper">
+      <div ref={rootRef} style={{ height: `${(featured.length + 1) * 100}vh` }}>
+        <div className="sticky top-0 h-[100svh] overflow-hidden">
+          <div ref={trackRef} className="flex h-full w-max will-change-transform">
+            {/* intro panel */}
+            <div data-panel className="relative flex h-full w-screen shrink-0 flex-col justify-center px-gutter">
+              <div data-inner className="max-w-xl">
+                <p className="mb-5 text-fluid-xs uppercase tracking-wideish text-blue-500">Featured routes</p>
+                <h2 className="font-display text-fluid-h1 font-light leading-[0.95] tracking-tightest text-ink">
+                  Where the <span className="italic">dream</span> takes you
+                </h2>
+                <p className="mt-6 max-w-md text-fluid-body text-ink/60">
+                  Six of the destinations on RwandAir's growing network — keep scrolling to travel through them.
+                </p>
+                <p className="mt-10 flex items-center gap-3 text-fluid-xs uppercase tracking-wideish text-ink/45">
+                  <span className="h-px w-10 bg-ink/30" /> Scroll to explore
+                </p>
               </div>
-              <span className="text-fluid-xs uppercase tracking-wideish text-blue-500 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
-                Search flights →
-              </span>
-            </a>
-          ))}
+            </div>
+
+            {/* destination panels */}
+            {featured.map((f, i) => (
+              <div key={f.city} data-panel className="relative h-full w-screen shrink-0 overflow-hidden">
+                {/* background: photo when provided, brand gradient otherwise */}
+                <div data-media className="absolute inset-0 will-change-transform" style={{ background: gradients[f.region] }}>
+                  {f.image && (
+                    <Image src={f.image} alt={`${f.city}, ${f.country}`} fill sizes="100vw" className="object-cover" />
+                  )}
+                </div>
+                <div className="absolute inset-0 bg-gradient-to-t from-blue-900/70 via-blue-900/10 to-blue-900/20" />
+
+                {/* giant ghost region word */}
+                <span className="pointer-events-none absolute -right-4 bottom-[-2vh] font-display text-[26vw] font-light leading-none text-white/10">
+                  {f.code}
+                </span>
+
+                <div data-inner className="relative z-10 flex h-full flex-col justify-center px-gutter">
+                  <span className="font-display text-fluid-lg text-white/40">{String(i + 1).padStart(2, "0")} / 0{featured.length}</span>
+                  <h3 className="mt-3 font-display text-[clamp(3.5rem,12vw,11rem)] font-light leading-[0.9] tracking-tightest text-white">
+                    {f.city}
+                  </h3>
+                  <p className="mt-4 max-w-md text-fluid-body text-white/75">
+                    {f.country} — {f.note}
+                  </p>
+                  <a
+                    href="#book"
+                    className="focus-ring mt-8 inline-flex w-fit items-center gap-2 rounded-full border border-white/40 px-6 py-3 text-fluid-xs uppercase tracking-wideish text-white transition-colors hover:border-white hover:bg-white hover:text-blue-700"
+                  >
+                    Search flights to {f.code} →
+                  </a>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* progress */}
+          <div className="pointer-events-none absolute inset-x-gutter bottom-8 z-20 flex items-center gap-4">
+            <span className="font-display text-fluid-sm text-ink/50 mix-blend-difference">
+              {String(current + 1).padStart(2, "0")}
+            </span>
+            <div className="relative h-px flex-1 bg-ink/15">
+              <div ref={barRef} className="absolute inset-0 origin-left scale-x-0 bg-blue-500" />
+            </div>
+            <span className="font-display text-fluid-sm text-ink/50 mix-blend-difference">
+              0{featured.length + 1}
+            </span>
+          </div>
         </div>
       </div>
     </section>

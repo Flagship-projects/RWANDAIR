@@ -9,6 +9,10 @@ let registered = false;
 export function ensureGsapRegistered() {
   if (!registered && typeof window !== "undefined") {
     gsap.registerPlugin(ScrollTrigger);
+    // Dev-only: expose gsap so animations can be paused for screenshot capture.
+    if (process.env.NODE_ENV !== "production") {
+      (window as unknown as { gsap: typeof gsap }).gsap = gsap;
+    }
     registered = true;
   }
 }
