@@ -11,7 +11,7 @@ const DestinationGlobe = dynamic(
     ssr: false,
     loading: () => (
       <div className="mx-auto flex aspect-square w-full max-w-[560px] items-center justify-center lg:aspect-auto lg:h-[520px]">
-        <div className="h-2 w-2 animate-ping rounded-full bg-ochre-300" />
+        <div className="h-2 w-2 animate-ping rounded-full bg-blue-500" />
       </div>
     ),
   }
@@ -35,8 +35,8 @@ export function DestinationsSection() {
             <div className="reveal-item mt-10 grid grid-cols-2 gap-x-8 gap-y-5 sm:grid-cols-3">
               {regions.map((region) => (
                 <div key={region}>
-                  <p className="text-fluid-xs uppercase tracking-wideish text-paper/45">{region}</p>
-                  <p className="mt-1 font-display text-fluid-lg text-paper">
+                  <p className="text-fluid-xs uppercase tracking-wideish text-ink/45">{region}</p>
+                  <p className="mt-1 font-display text-fluid-lg text-blue-500">
                     {destinations.filter((d) => d.region === region).length}
                   </p>
                 </div>

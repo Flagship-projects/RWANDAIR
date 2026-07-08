@@ -29,16 +29,16 @@ export function FeaturedDestinations() {
             <a
               key={f.city}
               href="#book"
-              className="reveal-item group relative flex flex-col justify-between gap-10 border-b border-line px-2 py-10 transition-colors duration-300 hover:bg-ink-soft/40 sm:border-b-0 sm:px-8"
+              className="reveal-item group relative flex flex-col justify-between gap-10 border-b border-line px-2 py-10 transition-colors duration-300 hover:bg-blue-50 sm:border-b-0 sm:px-8"
             >
-              <span className="font-display text-fluid-lg text-paper/30">{String(i + 1).padStart(2, "0")}</span>
+              <span className="font-display text-fluid-lg text-ink/25">{String(i + 1).padStart(2, "0")}</span>
               <div>
-                <h3 className="font-display text-fluid-h3 font-light leading-none tracking-tightest text-paper transition-transform duration-500 ease-premium group-hover:-translate-y-1">
+                <h3 className="font-display text-fluid-h3 font-light leading-none tracking-tightest text-ink transition-transform duration-500 ease-premium group-hover:-translate-y-1 group-hover:text-blue-500">
                   {f.city}
                 </h3>
-                <p className="mt-3 text-fluid-sm text-paper/55">{f.country} — {f.note}</p>
+                <p className="mt-3 text-fluid-sm text-ink/55">{f.country} — {f.note}</p>
               </div>
-              <span className="text-fluid-xs uppercase tracking-wideish text-ochre-300 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+              <span className="text-fluid-xs uppercase tracking-wideish text-blue-500 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
                 Search flights →
               </span>
             </a>

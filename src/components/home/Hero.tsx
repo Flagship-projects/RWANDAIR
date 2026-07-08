@@ -24,7 +24,7 @@ export function Hero() {
   }, []);
 
   return (
-    <section id="top" className="relative flex min-h-[100svh] items-end overflow-hidden bg-ink">
+    <section id="top" className="relative flex min-h-[100svh] items-end overflow-hidden bg-blue-900">
       <Image
         src="/assets/aircraft/takeoff.webp"
         alt=""

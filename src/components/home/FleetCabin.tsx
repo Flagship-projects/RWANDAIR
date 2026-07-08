@@ -84,9 +84,9 @@ export function FleetCabin() {
 
   return (
     <div ref={wrapperRef} id="experience" className="relative h-[240vh]">
-      <section className="sticky top-0 h-[100svh] overflow-hidden bg-ink-soft">
+      <section className="sticky top-0 h-[100svh] overflow-hidden bg-gradient-to-b from-blue-50 to-paper">
         <canvas ref={canvasRef} className="absolute inset-0 h-full w-full" />
-        <div className="absolute inset-0 bg-gradient-to-r from-ink/85 via-ink/25 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-r from-paper via-paper/55 to-transparent" />
 
         <div className="relative z-10 flex h-full items-center">
           <div className="mx-auto w-full max-w-shell px-gutter">
@@ -95,10 +95,10 @@ export function FleetCabin() {
 
               <div className="mt-10 space-y-8">
                 {fleet.map((f) => (
-                  <div key={f.name} className="border-l border-ochre-500/40 pl-5">
-                    <p className="font-display text-fluid-lg text-paper">{f.name}</p>
-                    <p className="text-fluid-xs uppercase tracking-wideish text-ochre-300">{f.role}</p>
-                    <p className="mt-2 text-fluid-sm text-paper/60">{f.detail}</p>
+                  <div key={f.name} className="border-l-2 border-blue-500/40 pl-5">
+                    <p className="font-display text-fluid-lg text-ink">{f.name}</p>
+                    <p className="text-fluid-xs uppercase tracking-wideish text-blue-500">{f.role}</p>
+                    <p className="mt-2 text-fluid-sm text-ink/60">{f.detail}</p>
                   </div>
                 ))}
               </div>
@@ -106,8 +106,8 @@ export function FleetCabin() {
               <div className="mt-10 grid grid-cols-2 gap-6">
                 {cabins.map((c) => (
                   <div key={c.name}>
-                    <p className="font-display text-fluid-body text-paper">{c.name}</p>
-                    <ul className="mt-3 space-y-1.5 text-fluid-xs text-paper/55">
+                    <p className="font-display text-fluid-body text-ink">{c.name}</p>
+                    <ul className="mt-3 space-y-1.5 text-fluid-xs text-ink/60">
                       {c.points.map((p) => (
                         <li key={p}>{p}</li>
                       ))}

@@ -26,9 +26,9 @@ export function Loyalty() {
 
           <div className="grid gap-px overflow-hidden rounded-2xl border border-line bg-line">
             {loyaltyTiers.map((tier) => (
-              <div key={tier.tier} className="reveal-item bg-ink px-8 py-8">
-                <p className="font-display text-fluid-lg text-paper">{tier.tier}</p>
-                <p className="mt-2 text-fluid-sm text-paper/60">{tier.benefit}</p>
+              <div key={tier.tier} className="reveal-item bg-paper-bright px-8 py-8">
+                <p className="font-display text-fluid-lg text-ink">{tier.tier}</p>
+                <p className="mt-2 text-fluid-sm text-ink/60">{tier.benefit}</p>
               </div>
             ))}
           </div>

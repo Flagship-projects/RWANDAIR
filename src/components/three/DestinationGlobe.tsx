@@ -33,17 +33,17 @@ function Globe() {
       <mesh>
         <sphereGeometry args={[RADIUS, 64, 64]} />
         <meshStandardMaterial
-          color="#0d1f38"
-          emissive="#12233c"
-          emissiveIntensity={0.4}
-          roughness={0.9}
-          metalness={0.05}
+          color="#00305f"
+          emissive="#0050a0"
+          emissiveIntensity={0.35}
+          roughness={0.85}
+          metalness={0.1}
           wireframe={false}
         />
       </mesh>
       <mesh>
         <sphereGeometry args={[RADIUS + 0.004, 48, 48]} />
-        <meshBasicMaterial color="#3d6fa8" wireframe transparent opacity={0.12} />
+        <meshBasicMaterial color="#20a0e0" wireframe transparent opacity={0.18} />
       </mesh>
 
       {destinations.map((d) => {
@@ -62,10 +62,10 @@ function Globe() {
                   .normalize()
                   .multiplyScalar(RADIUS + 0.75)
                   .toArray()}
-                color={active?.code === d.code ? "#e8c896" : "#c9954f"}
-                lineWidth={active?.code === d.code ? 1.6 : 0.6}
+                color={active?.code === d.code ? "#f7c623" : "#20a0e0"}
+                lineWidth={active?.code === d.code ? 1.8 : 0.7}
                 transparent
-                opacity={active?.code === d.code ? 0.9 : 0.28}
+                opacity={active?.code === d.code ? 0.95 : 0.32}
               />
             )}
             <mesh
@@ -77,11 +77,11 @@ function Globe() {
               onPointerOut={() => setActive((cur) => (cur?.code === d.code ? null : cur))}
             >
               <sphereGeometry args={[isHub ? 0.045 : 0.03, 12, 12]} />
-              <meshBasicMaterial color={isHub ? "#e8c896" : "#f7f4ee"} />
+              <meshBasicMaterial color={isHub ? "#f7c623" : "#ffffff"} />
             </mesh>
             {active?.code === d.code && (
               <Html position={pos} center distanceFactor={7} className="pointer-events-none">
-                <div className="whitespace-nowrap rounded-md border border-line bg-ink/90 px-3 py-1.5 text-xs uppercase tracking-wideish text-paper shadow-lg">
+                <div className="whitespace-nowrap rounded-md border border-line bg-white px-3 py-1.5 text-xs uppercase tracking-wideish text-ink shadow-lg">
                   {d.city}, {d.country}
                 </div>
               </Html>
