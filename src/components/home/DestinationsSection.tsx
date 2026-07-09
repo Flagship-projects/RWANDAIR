@@ -2,6 +2,7 @@
 
 import dynamic from "next/dynamic";
 import { SectionHeading } from "@/components/ui/SectionHeading";
+import { ArrowButton } from "@/components/ui/ArrowButton";
 import { destinations } from "@/lib/data";
 import { useScrollReveal } from "@/lib/motion";
 
@@ -41,6 +42,9 @@ export function DestinationsSection() {
                   </p>
                 </div>
               ))}
+            </div>
+            <div className="reveal-item mt-12">
+              <ArrowButton href="/destinations">Explore all destinations</ArrowButton>
             </div>
           </div>
           <div className="reveal-item">

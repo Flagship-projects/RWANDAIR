@@ -19,12 +19,13 @@ type Featured = {
 };
 
 const featured: Featured[] = [
-  { city: "Nairobi", country: "Kenya", code: "NBO", region: "East Africa", note: "East Africa's business gateway" },
-  { city: "Lagos", country: "Nigeria", code: "LOS", region: "West Africa", note: "West Africa's commercial hub" },
-  { city: "Johannesburg", country: "South Africa", code: "JNB", region: "Southern Africa", note: "The Southern Africa connector" },
-  { city: "Dubai", country: "United Arab Emirates", code: "DXB", region: "Middle East", note: "Long-haul link to the Gulf" },
-  { city: "London", country: "United Kingdom", code: "LHR", region: "Europe", note: "RwandAir's European gateway" },
-  { city: "Accra", country: "Ghana", code: "ACC", region: "West Africa", note: "West African coastal capital" },
+  { city: "Nairobi", country: "Kenya", code: "NBO", region: "East Africa", note: "East Africa's business gateway", image: "/assets/destinations/nairobi.jpg" },
+  { city: "Lagos", country: "Nigeria", code: "LOS", region: "West Africa", note: "West Africa's commercial hub", image: "/assets/destinations/lagos.jpg" },
+  { city: "Johannesburg", country: "South Africa", code: "JNB", region: "Southern Africa", note: "The Southern Africa connector", image: "/assets/destinations/johannesburg.jpg" },
+  { city: "Dubai", country: "United Arab Emirates", code: "DXB", region: "Middle East", note: "Long-haul link to the Gulf", image: "/assets/destinations/dubai.jpg" },
+  { city: "London", country: "United Kingdom", code: "LHR", region: "Europe", note: "RwandAir's European gateway", image: "/assets/destinations/london.jpg" },
+  { city: "Accra", country: "Ghana", code: "ACC", region: "West Africa", note: "West African coastal capital", image: "/assets/destinations/accra.jpg" },
+  { city: "Doha", country: "Qatar", code: "DOH", region: "Middle East", note: "Gateway to the Arabian Gulf", image: "/assets/destinations/doha.jpg" },
 ];
 
 const gradients: Record<Region, string> = {
@@ -155,7 +156,8 @@ export function FeaturedDestinations() {
                     <Image src={f.image} alt={`${f.city}, ${f.country}`} fill sizes="100vw" className="object-cover" />
                   )}
                 </div>
-                <div className="absolute inset-0 bg-gradient-to-t from-blue-900/70 via-blue-900/10 to-blue-900/20" />
+                <div className="absolute inset-0 bg-gradient-to-t from-blue-900/85 via-blue-900/25 to-blue-900/40" />
+                <div className="absolute inset-0 bg-gradient-to-r from-blue-900/70 via-transparent to-transparent" />
 
                 {/* giant ghost region word */}
                 <span className="pointer-events-none absolute -right-4 bottom-[-2vh] font-display text-[26vw] font-light leading-none text-white/10">
