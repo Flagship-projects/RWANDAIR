@@ -82,9 +82,24 @@ export const cabins = [
 ];
 
 export const awards = [
-  "Africa's Best Regional Airline — 2025",
-  "Africa's Best Airline Staff",
-  "APEX Diamond Award for Health & Safety",
+  {
+    title: "Africa's Best Regional Airline",
+    issuer: "Skytrax World Airline Awards",
+    year: "2025",
+    image: "/assets/awards/SKYT_Airline_2025.png",
+  },
+  {
+    title: "Africa's Best Airline Staff",
+    issuer: "Skytrax World Airline Awards",
+    year: "2021",
+    image: "/assets/awards/awards.png",
+  },
+  {
+    title: "Diamond — Health & Safety",
+    issuer: "APEX, powered by SimpliFlying",
+    year: "2021",
+    image: "/assets/awards/safety.png",
+  },
 ];
 
 export const loyaltyTiers = [
@@ -111,21 +126,48 @@ export const services = [
 
 export const footerColumns = [
   {
-    title: "Book & Travel",
-    links: ["Book a flight", "Manage booking", "Check-in", "Flight schedules", "Hotels & cars"],
+    title: "About us",
+    links: ["Who we are", "Fleet"],
   },
   {
-    title: "Destinations & Offers",
-    links: ["Where we fly", "Route map", "Latest offers", "Holidays"],
+    title: "Media Center",
+    links: ["Inzozi", "Newsroom", "Gallery", "Travel alerts"],
   },
   {
-    title: "Experience & Info",
-    links: ["Before you fly", "Baggage", "Onboard", "Restricted items"],
+    title: "Connect with us",
+    links: ["Careers", "Contact us", "Tenders"],
   },
   {
-    title: "Loyalty",
-    links: ["DreamMiles", "Tiers & benefits", "Partner offers"],
+    title: "Business solutions",
+    links: ["Cargo", "Cargo Tracking"],
+  },
+  {
+    title: "Internal Links",
+    links: ["Webmail", "Q-pulse"],
+  },
+  {
+    title: "Our policies",
+    links: [
+      "Terms & Conditions of carriage",
+      "Terms & Conditions of use",
+      "Private & Cookie Policy",
+      "Terms & Conditions for Online Payment",
+      "General rules for the US market",
+      "ADM Policy",
+      "GESE Policy",
+    ],
+  },
+  {
+    title: "External links",
+    links: ["Immigration and Emigration", "Rwanda Development Board", "Visit Rwanda"],
   },
 ];
 
-export const socialLinks = ["Facebook", "X", "Instagram", "LinkedIn", "YouTube", "TikTok"];
+export const socialLinks: { label: string; icon: "facebook" | "x" | "youtube" | "instagram" | "linkedin" | "tiktok"; href: string }[] = [
+  { label: "Facebook", icon: "facebook", href: "https://www.facebook.com/RwandAir" },
+  { label: "X", icon: "x", href: "https://x.com/RwandAir" },
+  { label: "YouTube", icon: "youtube", href: "https://www.youtube.com/@RwandAir" },
+  { label: "Instagram", icon: "instagram", href: "https://www.instagram.com/rwandair" },
+  { label: "LinkedIn", icon: "linkedin", href: "https://www.linkedin.com/company/rwandair" },
+  { label: "TikTok", icon: "tiktok", href: "https://www.tiktok.com/@rwandair" },
+];
