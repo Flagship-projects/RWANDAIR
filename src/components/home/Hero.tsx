@@ -4,6 +4,7 @@ import { useEffect, useRef } from "react";
 import Image from "next/image";
 import gsap from "gsap";
 import { Button } from "@/components/ui/Button";
+import { destinations } from "@/lib/data";
 
 export function Hero() {
   const titleRef = useRef<HTMLHeadingElement>(null);
@@ -58,8 +59,8 @@ export function Hero() {
       </div>
 
       <div className="hero-fade absolute bottom-8 right-gutter z-10 hidden flex-col items-end gap-2 text-right text-fluid-xs uppercase tracking-wideish text-white/60 opacity-0 sm:flex">
-        <span>23 destinations</span>
-        <span>4 continents</span>
+        <span>{destinations.length} destinations</span>
+        <span>3 continents</span>
       </div>
     </section>
   );
