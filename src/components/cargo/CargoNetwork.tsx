@@ -77,15 +77,15 @@ export function CargoNetwork() {
         {/* hangar-door image reveal */}
         <div ref={imgWrapRef} className="relative aspect-[16/8] overflow-hidden rounded-2xl will-change-[clip-path]">
           <Image
-            src="/assets/cargo/freighter.jpg"
-            alt="RwandAir freighter loading at Kigali"
+            src="/assets/cargo/freighter.webp"
+            alt="RwandAir Cargo Boeing 737-800 freighter being loaded"
             fill
             sizes="100vw"
             className="object-cover"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-blue-900/50 to-transparent" />
           <p className="absolute bottom-6 left-6 text-fluid-xs uppercase tracking-wideish text-white/80">
-            Boeing 737-800F · Kigali International Airport
+            Boeing 737-800 Freighter · Kigali International Airport
           </p>
         </div>
 

@@ -58,7 +58,7 @@ export function CargoHero() {
   return (
     <section ref={rootRef} className="relative flex min-h-[100svh] items-end overflow-hidden bg-blue-900">
       <div ref={imgRef} className="absolute inset-0 will-change-transform">
-        <Image src="/assets/cargo/hero-ramp.jpg" alt="RwandAir Cargo aircraft on the ramp" fill priority sizes="100vw" className="object-cover" />
+        <Image src="/assets/cargo/hero-ramp.png" alt="RwandAir Cargo aircraft being loaded on the ramp at night" fill priority sizes="100vw" className="object-cover" />
       </div>
       <div className="absolute inset-0 bg-gradient-to-t from-blue-900/90 via-blue-900/45 to-blue-900/30" />
       <div className="absolute inset-0 bg-gradient-to-r from-blue-900/60 to-transparent" />

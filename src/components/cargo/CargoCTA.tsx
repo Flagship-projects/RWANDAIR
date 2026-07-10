@@ -46,8 +46,8 @@ export function CargoCTA() {
         <div className="relative overflow-hidden rounded-3xl">
           <div ref={apertureRef} className="relative aspect-[16/9] will-change-[clip-path] sm:aspect-[21/9]">
             <Image
-              src="/assets/cargo/cold-chain.jpg"
-              alt="Rwandan produce prepared for export"
+              src="/assets/cargo/cold-chain.png"
+              alt="Roses and vegetables packed for export in RwandAir Cargo cartons"
               fill
               sizes="100vw"
               className="object-cover"
