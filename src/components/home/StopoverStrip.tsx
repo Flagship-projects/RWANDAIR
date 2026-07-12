@@ -1,31 +1,60 @@
 "use client";
 
+import { useEffect, useRef } from "react";
 import Image from "next/image";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { ArrowButton } from "@/components/ui/ArrowButton";
-import { useScrollReveal } from "@/lib/motion";
+import { ensureGsapRegistered, useScrollReveal } from "@/lib/motion";
+
+const facts = [
+  { value: "1 night", label: "Complimentary hotel" },
+  { value: "8–24h", label: "Eligible layover" },
+  { value: "Free", label: "Airport transfers*" },
+];
 
 export function StopoverStrip() {
   const ref = useScrollReveal<HTMLDivElement>({ selector: ".reveal-item", start: "top 80%" });
+  const imgRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    ensureGsapRegistered();
+    const el = imgRef.current;
+    if (!el || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const ctx = gsap.context(() => {
+      gsap.fromTo(
+        el.querySelector("img"),
+        { yPercent: -8, scale: 1.12 },
+        {
+          yPercent: 8,
+          scale: 1.12,
+          ease: "none",
+          scrollTrigger: { trigger: el, start: "top bottom", end: "bottom top", scrub: true },
+        }
+      );
+    }, el);
+    return () => ctx.revert();
+  }, []);
 
   return (
     <section id="stopover" className="relative overflow-hidden border-t border-line" ref={ref}>
       <div className="relative grid lg:grid-cols-2">
-        <div className="relative min-h-[420px]">
+        <div ref={imgRef} className="relative min-h-[440px] overflow-hidden">
           <Image
-            src="/assets/destinations/kigali.jpg"
+            src="/assets/stopover/hero.jpg"
             alt="The landscapes of Rwanda"
             fill
             sizes="(min-width: 1024px) 50vw, 100vw"
-            className="object-cover"
+            className="object-cover will-change-transform"
           />
-          <div className="absolute inset-0 bg-blue-900/25" />
+          <div className="absolute inset-0 bg-gradient-to-t from-blue-900/55 via-blue-900/10 to-blue-900/25" />
           <div className="reveal-item absolute bottom-6 left-6 inline-flex items-center gap-2 rounded-full bg-white/90 px-4 py-2 backdrop-blur">
-            <span className="h-1.5 w-1.5 rounded-full bg-green-500" />
+            <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-green-500" />
             <span className="text-fluid-xs uppercase tracking-wideish text-ink">Complimentary one-night hotel stay</span>
           </div>
         </div>
 
-        <div className="flex flex-col justify-center gap-7 bg-paper-bright px-gutter py-section-md">
+        <div className="flex flex-col justify-center gap-8 bg-paper-bright px-gutter py-section-md">
           <div className="reveal-item">
             <p className="text-fluid-xs uppercase tracking-wideish text-blue-500">Kigali Stopover</p>
             <h2 className="mt-4 max-w-lg font-display text-fluid-h2 font-light leading-[1.04] tracking-tightest text-ink">
@@ -33,13 +62,22 @@ export function StopoverStrip() {
             </h2>
           </div>
           <p className="reveal-item max-w-xl text-fluid-body text-ink/60">
-            Turn your layover into an experience. Make the most of your journey with RwandAir&rsquo;s Kigali Stopover,
-            an exclusive offer that transforms a long layover into a refreshing travel experience. Eligible transit
-            passengers connecting through Kigali can enjoy a complimentary one-night hotel stay, giving them the chance
-            to relax, recharge, or discover the charm of Rwanda&rsquo;s vibrant capital.
+            Turn your layover into an experience. Eligible transit passengers connecting through Kigali can enjoy a
+            complimentary one-night hotel stay — a chance to relax, recharge, or discover the charm of Rwanda&rsquo;s
+            vibrant capital.
           </p>
+
+          <div className="reveal-item grid grid-cols-3 gap-4 border-y border-line py-6">
+            {facts.map((f) => (
+              <div key={f.label}>
+                <p className="font-display text-fluid-lg text-blue-500">{f.value}</p>
+                <p className="mt-1 text-fluid-xs uppercase tracking-wideish text-ink/45">{f.label}</p>
+              </div>
+            ))}
+          </div>
+
           <div className="reveal-item">
-            <ArrowButton href="#stopover">Learn more</ArrowButton>
+            <ArrowButton href="/stopover">Learn more</ArrowButton>
           </div>
         </div>
       </div>
