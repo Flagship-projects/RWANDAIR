@@ -2,7 +2,7 @@
 
 import { FormEvent, useState } from "react";
 import Image from "next/image";
-import { footerColumns, socialLinks } from "@/lib/data";
+import { footerColumnGroups, socialLinks } from "@/lib/data";
 import { socialIcons, GooglePlayIcon, AppleIcon, ArrowRightIcon } from "@/components/ui/BrandIcons";
 
 function AppButton({ store, line1, line2, icon }: { store: string; line1: string; line2: string; icon: React.ReactNode }) {
@@ -32,22 +32,25 @@ export function Footer() {
   return (
     <footer id="holidays" className="border-t border-line bg-paper-dim">
       <div className="mx-auto max-w-shell px-gutter py-section-md">
-        <div className="grid gap-16 lg:grid-cols-[1fr_340px] lg:gap-24">
-          {/* link columns */}
-          <div>
-            <Image
-              src="/assets/brand/logotype.png"
-              alt="RwandAir"
-              width={160}
-              height={38}
-              className="h-7 w-auto"
-            />
-            <p className="mt-6 max-w-xs text-fluid-sm text-ink/55">
-              Rwanda&rsquo;s national carrier, connecting Kigali to Africa, Europe and the Middle East.
-            </p>
+        {/* brand block — its own full-width row, so everything below shares one top edge */}
+        <div className="mb-14 lg:mb-16">
+          <Image
+            src="/assets/brand/logotype.png"
+            alt="RwandAir"
+            width={160}
+            height={38}
+            className="h-7 w-auto"
+          />
+          <p className="mt-6 max-w-xs text-fluid-sm text-ink/55">
+            Rwanda&rsquo;s national carrier, connecting Kigali to Africa, Europe and the Middle East.
+          </p>
+        </div>
 
-            <div className="mt-12 grid grid-cols-2 gap-x-8 gap-y-10 sm:grid-cols-3">
-              {footerColumns.map((col) => (
+        <div className="grid gap-x-10 gap-y-14 sm:grid-cols-2 lg:grid-cols-[1fr_1fr_1fr_340px] lg:gap-x-12">
+          {/* three balanced link columns, each stacking its sections top-aligned */}
+          {footerColumnGroups.map((group, i) => (
+            <div key={i} className="space-y-10">
+              {group.map((col) => (
                 <div key={col.title}>
                   <p className="text-fluid-xs font-semibold uppercase tracking-wideish text-ink">{col.title}</p>
                   <ul className="mt-4 space-y-2.5">
@@ -65,9 +68,9 @@ export function Footer() {
                 </div>
               ))}
             </div>
-          </div>
+          ))}
 
-          {/* connect rail */}
+          {/* connect rail — same top edge as the link columns */}
           <div className="flex flex-col gap-10">
             <div>
               <p className="font-display text-fluid-lg text-ink">Let&rsquo;s be connected</p>

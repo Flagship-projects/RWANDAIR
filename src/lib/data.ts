@@ -124,50 +124,40 @@ export const services = [
   { label: "eSIM & eVisa", detail: "Digital travel essentials arranged before you fly." },
 ];
 
-export const footerColumns = [
-  {
-    title: "About us",
-    links: ["Who we are", "Fleet"],
-  },
-  {
-    title: "Media Center",
-    links: ["Inzozi", "Newsroom", "Gallery", "Travel alerts"],
-  },
-  {
-    title: "Connect with us",
-    links: ["Careers", "Contact us", "Tenders"],
-  },
-  {
-    title: "Business solutions",
-    links: ["Cargo", "Cargo Tracking"],
-  },
-  {
-    title: "Internal Links",
-    links: ["Webmail", "Q-pulse"],
-  },
-  {
-    title: "Our policies",
-    links: [
-      "Terms & Conditions of carriage",
-      "Terms & Conditions of use",
-      "Private & Cookie Policy",
-      "Terms & Conditions for Online Payment",
-      "General rules for the US market",
-      "ADM Policy",
-      "GESE Policy",
-    ],
-  },
-  {
-    title: "External links",
-    links: ["Immigration and Emigration", "Rwanda Development Board", "Visit Rwanda"],
-  },
+// Grouped into three balanced columns (each stacking 2-3 sections), mirroring
+// rwandair.com's real footer so no column wraps or dangles alone.
+export const footerColumnGroups: { title: string; links: string[] }[][] = [
+  [
+    { title: "About us", links: ["Who we are", "Fleet"] },
+    { title: "Business solutions", links: ["Cargo", "Cargo Tracking"] },
+    { title: "Internal Links", links: ["Webmail", "Q-pulse"] },
+  ],
+  [
+    { title: "Media Center", links: ["Inzozi", "Newsroom", "Gallery", "Travel alerts"] },
+    {
+      title: "Our policies",
+      links: [
+        "Terms & Conditions of carriage",
+        "Terms & Conditions of use",
+        "Private & Cookie Policy",
+        "Terms & Conditions for Online Payment",
+        "General rules for the US market",
+        "ADM Policy",
+        "GESE Policy",
+      ],
+    },
+  ],
+  [
+    { title: "Connect with us", links: ["Careers", "Contact us", "Tenders"] },
+    { title: "External links", links: ["Immigration and Emigration", "Rwanda Development Board", "Visit Rwanda"] },
+  ],
 ];
 
 export const socialLinks: { label: string; icon: "facebook" | "x" | "youtube" | "instagram" | "linkedin" | "tiktok"; href: string }[] = [
-  { label: "Facebook", icon: "facebook", href: "https://www.facebook.com/RwandAir" },
-  { label: "X", icon: "x", href: "https://x.com/RwandAir" },
-  { label: "YouTube", icon: "youtube", href: "https://www.youtube.com/@RwandAir" },
-  { label: "Instagram", icon: "instagram", href: "https://www.instagram.com/rwandair" },
-  { label: "LinkedIn", icon: "linkedin", href: "https://www.linkedin.com/company/rwandair" },
-  { label: "TikTok", icon: "tiktok", href: "https://www.tiktok.com/@rwandair" },
+  { label: "Facebook", icon: "facebook", href: "https://web.facebook.com/FlyRwandAir/" },
+  { label: "X", icon: "x", href: "https://x.com/FlyRwandAir" },
+  { label: "YouTube", icon: "youtube", href: "https://www.youtube.com/user/flyrwandair" },
+  { label: "Instagram", icon: "instagram", href: "https://www.instagram.com/flyrwandair/" },
+  { label: "LinkedIn", icon: "linkedin", href: "https://www.linkedin.com/company/flyrwandair/" },
+  { label: "TikTok", icon: "tiktok", href: "https://www.tiktok.com/@thisisflyrwandair" },
 ];
