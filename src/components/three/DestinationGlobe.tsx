@@ -144,12 +144,16 @@ function Globe() {
   const landPositions = useLandPoints();
   const dotTexture = useDotTexture();
 
+  // Start with the hub (Kigali, centre of Africa) facing the camera, then drift
+  // very slowly. A Y-rotation of -(lon + 90)° brings that longitude to the front.
+  const initialRotY = -(hub.lon + 90) * (Math.PI / 180);
+
   useFrame((_, delta) => {
-    if (groupRef.current) groupRef.current.rotation.y += delta * 0.045;
+    if (groupRef.current) groupRef.current.rotation.y += delta * 0.014;
   });
 
   return (
-    <group ref={groupRef} rotation={[0.35, 0, 0.1]}>
+    <group ref={groupRef} rotation={[0.22, initialRotY, 0.1]}>
       {/* ocean sphere */}
       <mesh>
         <sphereGeometry args={[RADIUS, 64, 64]} />
