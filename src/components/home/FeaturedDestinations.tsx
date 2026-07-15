@@ -24,8 +24,6 @@ const featured: Featured[] = [
   { city: "Johannesburg", country: "South Africa", code: "JNB", region: "Southern Africa", note: "The Southern Africa connector", image: "/assets/destinations/johannesburg.jpg" },
   { city: "Dubai", country: "United Arab Emirates", code: "DXB", region: "Middle East", note: "Long-haul link to the Gulf", image: "/assets/destinations/dubai.jpg" },
   { city: "London", country: "United Kingdom", code: "LHR", region: "Europe", note: "RwandAir's European gateway", image: "/assets/destinations/london.jpg" },
-  { city: "Accra", country: "Ghana", code: "ACC", region: "West Africa", note: "West African coastal capital", image: "/assets/destinations/accra.jpg" },
-  { city: "Doha", country: "Qatar", code: "DOH", region: "Middle East", note: "Gateway to the Arabian Gulf", image: "/assets/destinations/doha.jpg" },
 ];
 
 const gradients: Record<Region, string> = {
@@ -139,7 +137,7 @@ export function FeaturedDestinations() {
                   Where the <span className="italic">dream</span> takes you
                 </h2>
                 <p className="mt-6 max-w-md text-fluid-body text-ink/60">
-                  Six of the destinations on RwandAir's growing network — keep scrolling to travel through them.
+                  Five of the destinations on RwandAir's growing network — keep scrolling to travel through them.
                 </p>
                 <p className="mt-10 flex items-center gap-3 text-fluid-xs uppercase tracking-wideish text-ink/45">
                   <span className="h-px w-10 bg-ink/30" /> Scroll to explore
