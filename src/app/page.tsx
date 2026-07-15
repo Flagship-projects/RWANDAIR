@@ -31,10 +31,10 @@ export default function Home() {
         <CloudCorridor />
         <DestinationsSection />
         <FeaturedDestinations />
-        <FleetCabin />
         <Loyalty />
         <AdditionalServices />
         <StopoverStrip />
+        <FleetCabin />
         <TripPlanning />
         <AwardsMarquee />
       </main>
