@@ -3,7 +3,6 @@
 import { useEffect, useRef } from "react";
 import Image from "next/image";
 import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { ensureGsapRegistered, useMagnetic } from "@/lib/motion";
 import { loyaltyTiers, type LoyaltyTier } from "@/lib/data";
 import { cn } from "@/lib/cn";
