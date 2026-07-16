@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import Image from "next/image";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -11,24 +11,22 @@ import { cn } from "@/lib/cn";
 /**
  * DreamMiles — "Ascension".
  *
- * A dark cinematic chapter set above the stratosphere. The section's signature
- * move is a scroll-direction inversion: as you scroll DOWN into it, an inner
- * wrapper is lifted UPWARD against the gesture (faster than the page scrolls),
- * so for a beat the content reads as rising — then the offset eases back to zero
- * and hands you to normal 1:1 downward scroll. The illusion is thematic here:
- * the four real DreamMiles tiers (Emerald → Silver → Gold → Diamond) are a climb,
- * and the page makes you feel it. Everything is driven by scrubbed ScrollTriggers
- * over transforms (never a JS pin), so it never touches the global pin/scroll
- * bookkeeping the globe and route map rely on.
+ * A light, airy chapter set among soft clouds. Its signature move is a
+ * scroll-direction inversion: as you scroll DOWN into it, an inner wrapper is
+ * lifted UPWARD against the gesture (faster than the page scrolls), so for a
+ * beat the content reads as rising — then the offset eases back to zero and
+ * hands you to normal 1:1 downward scroll. The illusion is thematic: the four
+ * real DreamMiles tiers (Emerald → Silver → Gold → Diamond) are a climb, and
+ * the page makes you feel it. The genuine RwandAir membership cards float and
+ * tilt to the cursor, catching light. Everything is driven by scrubbed
+ * ScrollTriggers over transforms (never a JS pin), so it never disturbs the
+ * global pin/scroll bookkeeping the globe and route map rely on.
  */
 export function Loyalty() {
   const sectionRef = useRef<HTMLElement>(null);
   const liftRef = useRef<HTMLDivElement>(null);
-  const bgRef = useRef<HTMLDivElement>(null);
-  const clusterRef = useRef<HTMLDivElement>(null);
+  const cloudsRef = useRef<HTMLDivElement>(null);
   const headRef = useRef<HTMLDivElement>(null);
-  const [active, setActive] = useState(0);
-  const [reduced, setReduced] = useState(false);
 
   useEffect(() => {
     ensureGsapRegistered();
@@ -36,10 +34,9 @@ export function Loyalty() {
     const lift = liftRef.current;
     if (!section || !lift) return;
 
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-      setReduced(true);
-      return;
-    }
+    // Reduced motion: skip all animation. Elements keep their natural (visible)
+    // state, so the section renders fully and statically.
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
     const cards = Array.from(section.querySelectorAll<HTMLElement>(".tier-card"));
 
@@ -49,24 +46,18 @@ export function Loyalty() {
          content briefly climbs against the scroll before settling. */
       gsap
         .timeline({
-          scrollTrigger: {
-            trigger: section,
-            start: "top bottom",
-            end: "top 8%",
-            scrub: 1,
-          },
+          scrollTrigger: { trigger: section, start: "top bottom", end: "top 8%", scrub: 1 },
         })
         .fromTo(lift, { y: 0 }, { y: -150, ease: "power2.out", duration: 0.55 })
         .to(lift, { y: 0, ease: "power2.inOut", duration: 0.45 });
 
-      /* ---- Backdrop parallax (opposite drift for depth) ---- */
-      if (bgRef.current) {
+      /* ---- Clouds drift for parallax depth ---- */
+      if (cloudsRef.current) {
         gsap.fromTo(
-          bgRef.current,
-          { yPercent: -8, scale: 1.12 },
+          cloudsRef.current,
+          { yPercent: -6 },
           {
-            yPercent: 10,
-            scale: 1.12,
+            yPercent: 6,
             ease: "none",
             scrollTrigger: { trigger: section, start: "top bottom", end: "bottom top", scrub: true },
           }
@@ -85,32 +76,54 @@ export function Loyalty() {
         });
       }
 
-      /* ---- Cards rise + unbank as they climb into view ---- */
-      cards.forEach((card, i) => {
-        gsap.fromTo(
-          card,
-          { opacity: 0, y: 90, rotateX: -12, transformPerspective: 1000 },
-          {
-            opacity: 1,
-            y: 0,
-            rotateX: 0,
-            duration: 1.2,
-            ease: "power3.out",
-            scrollTrigger: { trigger: card, start: "top 88%", once: true },
-          }
-        );
-
-        // Track which tier is centred, to drive the left-hand progress rail.
-        ScrollTrigger.create({
-          trigger: card,
-          start: "top 60%",
-          end: "bottom 60%",
-          onEnter: () => setActive(i),
-          onEnterBack: () => setActive(i),
+      /* ---- Each tier act rises + un-banks as it climbs into view ---- */
+      gsap.utils.toArray<HTMLElement>(".tier-act").forEach((act) => {
+        gsap.from(act.querySelectorAll(".act-reveal"), {
+          opacity: 0,
+          y: 46,
+          duration: 1.1,
+          ease: "power3.out",
+          stagger: 0.1,
+          scrollTrigger: { trigger: act, start: "top 80%", once: true },
         });
+        const card = act.querySelector<HTMLElement>(".tier-card");
+        if (card) {
+          gsap.from(card, {
+            opacity: 0,
+            y: 80,
+            rotateX: -14,
+            transformPerspective: 1000,
+            duration: 1.3,
+            ease: "power3.out",
+            scrollTrigger: { trigger: act, start: "top 82%", once: true },
+          });
+        }
       });
 
+      /* ---- Closing block reveal ---- */
+      gsap.from(".outro-reveal", {
+        opacity: 0,
+        y: 30,
+        duration: 1,
+        ease: "power3.out",
+        stagger: 0.1,
+        scrollTrigger: { trigger: ".tier-outro", start: "top 85%", once: true },
+      });
+
+      /* ---- Continuous, gentle float on each card ---- */
+      const floats = cards.map((card, i) =>
+        gsap.to(card, {
+          y: `+=${gsap.utils.random(-12, 12)}`,
+          duration: gsap.utils.random(5, 7.5),
+          ease: "sine.inOut",
+          yoyo: true,
+          repeat: -1,
+          delay: i * 0.4,
+        })
+      );
+
       /* ---- Cursor: 3D tilt + moving glare per card ---- */
+      const cleanups: Array<() => void> = [];
       if (!window.matchMedia("(pointer: coarse)").matches) {
         cards.forEach((card) => {
           const rotY = gsap.quickTo(card, "rotationY", { duration: 0.6, ease: "power3.out" });
@@ -119,10 +132,10 @@ export function Loyalty() {
 
           function onMove(e: MouseEvent) {
             const r = card.getBoundingClientRect();
-            const nx = (e.clientX - (r.left + r.width / 2)) / r.width; // -0.5..0.5
+            const nx = (e.clientX - (r.left + r.width / 2)) / r.width;
             const ny = (e.clientY - (r.top + r.height / 2)) / r.height;
-            rotY(nx * 11);
-            rotX(-ny * 11);
+            rotY(nx * 13);
+            rotX(-ny * 13);
             if (glare) {
               glare.style.setProperty("--mx", `${(nx + 0.5) * 100}%`);
               glare.style.setProperty("--my", `${(ny + 0.5) * 100}%`);
@@ -136,8 +149,17 @@ export function Loyalty() {
           }
           card.addEventListener("mousemove", onMove);
           card.addEventListener("mouseleave", onLeave);
+          cleanups.push(() => {
+            card.removeEventListener("mousemove", onMove);
+            card.removeEventListener("mouseleave", onLeave);
+          });
         });
       }
+
+      return () => {
+        floats.forEach((t) => t.kill());
+        cleanups.forEach((fn) => fn());
+      };
     }, section);
 
     return () => ctx.revert();
@@ -147,108 +169,75 @@ export function Loyalty() {
     <section
       ref={sectionRef}
       id="loyalty"
-      className="relative isolate overflow-hidden bg-ink text-paper"
+      className="relative isolate overflow-hidden border-t border-line bg-gradient-to-b from-[#e9f3fd] via-[#f3f8fd] to-paper text-ink"
     >
-      {/* ------------------------------- backdrop ------------------------------ */}
+      {/* ------------------------------ sky backdrop ----------------------------- */}
       <div className="pointer-events-none absolute inset-0 -z-10">
-        <div ref={bgRef} className="absolute inset-0 will-change-transform">
+        {/* soft sun glow, high and warm */}
+        <div className="absolute inset-x-0 top-0 h-2/3 bg-[radial-gradient(90%_70%_at_70%_-10%,rgba(255,240,205,0.7),transparent_60%)]" />
+        {/* drifting clouds */}
+        <div ref={cloudsRef} className="absolute inset-0 will-change-transform">
           <Image
-            src="/assets/loyalty/vault.png"
+            src="/assets/sky/clouds-1-a.png"
             alt=""
             fill
             sizes="100vw"
-            className="object-cover object-center opacity-80"
+            className="object-cover object-top opacity-70 mix-blend-screen"
+            priority={false}
+          />
+          <Image
+            src="/assets/sky/clouds-2-a.png"
+            alt=""
+            fill
+            sizes="100vw"
+            className="scale-110 object-cover object-bottom opacity-50 mix-blend-screen"
             priority={false}
           />
         </div>
-        {/* vertical scrims: clean top/bottom seams into neighbouring light sections */}
-        <div className="absolute inset-0 bg-gradient-to-b from-ink via-ink/55 to-ink" />
-        {/* warm horizon glow, low and central */}
-        <div className="absolute inset-x-0 bottom-0 h-2/3 bg-[radial-gradient(120%_80%_at_50%_120%,rgba(247,198,35,0.10),transparent_60%)]" />
-        {/* faint grain via subtle vignette */}
-        <div className="absolute inset-0 bg-[radial-gradient(100%_100%_at_50%_0%,transparent_55%,rgba(0,10,25,0.55))]" />
+        {/* fade the very bottom cleanly into the next section */}
+        <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-b from-transparent to-paper" />
       </div>
 
-      {/* ------------------------------- content ------------------------------- */}
+      {/* -------------------------------- content -------------------------------- */}
       <div ref={liftRef} className="relative will-change-transform">
         <div className="mx-auto max-w-shell px-gutter py-section-lg">
           {/* header */}
-          <div ref={headRef} className="max-w-3xl">
-            <p className="reveal-item mb-5 text-fluid-xs uppercase tracking-wideish text-gold-400">
+          <div ref={headRef} className="mx-auto max-w-3xl text-center">
+            <p className="reveal-item mb-5 text-fluid-xs uppercase tracking-wideish text-blue-500">
               DreamMiles · The World in DreamMiles
             </p>
-            <h2 className="reveal-item font-display text-fluid-h1 font-light leading-[0.95] tracking-tightest text-balance">
-              Rise through <span className="italic text-gold-300">the ranks</span>
+            <h2 className="reveal-item font-display text-fluid-h1 font-light leading-[0.95] tracking-tightest text-balance text-ink">
+              Rise through <span className="italic text-blue-500">the ranks</span>
             </h2>
-            <p className="reveal-item mt-6 max-w-xl text-fluid-body text-white/65">
+            <p className="reveal-item mx-auto mt-6 max-w-xl text-fluid-body text-ink/60">
               RwandAir&apos;s loyalty programme turns every journey into altitude. Earn from your first
               flight, then climb four tiers — each unlocking richer bonuses, deeper comfort and
               exclusive privileges that follow you across the world.
             </p>
           </div>
 
-          {/* main: sticky narrative rail + ascending cards */}
-          <div className="mt-16 grid gap-12 lg:mt-24 lg:grid-cols-[0.85fr_1.15fr] lg:gap-20">
-            {/* left — sticky progress rail */}
-            <div className="lg:sticky lg:top-28 lg:h-fit lg:self-start">
-              <p className="text-fluid-xs uppercase tracking-wideish text-white/40">Your climb</p>
-              <ol className="mt-6 space-y-1">
-                {loyaltyTiers.map((tier, i) => (
-                  <li key={tier.name}>
-                    <button
-                      type="button"
-                      aria-current={active === i}
-                      className="group flex w-full items-center gap-4 py-2.5 text-left"
-                      onClick={() => {
-                        document
-                          .getElementById(`tier-${tier.name.toLowerCase()}`)
-                          ?.scrollIntoView({ behavior: "smooth", block: "center" });
-                      }}
-                    >
-                      <span
-                        className="h-2 w-2 shrink-0 rounded-full transition-all duration-500"
-                        style={{
-                          background: active >= i ? tier.accent : "rgba(255,255,255,0.22)",
-                          boxShadow: active === i ? `0 0 14px ${tier.accent}` : "none",
-                        }}
-                      />
-                      <span
-                        className={cn(
-                          "font-display text-fluid-lg transition-colors duration-500",
-                          active === i ? "text-paper" : "text-white/45 group-hover:text-white/75"
-                        )}
-                      >
-                        {tier.name}
-                      </span>
-                      <span className="ml-auto font-display text-fluid-xs text-white/30">
-                        {tier.index}
-                      </span>
-                    </button>
-                  </li>
-                ))}
-              </ol>
+          {/* the four tiers, an ascending alternating climb */}
+          <div className="mt-20 flex flex-col gap-24 sm:mt-28 sm:gap-32 lg:gap-40">
+            {loyaltyTiers.map((tier, i) => (
+              <TierAct key={tier.name} tier={tier} order={i} />
+            ))}
+          </div>
 
-              <div className="mt-10 flex flex-wrap items-center gap-4">
-                <VaultLink href="#" primary>
-                  Join DreamMiles
-                </VaultLink>
-                <VaultLink href="#">Sign in to your account</VaultLink>
-              </div>
-
-              <p className="mt-10 max-w-xs text-fluid-xs leading-relaxed text-white/40">
-                Miles are valid for two years and your membership never expires. Award tickets via
-                dreammiles@rwandair.com or online.
-              </p>
+          {/* close */}
+          <div className="tier-outro mx-auto mt-28 max-w-2xl text-center sm:mt-36">
+            <p className="outro-reveal font-display text-fluid-h3 font-light tracking-tightest text-ink">
+              Your climb starts with a single flight.
+            </p>
+            <div className="outro-reveal mt-8 flex flex-wrap items-center justify-center gap-4">
+              <VaultLink href="#" primary>
+                Join DreamMiles
+              </VaultLink>
+              <VaultLink href="#">Sign in to your account</VaultLink>
             </div>
-
-            {/* right — the four tiers, an ascending staircase on a flight-path spine */}
-            <div ref={clusterRef} className="relative [perspective:1400px]">
-              <div className="flex flex-col gap-7 sm:gap-9">
-                {loyaltyTiers.map((tier, i) => (
-                  <TierCard key={tier.name} tier={tier} rise={i} />
-                ))}
-              </div>
-            </div>
+            <p className="outro-reveal mx-auto mt-8 max-w-md text-fluid-xs leading-relaxed text-ink/45">
+              Miles are valid for two years and your membership never expires. Request award tickets
+              online or via dreammiles@rwandair.com.
+            </p>
           </div>
         </div>
       </div>
@@ -256,109 +245,98 @@ export function Loyalty() {
   );
 }
 
-/* -------------------------------- tier card ------------------------------- */
+/* -------------------------------- tier act -------------------------------- */
 
-function TierCard({ tier, rise }: { tier: LoyaltyTier; rise: number }) {
-  // Progressive indent + scale so the stack literally reads as a climb.
-  const indent = ["lg:ml-0", "lg:ml-6", "lg:ml-12", "lg:ml-20"][rise] ?? "";
+function TierAct({ tier, order }: { tier: LoyaltyTier; order: number }) {
+  const flipped = order % 2 === 1; // alternate the card side down the climb
 
   return (
-    <article
-      id={`tier-${tier.name.toLowerCase()}`}
-      className={cn(
-        "tier-card group relative isolate overflow-hidden rounded-3xl border border-white/12 shadow-2xl shadow-black/40 will-change-transform [transform-style:preserve-3d]",
-        indent
-      )}
-      style={{ ["--accent" as string]: tier.accent }}
-    >
-      {/* metal material */}
-      <div className="absolute inset-0 -z-10">
-        <Image
-          src={tier.material}
-          alt={`${tier.name} tier material`}
-          fill
-          sizes="(min-width:1024px) 46vw, 100vw"
-          className="scale-105 object-cover transition-transform duration-[1200ms] ease-premium group-hover:scale-110"
-        />
+    <div className="tier-act grid items-center gap-10 lg:grid-cols-2 lg:gap-16">
+      {/* card */}
+      <div className={cn("[perspective:1400px]", flipped && "lg:order-2")}>
+        <CardVisual tier={tier} />
       </div>
-      {/* legibility scrims — darken toward the text (left), floor and top */}
-      <div className="absolute inset-0 -z-10 bg-gradient-to-r from-ink/92 via-ink/72 to-ink/25" />
-      <div className="absolute inset-0 -z-10 bg-gradient-to-t from-ink/85 via-transparent to-ink/45" />
-      {/* accent wash keyed to the gem */}
-      <div
-        className="absolute inset-0 -z-10 opacity-25 mix-blend-screen"
-        style={{ background: `radial-gradient(120% 140% at 100% 0%, ${tier.accent}, transparent 55%)` }}
+
+      {/* copy */}
+      <div className={cn(flipped && "lg:order-1")}>
+        <div className="act-reveal flex items-center gap-4">
+          <span className="font-display text-fluid-h2 font-light leading-none text-ink/15">
+            {tier.index}
+          </span>
+          <span
+            className="h-px flex-1 max-w-[3.5rem] origin-left"
+            style={{ background: tier.accent }}
+          />
+          <span
+            className="rounded-full border px-3 py-1.5 text-fluid-xs font-medium"
+            style={{ borderColor: `${tier.accent}55`, color: tier.accent, background: `${tier.accent}12` }}
+          >
+            {tier.bonus}
+          </span>
+        </div>
+
+        <h3 className="act-reveal mt-5 font-display text-fluid-h2 font-light leading-[0.98] tracking-tightest text-ink">
+          {tier.name}
+        </h3>
+        <p className="act-reveal mt-1.5 text-fluid-xs uppercase tracking-wideish text-ink/45">
+          {tier.threshold}
+        </p>
+        <p className="act-reveal mt-5 max-w-md font-display text-fluid-lg font-light text-ink/70">
+          {tier.headline}
+        </p>
+
+        <ul className="act-reveal mt-7 max-w-md">
+          {tier.benefits.map((b) => (
+            <li key={b} className="flex items-baseline gap-3.5 border-t border-line py-3">
+              <span
+                aria-hidden
+                className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full"
+                style={{ background: tier.accent }}
+              />
+              <span className="text-fluid-sm text-ink/75">{b}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </div>
+  );
+}
+
+/* ------------------------------- card visual ------------------------------- */
+
+function CardVisual({ tier }: { tier: LoyaltyTier }) {
+  return (
+    <div
+      className="tier-card group relative isolate mx-auto w-full max-w-[30rem] overflow-hidden rounded-[5.5%] shadow-[0_34px_70px_-24px_rgba(11,31,58,0.55)] will-change-transform [transform-style:preserve-3d]"
+      style={{ aspectRatio: "1.585", ["--accent" as string]: tier.accent }}
+    >
+      {/* the genuine DreamMiles card */}
+      <Image
+        src={tier.material}
+        alt={`RwandAir DreamMiles ${tier.name} card`}
+        fill
+        sizes="(min-width:1024px) 30rem, 90vw"
+        className="scale-[1.035] object-cover"
+      />
+      {/* inner hairline to seat the card on the sky */}
+      <span aria-hidden className="pointer-events-none absolute inset-0 rounded-[inherit] ring-1 ring-inset ring-white/25" />
+      {/* accent glow keyed to the tier */}
+      <span
+        aria-hidden
+        className="pointer-events-none absolute -inset-8 -z-10 opacity-40 blur-2xl"
+        style={{ background: `radial-gradient(50% 50% at 50% 60%, ${tier.accent}, transparent 70%)` }}
       />
       {/* moving cursor glare */}
       <div
         className="card-glare pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-300"
         style={{
           background:
-            "radial-gradient(220px 220px at var(--mx,50%) var(--my,50%), rgba(255,255,255,0.22), transparent 65%)",
+            "radial-gradient(240px 240px at var(--mx,50%) var(--my,50%), rgba(255,255,255,0.35), transparent 60%)",
         }}
       />
-      {/* continuous sheen sweep */}
+      {/* continuous sheen sweep on hover */}
       <span aria-hidden className="card-sheen pointer-events-none absolute inset-0" />
-      {/* accent hairline top edge */}
-      <span
-        aria-hidden
-        className="absolute inset-x-0 top-0 h-px opacity-60"
-        style={{ background: `linear-gradient(90deg, transparent, ${tier.accent}, transparent)` }}
-      />
-
-      {/* crane watermark */}
-      <Image
-        src="/assets/brand/mark.png"
-        alt=""
-        width={120}
-        height={120}
-        className="pointer-events-none absolute -right-3 -top-3 w-24 opacity-[0.12] mix-blend-screen sm:w-28"
-      />
-
-      {/* content */}
-      <div className="relative flex flex-col gap-5 p-7 sm:p-9">
-        <div className="flex items-start justify-between gap-4">
-          <div className="flex items-center gap-4">
-            {/* node dot on the flight-path spine */}
-            <span
-              className="grid h-9 w-9 place-items-center rounded-full border border-white/25 bg-ink/60 font-display text-fluid-xs backdrop-blur-sm"
-              style={{ color: tier.accent }}
-            >
-              {tier.index}
-            </span>
-            <div>
-              <h3 className="font-display text-fluid-h3 font-light leading-none tracking-tightest">
-                {tier.name}
-              </h3>
-              <p className="mt-1.5 text-fluid-xs uppercase tracking-wideish text-white/45">
-                {tier.threshold}
-              </p>
-            </div>
-          </div>
-          <span
-            className="shrink-0 rounded-full border px-3 py-1.5 text-fluid-xs font-medium"
-            style={{ borderColor: `${tier.accent}66`, color: tier.accent, background: `${tier.accent}12` }}
-          >
-            {tier.bonus}
-          </span>
-        </div>
-
-        <p className="font-display text-fluid-lg font-light text-white/85">{tier.headline}</p>
-
-        <ul className="grid gap-y-1.5">
-          {tier.benefits.map((b) => (
-            <li key={b} className="flex items-baseline gap-3 border-t border-white/10 py-2.5">
-              <span
-                aria-hidden
-                className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full"
-                style={{ background: tier.accent }}
-              />
-              <span className="text-fluid-sm text-white/75">{b}</span>
-            </li>
-          ))}
-        </ul>
-      </div>
-    </article>
+    </div>
   );
 }
 
@@ -381,8 +359,8 @@ function VaultLink({
       className={cn(
         "focus-ring relative inline-flex items-center justify-center gap-2 rounded-full text-fluid-sm font-medium tracking-tight transition-colors duration-300 ease-premium",
         primary
-          ? "bg-gold-400 px-8 py-3.5 text-ink hover:bg-gold-300"
-          : "px-2 py-3.5 text-white/70 hover:text-paper"
+          ? "bg-blue-500 px-8 py-3.5 text-white hover:bg-blue-600"
+          : "px-2 py-3.5 text-ink/70 hover:text-blue-500"
       )}
     >
       {children}

@@ -128,8 +128,8 @@ export const loyaltyTiers: LoyaltyTier[] = [
       "Redeem miles for award tickets & upgrades",
       "Lounge access and extra baggage using miles",
     ],
-    material: "/assets/loyalty/emerald.jpg",
-    accent: "#1fae7a",
+    material: "/assets/loyalty/card-emerald.png",
+    accent: "#0f9d6b",
   },
   {
     name: "Silver",
@@ -143,8 +143,8 @@ export const loyaltyTiers: LoyaltyTier[] = [
       "Discounted seat selection",
       "Priority waitlist clearance",
     ],
-    material: "/assets/loyalty/silver.jpg",
-    accent: "#cdd7e6",
+    material: "/assets/loyalty/card-silver.png",
+    accent: "#7c8798",
   },
   {
     name: "Gold",
@@ -159,8 +159,8 @@ export const loyaltyTiers: LoyaltyTier[] = [
       "Complimentary lounge access",
       "Free seat selection",
     ],
-    material: "/assets/loyalty/gold.jpg",
-    accent: "#f7c623",
+    material: "/assets/loyalty/card-gold.png",
+    accent: "#c08a00",
   },
   {
     name: "Diamond",
@@ -176,8 +176,8 @@ export const loyaltyTiers: LoyaltyTier[] = [
       "Free seat selection",
       "Tier status extension up to 1 year",
     ],
-    material: "/assets/loyalty/diamond.jpg",
-    accent: "#a9d8ff",
+    material: "/assets/loyalty/card-diamond.png",
+    accent: "#2f6fb0",
   },
 ];
 
