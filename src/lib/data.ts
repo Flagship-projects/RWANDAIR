@@ -102,18 +102,82 @@ export const awards = [
   },
 ];
 
-export const loyaltyTiers = [
+export type LoyaltyTier = {
+  name: string;
+  index: string;
+  threshold: string;
+  bonus: string;
+  headline: string;
+  benefits: string[];
+  material: string;
+  /** Jewel accent used for glow, hairlines and light-sweeps in the dark vault. */
+  accent: string;
+};
+
+// Sourced from RwandAir's DreamMiles loyalty program — four real tiers, real
+// qualification thresholds and published benefits (no invented perks).
+export const loyaltyTiers: LoyaltyTier[] = [
   {
-    tier: "Member",
-    benefit: "Earn DreamMiles on every RwandAir flight from your very first trip.",
+    name: "Emerald",
+    index: "01",
+    threshold: "Entry tier · free to join",
+    bonus: "Base earn rate",
+    headline: "Every journey starts earning",
+    benefits: [
+      "Earn DreamMiles from your very first flight",
+      "Redeem miles for award tickets & upgrades",
+      "Lounge access and extra baggage using miles",
+    ],
+    material: "/assets/loyalty/emerald.jpg",
+    accent: "#1fae7a",
   },
   {
-    tier: "Silver / Gold / Platinum",
-    benefit: "Unlock cabin upgrades, extra baggage allowance and priority services as your miles grow.",
+    name: "Silver",
+    index: "02",
+    threshold: "25,000 tier miles · 20 sectors",
+    bonus: "+25% bonus miles",
+    headline: "The climb begins",
+    benefits: [
+      "25% bonus miles on every flight",
+      "10kg extra baggage allowance",
+      "Discounted seat selection",
+      "Priority waitlist clearance",
+    ],
+    material: "/assets/loyalty/silver.jpg",
+    accent: "#cdd7e6",
   },
   {
-    tier: "Partner Network",
-    benefit: "Redeem DreamMiles for free tickets and offers across RwandAir's partner airlines.",
+    name: "Gold",
+    index: "03",
+    threshold: "50,000 tier miles · 40 sectors",
+    bonus: "+50% bonus miles",
+    headline: "Travel, elevated",
+    benefits: [
+      "50% bonus miles on every flight",
+      "23kg extra baggage, piece concept",
+      "Priority check-in & boarding",
+      "Complimentary lounge access",
+      "Free seat selection",
+    ],
+    material: "/assets/loyalty/gold.jpg",
+    accent: "#f7c623",
+  },
+  {
+    name: "Diamond",
+    index: "04",
+    threshold: "100,000 tier miles · 60 sectors",
+    bonus: "+100% bonus miles",
+    headline: "The summit of DreamMiles",
+    benefits: [
+      "100% bonus miles on every flight",
+      "32kg extra baggage, piece concept",
+      "Priority check-in & boarding",
+      "Lounge access with a guest",
+      "Free seat selection",
+      "Tier status extension up to 1 year",
+    ],
+    material: "/assets/loyalty/diamond.jpg",
+    accent: "#a9d8ff",
   },
 ];
 

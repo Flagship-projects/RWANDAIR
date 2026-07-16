@@ -76,3 +76,31 @@ body {
   outline-offset: 4px;
   border-radius: 2px;
 }
+
+/* DreamMiles tier-card sheen — a single specular band sweeps on hover. */
+.card-sheen {
+  background: linear-gradient(
+    115deg,
+    transparent 35%,
+    rgba(255, 255, 255, 0.16) 48%,
+    rgba(255, 255, 255, 0.3) 50%,
+    rgba(255, 255, 255, 0.16) 52%,
+    transparent 65%
+  );
+  background-size: 250% 100%;
+  background-position: 185% 0;
+  opacity: 0;
+  mix-blend-mode: screen;
+}
+.tier-card:hover .card-sheen {
+  opacity: 1;
+  animation: sheen-sweep 1.15s cubic-bezier(0.16, 1, 0.3, 1);
+}
+@keyframes sheen-sweep {
+  from {
+    background-position: 185% 0;
+  }
+  to {
+    background-position: -85% 0;
+  }
+}
