@@ -232,18 +232,18 @@ export function Hero() {
       <div ref={planeScrollRef} className="absolute inset-0 z-[5] will-change-transform">
         <div ref={planeIntroRef} className="absolute inset-0 opacity-0 will-change-transform">
           <div ref={planeMouseRef} className="absolute inset-0 will-change-transform">
-            <div ref={planeBobRef} className="absolute left-1/2 top-[7%] aspect-[2/1] w-[86vw] max-w-[860px] -translate-x-1/2 will-change-transform sm:left-[58%] sm:top-[4%]">
-              {/* soft ground/haze glow so the jet reads against the bright sky */}
+            <div ref={planeBobRef} className="absolute left-1/2 top-[10%] aspect-[3520/1125] w-[92vw] max-w-[1080px] -translate-x-1/2 will-change-transform sm:left-[56%] sm:top-[7%]">
+              {/* soft haze glow so the jet reads against the bright sky */}
               <div
                 className="absolute inset-0"
-                style={{ background: "radial-gradient(52% 42% at 50% 52%,rgba(3,26,58,0.16),rgba(3,26,58,0) 72%)" }}
+                style={{ background: "radial-gradient(58% 46% at 50% 52%,rgba(3,26,58,0.16),rgba(3,26,58,0) 72%)" }}
               />
               <Image
-                src="/assets/aircraft/takeoff-cutout.png"
-                alt="RwandAir Airbus A330 climbing above the clouds"
+                src="/assets/aircraft/rwandair-transparent.png"
+                alt="RwandAir Airbus A330 in flight"
                 fill
                 priority
-                sizes="86vw"
+                sizes="92vw"
                 className="object-contain drop-shadow-[0_30px_60px_rgba(3,26,58,0.28)]"
               />
             </div>
