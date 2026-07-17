@@ -70,10 +70,11 @@ export function Hero() {
       gsap.fromTo(seaRef.current, { opacity: 0, yPercent: reduced ? 0 : 10, scale: 1.08 }, { opacity: 1, yPercent: 0, scale: 1, duration: reduced ? 0.6 : 2.4, ease: "power2.out", delay: 0.2 });
       gsap.fromTo([cloudFarRef.current, cloudMidRef.current], { opacity: 0 }, { opacity: 1, duration: 2, ease: "power2.out", delay: 0.4, stagger: 0.2 });
 
-      // the aircraft flies in from the sun-side
+      // the aircraft flies in from the left, nose forward — the start of one
+      // continuous left-to-right journey that the scroll then carries across.
       gsap.fromTo(
         planeIntroRef.current,
-        { xPercent: reduced ? 0 : 26, yPercent: reduced ? 0 : -8, opacity: 0 },
+        { xPercent: reduced ? 0 : -24, yPercent: reduced ? 0 : -6, opacity: 0 },
         { xPercent: 0, yPercent: 0, opacity: 1, duration: reduced ? 0.6 : 2.2, ease: "power3.out", delay: 0.4 }
       );
 
@@ -93,68 +94,60 @@ export function Hero() {
       gsap.to(seaRef.current, { x: -18, duration: 40, ease: "sine.inOut", yoyo: true, repeat: -1 });
 
       /* ======================================================================
-         THE FLIGHT — one pinned, scrubbed master timeline (0 → 1)
-         Every layer is placed on this single timeline, so forward and reverse
-         are guaranteed to be perfectly continuous. Eases inside the timeline
-         give each move its own natural accel/decel while scroll stays linear.
+         THE FLIGHT — one screen, one scrubbed timeline (0 → 1)
+         No pin: the hero is a single viewport tall. Over one screen of scroll
+         the jet cruises steadily LEFT → RIGHT across the sky while every cloud
+         deck slides the other way at its own speed (parallax), so it reads as
+         forward flight. Scroll up simply flies the same path in reverse.
          ====================================================================== */
       const tl = gsap.timeline({
         defaults: { ease: "none" },
         scrollTrigger: {
           trigger: root,
           start: "top top",
-          end: "+=260%",
+          end: "bottom top",
           scrub: 1,
-          pin: true,
-          anticipatePin: 1,
           invalidateOnRefresh: true,
         },
       });
 
-      /* --- the aircraft: three beats, always reading as forward flight --------
-         Beat A (0 → .30)  throttle up — eases forward-right, noses up, swells a touch
-         Beat B (.30 → .64) banks and cuts down through a passing cloud deck
-         Beat C (.64 → 1)  climbs toward the horizon and recedes into the distance */
-      tl.to(planePathRef.current, { xPercent: 7, yPercent: -3, rotation: -2, scale: 1.05, ease: "power1.inOut", duration: 0.3 }, 0)
-        .to(planePathRef.current, { xPercent: 17, yPercent: 5, rotation: 2.2, scale: 1.0, ease: "sine.inOut", duration: 0.34 }, 0.3)
-        .to(planePathRef.current, { xPercent: 29, yPercent: -22, rotation: -3, scale: 0.62, ease: "power2.inOut", duration: 0.36 }, 0.64);
+      /* --- the aircraft: a steady left-to-right cruise, gentle climb + bank --- */
+      tl.to(planePathRef.current, { xPercent: 44, yPercent: -8, rotation: -2, scale: 1.03, duration: 1 }, 0);
 
       /* --- sun: lifts and softens, drifting to the sun-side --- */
-      tl.to(sunRef.current, { xPercent: 7, yPercent: -16, opacity: 0.55, duration: 1 }, 0);
+      tl.to(sunRef.current, { xPercent: 5, yPercent: -12, opacity: 0.6, duration: 1 }, 0);
 
-      /* --- far deck (deep): slow, drifts LEFT against the jet, barely swells --- */
-      tl.to(cloudFarRef.current, { xPercent: -5, yPercent: 7, scale: 1.14, opacity: 0.5, ease: "sine.inOut", duration: 1 }, 0);
+      /* --- far deck (deep): slow, drifts LEFT against the jet --- */
+      tl.to(cloudFarRef.current, { xPercent: -8, yPercent: 5, scale: 1.1, opacity: 0.6, duration: 1 }, 0);
 
-      /* --- sea of clouds: the horizon sinks away below as we climb --- */
-      tl.to(seaRef.current, { xPercent: -8, yPercent: 30, scale: 1.36, opacity: 0.9, ease: "power1.in", duration: 1 }, 0);
+      /* --- sea of clouds: the horizon sinks a touch as we cruise --- */
+      tl.to(seaRef.current, { xPercent: -6, yPercent: 18, scale: 1.2, opacity: 0.92, duration: 1 }, 0);
 
-      /* --- mid deck (around the jet): rushes down-and-left, swells, blows past --- */
-      tl.to(cloudMidRef.current, { xPercent: -16, yPercent: 24, scale: 1.85, opacity: 0.4, ease: "power1.in", duration: 0.64 }, 0)
-        .to(cloudMidRef.current, { xPercent: -28, yPercent: 42, scale: 2.35, opacity: 0, ease: "power1.out", duration: 0.36 }, 0.64);
+      /* --- mid deck (around the jet): the workhorse — streams left and past --- */
+      tl.to(cloudMidRef.current, { xPercent: -26, yPercent: 16, scale: 1.5, opacity: 0.5, duration: 1 }, 0);
 
-      /* --- foreground wisp A: streaks in and blows past the lens (the "cut
-             through a cloud" moment), sweeping left as the jet pushes right --- */
+      /* --- foreground wisp A: one soft pass across the lens, opposite the jet --- */
       tl.fromTo(
         wispARef.current,
-        { opacity: 0, scale: 1.15, xPercent: 14, yPercent: -6 },
-        { opacity: 0.85, scale: 1.9, xPercent: -10, yPercent: 5, ease: "sine.in", duration: 0.34 },
-        0.22
-      ).to(wispARef.current, { opacity: 0, scale: 2.9, xPercent: -30, yPercent: 14, ease: "power1.out", duration: 0.3 }, 0.56);
+        { opacity: 0, scale: 1.2, xPercent: 12 },
+        { opacity: 0.6, scale: 1.7, xPercent: -18, ease: "sine.inOut", duration: 1 },
+        0
+      );
 
-      /* --- foreground wisp B: a second, slower pass later for depth/richness --- */
+      /* --- foreground wisp B: a slower, fainter second pass for depth --- */
       tl.fromTo(
         wispBRef.current,
-        { opacity: 0, scale: 1.2, xPercent: 10, yPercent: 4 },
-        { opacity: 0.6, scale: 2.1, xPercent: -12, yPercent: -4, ease: "sine.in", duration: 0.36 },
-        0.44
-      ).to(wispBRef.current, { opacity: 0, scale: 3.1, xPercent: -28, yPercent: -12, ease: "power1.out", duration: 0.2 }, 0.8);
+        { opacity: 0, scale: 1.3, xPercent: 8, yPercent: 4 },
+        { opacity: 0.4, scale: 1.9, xPercent: -14, yPercent: -6, ease: "sine.inOut", duration: 1 },
+        0
+      );
 
       /* --- atmosphere breathes forward a touch --- */
-      tl.to(atmosRef.current, { yPercent: 3, scale: 1.08, duration: 1 }, 0);
+      tl.to(atmosRef.current, { yPercent: 2, scale: 1.05, duration: 1 }, 0);
 
       /* --- copy hands the stage to the flight early --- */
-      tl.to([contentRef.current, statsRef.current], { yPercent: -14, opacity: 0, ease: "power2.in", duration: 0.26 }, 0);
-      tl.to(scrollHintRef.current, { opacity: 0, ease: "power1.in", duration: 0.1 }, 0);
+      tl.to([contentRef.current, statsRef.current], { yPercent: -12, opacity: 0, ease: "power2.in", duration: 0.4 }, 0);
+      tl.to(scrollHintRef.current, { opacity: 0, ease: "power1.in", duration: 0.15 }, 0);
     }, root);
 
     return () => ctx.revert();
@@ -238,7 +231,7 @@ export function Hero() {
       {/* ================= the aircraft (real RwandAir livery) ================= */}
       <div ref={planePathRef} className="absolute inset-0 z-[5] will-change-transform">
         <div ref={planeIntroRef} className="absolute inset-0 opacity-0 will-change-transform">
-          <div ref={planeBobRef} className="absolute left-1/2 top-[24%] aspect-[3520/1125] w-[80vw] max-w-[940px] -translate-x-1/2 will-change-transform sm:top-[22%]">
+          <div ref={planeBobRef} className="absolute left-[2%] top-[26%] aspect-[3520/1125] w-[72vw] max-w-[760px] will-change-transform sm:left-[4%] sm:top-[24%]">
             {/* soft haze glow so the jet reads against the bright sky */}
             <div
               className="absolute inset-0"
