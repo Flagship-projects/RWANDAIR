@@ -83,7 +83,9 @@ function Group({ children, className }: { children: ReactNode; className?: strin
   return (
     <div
       className={cn(
-        "flex items-stretch divide-x divide-line rounded-2xl border border-line bg-white transition-colors focus-within:border-blue-500/40",
+        // Stack fields on phones (full-width, comfortable tap targets); only
+        // sit them side-by-side from sm up where there's room.
+        "flex flex-col divide-y divide-line rounded-2xl border border-line bg-white transition-colors focus-within:border-blue-500/40 sm:flex-row sm:items-stretch sm:divide-x sm:divide-y-0",
         className
       )}
     >

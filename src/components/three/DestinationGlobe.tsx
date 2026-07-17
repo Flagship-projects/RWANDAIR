@@ -242,8 +242,13 @@ function Globe() {
 export function DestinationGlobe() {
   const wrapRef = useRef<HTMLDivElement>(null);
   const [inView, setInView] = useState(true);
+  // On touch devices, one-finger drag-to-rotate would swallow vertical page
+  // scroll (a scroll-trap). There we disable manual rotation and let the globe
+  // auto-spin as a self-running showpiece; desktop keeps full drag control.
+  const [coarse, setCoarse] = useState(false);
 
   useEffect(() => {
+    setCoarse(window.matchMedia("(pointer: coarse)").matches);
     const el = wrapRef.current;
     if (!el) return;
     const io = new IntersectionObserver(
@@ -271,6 +276,7 @@ export function DestinationGlobe() {
         <OrbitControls
           enablePan={false}
           enableZoom={false}
+          enableRotate={!coarse}
           minPolarAngle={Math.PI / 2.8}
           maxPolarAngle={Math.PI / 1.7}
           rotateSpeed={0.4}

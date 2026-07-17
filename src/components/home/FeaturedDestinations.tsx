@@ -39,11 +39,18 @@ export function FeaturedDestinations() {
   const barRef = useRef<HTMLDivElement>(null);
   const [current, setCurrent] = useState(0);
   const [reduced, setReduced] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
     ensureGsapRegistered();
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
       setReduced(true);
+      return;
+    }
+    // Phones get a native swipe carousel instead of the horizontal scroll-jack —
+    // touch-native, performant, and no 500vh of scroll to sit through.
+    if (window.matchMedia("(max-width: 767px)").matches) {
+      setIsMobile(true);
       return;
     }
     const root = rootRef.current;
@@ -119,6 +126,59 @@ export function FeaturedDestinations() {
             ))}
           </div>
         </div>
+      </section>
+    );
+  }
+
+  /* ---------------- mobile: a native, touch-first swipe carousel ---------------- */
+  if (isMobile) {
+    return (
+      <section id="featured" className="border-t border-line bg-paper py-section-lg">
+        <div className="px-gutter">
+          <p className="mb-4 text-fluid-xs uppercase tracking-wideish text-blue-500">Featured routes</p>
+          <h2 className="font-display text-fluid-h2 font-light leading-[0.98] tracking-tightest text-ink">
+            Where the <span className="italic">dream</span> takes you
+          </h2>
+          <p className="mt-4 max-w-md text-fluid-body text-ink/60">
+            Four destinations on RwandAir&apos;s growing network — swipe to explore.
+          </p>
+        </div>
+
+        <div className="hide-scrollbar mt-10 flex snap-x snap-mandatory gap-4 overflow-x-auto px-gutter pb-3">
+          {featured.map((f, i) => (
+            <a
+              key={f.city}
+              href="#book"
+              className="focus-ring relative aspect-[3/4] w-[80vw] max-w-[340px] shrink-0 snap-start overflow-hidden rounded-3xl"
+            >
+              <div className="absolute inset-0" style={{ background: gradients[f.region] }}>
+                {f.image && (
+                  <Image src={f.image} alt={`${f.city}, ${f.country}`} fill sizes="80vw" className="object-cover" />
+                )}
+              </div>
+              <div className="absolute inset-0 bg-gradient-to-t from-blue-900/90 via-blue-900/20 to-transparent" />
+              <span className="pointer-events-none absolute -right-2 top-1 font-display text-[20vw] font-light leading-none text-white/10">
+                {f.code}
+              </span>
+              <div className="absolute inset-x-0 bottom-0 p-6">
+                <span className="font-display text-fluid-sm text-white/50">
+                  {String(i + 1).padStart(2, "0")} / 0{featured.length}
+                </span>
+                <h3 className="mt-1 font-display text-[clamp(2rem,9.5vw,3rem)] font-light leading-[0.95] tracking-tightest text-white">
+                  {f.city}
+                </h3>
+                <p className="mt-2 text-fluid-sm text-white/75">{f.country} — {f.note}</p>
+                <span className="mt-5 inline-flex items-center gap-2 rounded-full border border-white/45 px-5 py-2.5 text-fluid-xs uppercase tracking-wideish text-white">
+                  Search {f.code} →
+                </span>
+              </div>
+            </a>
+          ))}
+        </div>
+
+        <p className="mt-3 flex items-center gap-3 px-gutter text-fluid-xs uppercase tracking-wideish text-ink/40">
+          <span className="h-px w-8 bg-ink/25" /> Swipe to explore
+        </p>
       </section>
     );
   }

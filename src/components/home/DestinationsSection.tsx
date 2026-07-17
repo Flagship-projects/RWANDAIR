@@ -31,7 +31,7 @@ export function DestinationsSection() {
             <SectionHeading
               eyebrow="Route network"
               title="One hub. A continent, and beyond."
-              description={`From Kigali, RwandAir connects ${destinations.length} cities across East, West, Central and Southern Africa, plus long-haul links to Europe and the Middle East. Hover the globe to trace a route.`}
+              description={`From Kigali, RwandAir connects ${destinations.length} cities across East, West, Central and Southern Africa, plus long-haul links to Europe and the Middle East — every route traced live from the hub.`}
             />
             <div className="reveal-item mt-10 grid grid-cols-2 gap-x-8 gap-y-5 sm:grid-cols-3">
               {regions.map((region) => (
