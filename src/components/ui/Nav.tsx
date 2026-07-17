@@ -26,6 +26,15 @@ export function Nav() {
         scrolled ? "bg-paper/85 backdrop-blur-md border-b border-line" : "bg-transparent"
       )}
     >
+      {/* Soft light scrim when transparent, so the full-colour logo and dark nav
+          read cleanly over the bright daytime hero sky. */}
+      {!scrolled && (
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-32 bg-gradient-to-b from-white/70 via-white/35 to-transparent lg:from-white/60 lg:via-white/25"
+        />
+      )}
+
       <div className="mx-auto flex max-w-shell items-center justify-between px-gutter py-4">
         <a href="#top" className="focus-ring flex items-center gap-2">
           <Image
@@ -34,10 +43,7 @@ export function Nav() {
             width={140}
             height={33}
             priority
-            className={cn(
-              "h-6 w-auto transition-[filter] duration-500 sm:h-7",
-              !scrolled && "brightness-0 invert"
-            )}
+            className="h-6 w-auto sm:h-7"
           />
         </a>
 
@@ -46,10 +52,7 @@ export function Nav() {
             <a
               key={link.label}
               href={link.href}
-              className={cn(
-                "focus-ring text-fluid-xs uppercase tracking-wideish transition-colors duration-300",
-                scrolled ? "text-ink/70 hover:text-blue-500" : "text-white/80 hover:text-white"
-              )}
+              className="focus-ring text-fluid-xs uppercase tracking-wideish text-ink/70 transition-colors duration-300 hover:text-blue-500"
             >
               {link.label}
             </a>
@@ -57,14 +60,7 @@ export function Nav() {
         </nav>
 
         <div className="hidden lg:block">
-          <Button
-            href="#book"
-            variant="outline"
-            className={cn(
-              "!px-6 !py-2.5",
-              !scrolled && "!border-white/40 !text-white hover:!border-white hover:!text-white"
-            )}
-          >
+          <Button href="#book" variant="outline" className="!px-6 !py-2.5">
             Book a flight
           </Button>
         </div>
@@ -78,15 +74,13 @@ export function Nav() {
           <span className="relative block h-4 w-6">
             <span
               className={cn(
-                "absolute left-0 top-0 h-px w-6 transition-transform duration-300",
-                scrolled || open ? "bg-ink" : "bg-white",
+                "absolute left-0 top-0 h-px w-6 bg-ink transition-transform duration-300",
                 open && "translate-y-[7px] rotate-45"
               )}
             />
             <span
               className={cn(
-                "absolute left-0 bottom-0 h-px w-6 transition-transform duration-300",
-                scrolled || open ? "bg-ink" : "bg-white",
+                "absolute left-0 bottom-0 h-px w-6 bg-ink transition-transform duration-300",
                 open && "-translate-y-[7px] -rotate-45"
               )}
             />
