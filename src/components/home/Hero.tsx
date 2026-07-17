@@ -1,36 +1,27 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
-import dynamic from "next/dynamic";
+import { useEffect, useRef } from "react";
 import Image from "next/image";
 import gsap from "gsap";
 import { Button } from "@/components/ui/Button";
 import { ensureGsapRegistered } from "@/lib/motion";
 import { destinations } from "@/lib/data";
 
-// 3D aircraft — client-only, gated frameloop.
-const HeroPlane = dynamic(() => import("@/components/three/HeroPlane").then((m) => m.HeroPlane), {
-  ssr: false,
-});
-
 /**
  * "Above the Clouds" — a bright, daytime cinematic hero. The visitor opens the
  * page already in flight: a brilliant blue sky, volumetric sun and god-rays
- * overhead, a photographic sea of clouds below, and RwandAir's A330 climbing
- * through soft cumulus that drift past the lens at several depths (parallax).
+ * overhead, a photographic sea of clouds below, and RwandAir's A330 (real
+ * livery) climbing through soft cumulus that drift past the lens at several
+ * depths (parallax).
  *
- * Everything is layered for depth and set in motion: clouds breathe and drift,
- * the sun bloom pulses, the aircraft banks toward the cursor, and on scroll the
- * whole camera *climbs* — the sea of clouds rushes down, foreground wisps sweep
- * up and past, and the jet recedes into the blue. Uplifting from the first frame.
+ * The whole scene is built to feel airborne. On load the jet flies in and the
+ * clouds part; then — the Awwwards "fly through the clouds" beat — as you
+ * scroll the camera pushes FORWARD: cloud layers rush toward you, swell in
+ * scale and dissolve, the horizon drops away, and the jet climbs off into the
+ * open sky. Uplifting from the very first frame.
  */
 export function Hero() {
   const rootRef = useRef<HTMLElement>(null);
-  const [render3D, setRender3D] = useState(false);
-
-  useEffect(() => {
-    setRender3D(!window.matchMedia("(prefers-reduced-motion: reduce)").matches);
-  }, []);
 
   const atmosRef = useRef<HTMLDivElement>(null);
   const sunRef = useRef<HTMLDivElement>(null);
@@ -112,18 +103,25 @@ export function Hero() {
         repeat: -1,
       });
 
-      /* ---------------- scroll: the camera climbs ---------------- */
+      /* ------- scroll: fly FORWARD through the clouds (Awwwards beat) -------
+         The camera pushes into the sky: every cloud layer swells toward the
+         lens (scale up from centre) and dissolves, the sea of clouds and the
+         horizon drop away below, and the jet climbs off into the open blue.
+         Depth = each layer scales/moves at its own rate. */
       const st = { trigger: root, start: "top top", end: "bottom top", scrub: 1 } as const;
-      gsap.to(atmosRef.current, { yPercent: 6, scale: 1.08, ease: "none", scrollTrigger: st });
-      gsap.to(sunRef.current, { yPercent: -30, opacity: 0.5, ease: "none", scrollTrigger: st });
-      // the sea of clouds rushes down and past as we rise
-      gsap.to(skyBankRef.current, { yPercent: 34, scale: 1.35, opacity: 0.9, ease: "none", scrollTrigger: st });
-      gsap.to(cloudMidRef.current, { yPercent: 26, scale: 1.5, ease: "none", scrollTrigger: st });
-      // foreground wisps sweep up and out (we pass through them)
-      gsap.to(cloudNearRef.current, { yPercent: -40, scale: 1.9, opacity: 0, ease: "none", scrollTrigger: st });
-      // the jet recedes into the blue
-      gsap.to(planeScrollRef.current, { xPercent: -14, yPercent: -44, scale: 0.7, opacity: 0.15, ease: "none", scrollTrigger: st });
-      gsap.to(contentRef.current, { yPercent: -26, opacity: 0.05, ease: "none", scrollTrigger: st });
+      gsap.to(atmosRef.current, { yPercent: 4, scale: 1.16, ease: "none", scrollTrigger: st });
+      gsap.to(sunRef.current, { yPercent: -34, opacity: 0.45, ease: "none", scrollTrigger: st });
+      // far band parts and swells
+      gsap.to(cloudFarRef.current, { yPercent: -14, scale: 1.6, opacity: 0.4, ease: "none", scrollTrigger: st });
+      // the sea of clouds drops away beneath us (horizon falls)
+      gsap.to(skyBankRef.current, { yPercent: 42, scale: 1.7, opacity: 0.85, ease: "none", scrollTrigger: st });
+      // mid clouds rush toward the lens and blow past
+      gsap.to(cloudMidRef.current, { yPercent: 20, scale: 2.2, opacity: 0.5, ease: "none", scrollTrigger: st });
+      // foreground wisps swell hugest and dissolve — we punch straight through
+      gsap.to(cloudNearRef.current, { yPercent: -10, scale: 3.2, opacity: 0, ease: "none", scrollTrigger: st });
+      // the jet leads us up and climbs off into the open sky
+      gsap.to(planeScrollRef.current, { xPercent: 8, yPercent: -30, scale: 1.08, opacity: 0, ease: "none", scrollTrigger: st });
+      gsap.to(contentRef.current, { yPercent: -22, opacity: 0.04, ease: "none", scrollTrigger: st });
       gsap.to(scrollHintRef.current, { opacity: 0, ease: "none", scrollTrigger: { trigger: root, start: "top top", end: "10% top", scrub: true } });
 
       /* ---------------- cursor parallax (depth) ---------------- */
@@ -230,32 +228,25 @@ export function Hero() {
         </div>
       </div>
 
-      {/* ================= the aircraft ================= */}
+      {/* ================= the aircraft (real RwandAir livery) ================= */}
       <div ref={planeScrollRef} className="absolute inset-0 z-[5] will-change-transform">
         <div ref={planeIntroRef} className="absolute inset-0 opacity-0 will-change-transform">
           <div ref={planeMouseRef} className="absolute inset-0 will-change-transform">
-            {render3D ? (
-              /* 3D daylight-clay A330 — env-lit, banks toward the cursor */
-              <div ref={planeBobRef} className="absolute left-1/2 top-[6%] aspect-[16/9] w-[98vw] max-w-[1200px] -translate-x-1/2 will-change-transform sm:left-[57%] sm:top-[3%]">
-                <HeroPlane />
-              </div>
-            ) : (
-              /* reduced-motion / fallback — clean daytime render, edges feathered */
-              <div ref={planeBobRef} className="absolute left-1/2 top-[12%] aspect-[2/1] w-[84vw] max-w-[900px] -translate-x-1/2 will-change-transform sm:left-[57%]">
-                <Image
-                  src="/assets/aircraft/takeoff.webp"
-                  alt="RwandAir Airbus A330 climbing above the clouds"
-                  fill
-                  priority
-                  sizes="84vw"
-                  className="object-contain"
-                  style={{
-                    maskImage: "radial-gradient(75% 75% at 50% 45%,#000 58%,transparent 100%)",
-                    WebkitMaskImage: "radial-gradient(75% 75% at 50% 45%,#000 58%,transparent 100%)",
-                  }}
-                />
-              </div>
-            )}
+            <div ref={planeBobRef} className="absolute left-1/2 top-[7%] aspect-[2/1] w-[86vw] max-w-[860px] -translate-x-1/2 will-change-transform sm:left-[58%] sm:top-[4%]">
+              {/* soft ground/haze glow so the jet reads against the bright sky */}
+              <div
+                className="absolute inset-0"
+                style={{ background: "radial-gradient(52% 42% at 50% 52%,rgba(3,26,58,0.16),rgba(3,26,58,0) 72%)" }}
+              />
+              <Image
+                src="/assets/aircraft/takeoff-cutout.png"
+                alt="RwandAir Airbus A330 climbing above the clouds"
+                fill
+                priority
+                sizes="86vw"
+                className="object-contain drop-shadow-[0_30px_60px_rgba(3,26,58,0.28)]"
+              />
+            </div>
           </div>
         </div>
       </div>
