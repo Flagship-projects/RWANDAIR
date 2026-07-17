@@ -92,7 +92,6 @@ export function Hero() {
       gsap.to(cloudFarRef.current, { xPercent: -3, duration: 34, ease: "sine.inOut", yoyo: true, repeat: -1 });
       gsap.to(cloudMidRef.current, { xPercent: 5, duration: 22, ease: "sine.inOut", yoyo: true, repeat: -1 });
       gsap.to(cloudNearRef.current, { xPercent: -6, duration: 16, ease: "sine.inOut", yoyo: true, repeat: -1 });
-      gsap.to(cloudNearRef.current, { scale: 1.06, duration: 12, ease: "sine.inOut", yoyo: true, repeat: -1 });
       gsap.to(skyBankRef.current, { xPercent: -2, duration: 40, ease: "sine.inOut", yoyo: true, repeat: -1 });
       gsap.to(scrollHintRef.current?.querySelector(".hint-line") ?? {}, {
         scaleY: 0.3,
@@ -103,25 +102,35 @@ export function Hero() {
         repeat: -1,
       });
 
-      /* ------- scroll: fly FORWARD through the clouds (Awwwards beat) -------
-         The camera pushes into the sky: every cloud layer swells toward the
-         lens (scale up from centre) and dissolves, the sea of clouds and the
-         horizon drop away below, and the jet climbs off into the open blue.
-         Depth = each layer scales/moves at its own rate. */
-      const st = { trigger: root, start: "top top", end: "bottom top", scrub: 1 } as const;
-      gsap.to(atmosRef.current, { yPercent: 4, scale: 1.16, ease: "none", scrollTrigger: st });
-      gsap.to(sunRef.current, { yPercent: -34, opacity: 0.45, ease: "none", scrollTrigger: st });
-      // far band parts and swells
-      gsap.to(cloudFarRef.current, { yPercent: -14, scale: 1.6, opacity: 0.4, ease: "none", scrollTrigger: st });
-      // the sea of clouds drops away beneath us (horizon falls)
-      gsap.to(skyBankRef.current, { yPercent: 42, scale: 1.7, opacity: 0.85, ease: "none", scrollTrigger: st });
-      // mid clouds rush toward the lens and blow past
-      gsap.to(cloudMidRef.current, { yPercent: 20, scale: 2.2, opacity: 0.5, ease: "none", scrollTrigger: st });
-      // foreground wisps swell hugest and dissolve — we punch straight through
-      gsap.to(cloudNearRef.current, { yPercent: -10, scale: 3.2, opacity: 0, ease: "none", scrollTrigger: st });
-      // the jet leads us up and climbs off into the open sky
-      gsap.to(planeScrollRef.current, { xPercent: 8, yPercent: -30, scale: 1.08, opacity: 0, ease: "none", scrollTrigger: st });
-      gsap.to(contentRef.current, { yPercent: -22, opacity: 0.04, ease: "none", scrollTrigger: st });
+      /* ------- scroll: keep flying — the decks stream past at their own depth -------
+         The jet holds frame and drifts gently while the cloud decks slide past
+         at different speeds AND opposing directions (cross-parallax): far band
+         eases right, the sea of clouds sinks away left, mid + foreground wisps
+         swell and rush downward past the lens. Together it reads as sustained
+         forward flight — and because ScrollTrigger scrubs, scrolling back up
+         simply flies the whole weave in reverse, smoothly.
+
+         Note: each tween rides a transform channel that isn't already driven by
+         the idle drift (xPercent) or the cursor parallax (x) on that element, so
+         nothing fights for the same property. */
+      const st = { trigger: root, start: "top top", end: "bottom top", scrub: 1.2 } as const;
+
+      // atmosphere breathes forward a touch
+      gsap.to(atmosRef.current, { yPercent: 3, scale: 1.1, ease: "none", scrollTrigger: st });
+      // sun lifts and softens, easing to the sun-side
+      gsap.to(sunRef.current, { yPercent: -26, xPercent: 12, opacity: 0.5, ease: "none", scrollTrigger: st });
+      // far deck: slow, drifts right, barely swells (deep parallax)
+      gsap.to(cloudFarRef.current, { yPercent: 6, x: 48, scale: 1.2, opacity: 0.55, ease: "none", scrollTrigger: st });
+      // the sea of clouds sinks away below and slides left as the horizon drops
+      gsap.to(skyBankRef.current, { yPercent: 34, x: -36, scale: 1.4, opacity: 0.9, ease: "none", scrollTrigger: st });
+      // mid deck around the jet rushes down and blows past
+      gsap.to(cloudMidRef.current, { yPercent: 24, scale: 1.7, opacity: 0.4, ease: "none", scrollTrigger: st });
+      // foreground wisps swell and stream past the lens, then dissolve
+      gsap.to(cloudNearRef.current, { yPercent: 18, scale: 2.5, opacity: 0, ease: "none", scrollTrigger: st });
+      // the jet holds frame — a gentle rise, drift and whisper of bank; never leaves
+      gsap.to(planeScrollRef.current, { yPercent: -7, x: 34, scale: 1.04, rotation: 1.4, ease: "none", scrollTrigger: st });
+      // copy eases up and out of the way for the handoff
+      gsap.to(contentRef.current, { yPercent: -18, opacity: 0.05, ease: "none", scrollTrigger: st });
       gsap.to(scrollHintRef.current, { opacity: 0, ease: "none", scrollTrigger: { trigger: root, start: "top top", end: "10% top", scrub: true } });
 
       /* ---------------- cursor parallax (depth) ---------------- */
