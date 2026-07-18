@@ -391,115 +391,6 @@ function Particles() {
   );
 }
 
-/* ----------------------------- aircraft ----------------------------- */
-function Aircraft({ progressRef, gradeRef }: { progressRef: MutableRefObject<number>; gradeRef: MutableRefObject<Grade> }) {
-  const rig = useRef<THREE.Group>(null);
-  const body = useRef<THREE.Group>(null);
-  const { scene } = useGLTF(MODEL);
-  const skinRef = useRef<THREE.MeshPhysicalMaterial>();
-
-  const model = useMemo(() => {
-    const s = scene.clone(true);
-    const skin = new THREE.MeshPhysicalMaterial({
-      color: new THREE.Color("#eef2f8"),
-      metalness: 0.32,
-      roughness: 0.34,
-      clearcoat: 0.6,
-      clearcoatRoughness: 0.3,
-      envMapIntensity: 1.15,
-    });
-    skinRef.current = skin;
-    s.traverse((o) => {
-      const m = o as THREE.Mesh;
-      if (m.isMesh) {
-        m.material = skin;
-        m.castShadow = false;
-        m.receiveShadow = false;
-      }
-    });
-    return s;
-  }, [scene]);
-
-  useFrame((state) => {
-    const p = progressRef.current;
-    const t = state.clock.elapsedTime;
-    const cam = state.camera;
-    if (rig.current) {
-      // the jet leads the flight: it rides ahead of the camera, drifting from
-      // the left of frame across to the right as the journey unfolds.
-      const lead = new THREE.Vector3(
-        THREE.MathUtils.lerp(-4.5, 3.5, THREE.MathUtils.smoothstep(p, 0.1, 0.85)),
-        -0.6 + Math.sin(t * 0.6) * 0.12,
-        -13
-      );
-      rig.current.position.set(cam.position.x + lead.x, cam.position.y + lead.y, cam.position.z + lead.z);
-      // enters the scene — fades/scales up out of the distance early on
-      const enter = THREE.MathUtils.smoothstep(p, 0.04, 0.2);
-      rig.current.scale.setScalar(0.6 + enter * 0.55);
-    }
-    if (body.current) {
-      // heading + a banked turn: rolls into the change of direction mid-flight
-      const bank = THREE.MathUtils.lerp(0.16, -0.2, THREE.MathUtils.smoothstep(p, 0.2, 0.7)) + Math.sin(t * 0.5) * 0.02;
-      body.current.rotation.z = bank;
-      body.current.rotation.y = -0.72 + THREE.MathUtils.lerp(0, 0.28, THREE.MathUtils.smoothstep(p, 0.2, 0.7));
-      body.current.rotation.x = -0.05 + Math.sin(t * 0.6) * 0.01;
-    }
-    // fuselage picks up the graded sky tint so it belongs to the moment
-    if (skinRef.current) skinRef.current.envMapIntensity = 1.05 + THREE.MathUtils.smoothstep(p, 0.3, 0.6) * 0.35;
-  });
-
-  return (
-    <group ref={rig}>
-      <group ref={body} rotation={[-0.05, -0.72, 0.16]} scale={1.15}>
-        <primitive object={model} />
-        {/* twin contrails streaming back from the engines */}
-        <Contrail offset={-1.15} gradeRef={gradeRef} />
-        <Contrail offset={1.15} gradeRef={gradeRef} />
-      </group>
-    </group>
-  );
-}
-
-/* ----------------------------- contrail ----------------------------- */
-function Contrail({ offset, gradeRef }: { offset: number; gradeRef: MutableRefObject<Grade> }) {
-  const mat = useRef<THREE.ShaderMaterial>(null);
-  const uniforms = useMemo(() => ({ uTime: { value: 0 }, uColor: { value: new THREE.Color("#ffffff") } }), []);
-  useFrame((_, dt) => {
-    if (mat.current) {
-      uniforms.uTime.value += dt;
-      (uniforms.uColor.value as THREE.Color).copy(gradeRef.current.lit);
-    }
-  });
-  // a long tapering ribbon behind the wing, dissolving into the sky
-  return (
-    <mesh position={[offset, -0.05, 5.2]} rotation={[Math.PI / 2, 0, 0]}>
-      <planeGeometry args={[0.34, 11, 1, 20]} />
-      <shaderMaterial
-        ref={mat}
-        uniforms={uniforms}
-        transparent
-        depthWrite={false}
-        side={THREE.DoubleSide}
-        blending={THREE.AdditiveBlending}
-        vertexShader={/* glsl */ `
-          varying vec2 vUv; void main(){ vUv = uv; gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }
-        `}
-        fragmentShader={/* glsl */ `
-          varying vec2 vUv; uniform float uTime; uniform vec3 uColor;
-          void main(){
-            // fade from dense at the engine (v=1) to nothing at the tail (v=0)
-            float along = smoothstep(0.0, 1.0, vUv.y);
-            float across = smoothstep(0.5, 0.0, abs(vUv.x - 0.5));
-            float puff = 0.6 + 0.4 * sin(vUv.y * 30.0 - uTime * 4.0);
-            float a = along * across * puff * 0.5;
-            gl_FragColor = vec4(uColor, a);
-          }
-        `}
-      />
-    </mesh>
-  );
-}
-
 /* --------------------------- camera + rig --------------------------- */
 function Rig({ progressRef, gradeRef, backdropRef }: { progressRef: MutableRefObject<number>; gradeRef: MutableRefObject<Grade>; backdropRef: MutableRefObject<THREE.Group | null> }) {
   const { camera } = useThree();
@@ -560,19 +451,9 @@ export function FlightScene({
       <group ref={backdropRef}>
         <Backdrop gradeRef={gradeRef} />
       </group>
-      <Suspense fallback={null}>
-        <Aircraft progressRef={progressRef} gradeRef={gradeRef} />
-        <Environment resolution={256}>
-          <Lightformer form="rect" intensity={4} color="#ffffff" position={[3, 4, -2]} scale={[8, 8, 1]} />
-          <Lightformer form="rect" intensity={1.2} color="#8bc0f0" position={[-5, 1, 3]} scale={[6, 6, 1]} />
-          <Lightformer form="rect" intensity={0.6} color="#0e2c4d" rotation-x={Math.PI / 2} position={[0, -4, 0]} scale={[10, 10, 1]} />
-        </Environment>
-      </Suspense>
       <CloudField gradeRef={gradeRef} progressRef={progressRef} />
       <Stars gradeRef={gradeRef} progressRef={progressRef} />
       <Particles />
     </>
   );
 }
-
-useGLTF.preload(MODEL);

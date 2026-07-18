@@ -13,9 +13,9 @@ import { destinations } from "@/lib/data";
  * The evolved sibling of {@link CloudCorridor}: a real, scroll-driven 3D flight
  * that begins the instant the visitor finishes booking. The 3D half
  * ({@link FlightScene}) owns a genuine camera craning and climbing through
- * shader-built cloud banks while the RwandAir A330 leads the flight and banks
- * into its turn; this component owns the tall scroll track, the single
- * scroll→progress driver, and the crisp DOM storytelling layer on top.
+ * shader-built cloud banks — a pure first-person flight, no aircraft model;
+ * this component owns the tall scroll track, the single scroll→progress
+ * driver, and the crisp DOM storytelling layer on top.
  *
  * The story now plays in five chapters across the climb:
  *
