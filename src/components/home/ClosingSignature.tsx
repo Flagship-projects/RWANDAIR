@@ -79,12 +79,8 @@ export function ClosingSignature() {
       if (reduced) {
         // Present the finished composition; skip the scrubbed build entirely.
         gsap.set(routes, { strokeDashoffset: 0 });
-        gsap.set(
-          [".cs-field", ".cs-glow", ".cs-sun", ".cs-word", ".cs-tagline", ".cs-outro", ghosts, nodes],
-          { opacity: 1 }
-        );
-        gsap.set(".cs-sun", { scale: 1, rotate: 0, filter: "blur(0px)" });
-        gsap.set(".cs-word", { clipPath: "inset(0% 0% 0% 0%)", x: 0 });
+        gsap.set([".cs-field", ".cs-glow", ".cs-lockup", ".cs-outro", ghosts, nodes], { opacity: 1 });
+        gsap.set(".cs-lockup", { scale: 1, y: 0 });
         // Both of these otherwise sit at their pre-animation value: the planes
         // parked on the arc starts, and the footer feather covering the top.
         gsap.set(planes, { opacity: 0 });
@@ -113,21 +109,14 @@ export function ClosingSignature() {
         tl.to(p, { strokeDashoffset: 0, duration: 0.34, ease: "power1.inOut" }, 0.06 + i * 0.055);
       });
 
-      // 3 — the lockup builds in two beats: the sun wheels up out of a soft
-      // focus, then the wordmark wipes on beside it, left to right.
+      // 3 — the lockup fades up into place. Deliberately restrained: it is the
+      // brand mark, so it should settle rather than perform.
       tl.fromTo(
-        ".cs-sun",
-        { opacity: 0, scale: 0.5, rotate: -40, filter: "blur(10px)" },
-        { opacity: 1, scale: 1, rotate: 0, filter: "blur(0px)", duration: 0.22, ease: "power3.out" },
-        0.15
+        ".cs-lockup",
+        { opacity: 0, scale: 0.97, y: 14 },
+        { opacity: 1, scale: 1, y: 0, duration: 0.3, ease: "power2.out" },
+        0.18
       );
-      tl.fromTo(
-        ".cs-word",
-        { opacity: 0, clipPath: "inset(0% 100% 0% 0%)", x: -22 },
-        { opacity: 1, clipPath: "inset(0% 0% 0% 0%)", x: 0, duration: 0.2, ease: "power2.out" },
-        0.27
-      );
-      tl.fromTo(".cs-tagline", { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 0.16, ease: "power2.out" }, 0.42);
 
       // 4 — aircraft fly their routes; each fades in on departure, out on arrival.
       planes.forEach((plane, i) => {
@@ -227,34 +216,16 @@ export function ClosingSignature() {
 
         {/* Centrepiece lockup */}
         <div className="absolute inset-0 z-10 flex flex-col items-center justify-center px-gutter text-center">
-          {/*
-            The sun mark and wordmark are separate layers (cut from the master
-            artwork by scripts/logotype-split.js) positioned at their original
-            fractions of the 1822x426 lockup, so the pair reassembles exactly
-            while each can animate on its own.
-          */}
-          <div className="cs-lockup relative w-[min(72vw,560px)]" style={{ aspectRatio: "1822 / 426" }}>
+          {/* The dark-background lockup, tagline already set into the artwork. */}
+          <div className="cs-lockup opacity-0 will-change-transform">
             <Image
-              src="/assets/brand/logotype-sun.png"
-              alt=""
-              width={557}
-              height={419}
-              aria-hidden
-              className="cs-sun absolute opacity-0 will-change-transform"
-              style={{ left: "0.16%", top: "0.70%", width: "30.57%", height: "98.36%" }}
-            />
-            <Image
-              src="/assets/brand/logotype-word.png"
-              alt="RwandAir"
-              width={1204}
-              height={166}
-              className="cs-word absolute opacity-0 will-change-transform"
-              style={{ left: "33.64%", top: "32.16%", width: "66.08%", height: "38.97%" }}
+              src="/assets/brand/logotype-dark.png"
+              alt="RwandAir — Fly the dream of Africa"
+              width={1081}
+              height={298}
+              className="h-auto w-[min(76vw,600px)]"
             />
           </div>
-          <p className="cs-tagline mt-6 font-display text-fluid-lg italic text-gold-400 opacity-0">
-            Fly the dream of Africa
-          </p>
         </div>
 
         {/* Sign-off rail */}
