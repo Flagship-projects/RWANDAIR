@@ -32,8 +32,6 @@ export function Hero() {
   const sunCoreRef = useRef<HTMLDivElement>(null);
   const raysRef = useRef<HTMLDivElement>(null);
   const seaRef = useRef<HTMLDivElement>(null);
-  const cloudFarRef = useRef<HTMLDivElement>(null);
-  const cloudMidRef = useRef<HTMLDivElement>(null);
   const wispARef = useRef<HTMLDivElement>(null);
   const wispBRef = useRef<HTMLDivElement>(null);
 
@@ -67,8 +65,7 @@ export function Hero() {
       );
       gsap.fromTo(raysRef.current, { opacity: 0 }, { opacity: 1, duration: 2.6, ease: "power2.out", delay: 0.6 });
 
-      gsap.fromTo(seaRef.current, { opacity: 0, yPercent: reduced ? 0 : 10, scale: 1.08 }, { opacity: 1, yPercent: 0, scale: 1, duration: reduced ? 0.6 : 2.4, ease: "power2.out", delay: 0.2 });
-      gsap.fromTo([cloudFarRef.current, cloudMidRef.current], { opacity: 0 }, { opacity: 1, duration: 2, ease: "power2.out", delay: 0.4, stagger: 0.2 });
+      gsap.fromTo(seaRef.current, { opacity: 0, yPercent: reduced ? 0 : 6, scale: 1.04 }, { opacity: 1, yPercent: 0, scale: 1, duration: reduced ? 0.6 : 2.4, ease: "power2.out", delay: 0.2 });
 
       // the aircraft flies in from the left, nose forward — the start of one
       // continuous left-to-right journey that the scroll then carries across.
@@ -89,9 +86,10 @@ export function Hero() {
       gsap.to(raysRef.current, { rotation: 8, duration: 40, ease: "sine.inOut", yoyo: true, repeat: -1 });
       gsap.to(raysRef.current, { opacity: 0.6, duration: 6, ease: "sine.inOut", yoyo: true, repeat: -1 });
       gsap.to(planeBobRef.current, { y: 18, rotation: -1.1, duration: 4.6, ease: "sine.inOut", yoyo: true, repeat: -1 });
-      gsap.to(cloudFarRef.current, { x: -26, duration: 34, ease: "sine.inOut", yoyo: true, repeat: -1 });
-      gsap.to(cloudMidRef.current, { x: 34, duration: 24, ease: "sine.inOut", yoyo: true, repeat: -1 });
-      gsap.to(seaRef.current, { x: -18, duration: 40, ease: "sine.inOut", yoyo: true, repeat: -1 });
+      // Only the FOREGROUND wisps drift at idle — the sky and the sea of clouds
+      // hold perfectly still, like a real horizon from a cruising aircraft.
+      gsap.to(wispARef.current, { x: -44, duration: 30, ease: "sine.inOut", yoyo: true, repeat: -1 });
+      gsap.to(wispBRef.current, { x: 30, duration: 38, ease: "sine.inOut", yoyo: true, repeat: -1 });
 
       /* ======================================================================
          THE FLIGHT — one screen, one scrubbed timeline (0 → 1)
@@ -111,39 +109,35 @@ export function Hero() {
         },
       });
 
+      /* --- STABLE HORIZON: the background (sky, sun, sea of clouds) never
+             translates. It gets one whisper of zoom for depth, and that is
+             all. Every sensation of movement comes from the aircraft and the
+             two foreground wisp layers streaming past the lens. --- */
+
       /* --- the aircraft: a steady left-to-right cruise, gentle climb + bank --- */
-      tl.to(planePathRef.current, { xPercent: 44, yPercent: -8, rotation: -2, scale: 1.03, duration: 1 }, 0);
+      tl.to(planePathRef.current, { xPercent: 34, yPercent: -6, rotation: -2, scale: 1.02, duration: 1 }, 0);
 
-      /* --- sun: lifts and softens, drifting to the sun-side --- */
-      tl.to(sunRef.current, { xPercent: 5, yPercent: -12, opacity: 0.6, duration: 1 }, 0);
+      /* --- background: subtle zoom only — no x/y drift anywhere --- */
+      tl.to(atmosRef.current, { scale: 1.035, duration: 1 }, 0);
 
-      /* --- far deck (deep): slow, drifts LEFT against the jet --- */
-      tl.to(cloudFarRef.current, { xPercent: -8, yPercent: 5, scale: 1.1, opacity: 0.6, duration: 1 }, 0);
+      /* --- sun: softens a touch as we pass, but stays anchored --- */
+      tl.to(sunRef.current, { opacity: 0.75, duration: 1 }, 0);
 
-      /* --- sea of clouds: the horizon sinks a touch as we cruise --- */
-      tl.to(seaRef.current, { xPercent: -6, yPercent: 18, scale: 1.2, opacity: 0.92, duration: 1 }, 0);
-
-      /* --- mid deck (around the jet): the workhorse — streams left and past --- */
-      tl.to(cloudMidRef.current, { xPercent: -26, yPercent: 16, scale: 1.5, opacity: 0.5, duration: 1 }, 0);
-
-      /* --- foreground wisp A: one soft pass across the lens, opposite the jet --- */
+      /* --- foreground wisp A: the near layer — visible at rest, sweeps left --- */
       tl.fromTo(
         wispARef.current,
-        { opacity: 0, scale: 1.2, xPercent: 12 },
-        { opacity: 0.6, scale: 1.7, xPercent: -18, ease: "sine.inOut", duration: 1 },
+        { opacity: 0.3, xPercent: 18 },
+        { opacity: 0.5, xPercent: -40, ease: "sine.inOut", duration: 1 },
         0
       );
 
-      /* --- foreground wisp B: a slower, fainter second pass for depth --- */
+      /* --- foreground wisp B: deeper, slower, fainter — the second plane of depth --- */
       tl.fromTo(
         wispBRef.current,
-        { opacity: 0, scale: 1.3, xPercent: 8, yPercent: 4 },
-        { opacity: 0.4, scale: 1.9, xPercent: -14, yPercent: -6, ease: "sine.inOut", duration: 1 },
+        { opacity: 0.2, xPercent: 10, yPercent: 2 },
+        { opacity: 0.35, xPercent: -26, yPercent: -3, ease: "sine.inOut", duration: 1 },
         0
       );
-
-      /* --- atmosphere breathes forward a touch --- */
-      tl.to(atmosRef.current, { yPercent: 2, scale: 1.05, duration: 1 }, 0);
 
       /* --- copy hands the stage to the flight early --- */
       tl.to([contentRef.current, statsRef.current], { yPercent: -12, opacity: 0, ease: "power2.in", duration: 0.4 }, 0);
@@ -157,12 +151,24 @@ export function Hero() {
     <section id="top" ref={rootRef} className="relative flex min-h-[100svh] items-end overflow-hidden bg-[#bfe0f6]">
       {/* ================= bright daytime atmosphere ================= */}
       <div ref={atmosRef} className="absolute inset-0 will-change-transform">
-        {/* clear-sky gradient: deep azure aloft → pale, luminous horizon */}
+        {/* clear-sky gradient: deep, slightly desaturated azure aloft → pale,
+            luminous horizon. Less cyan than a stock sky — reads premium, and
+            lets the white aircraft and clouds carry the brightness. */}
         <div
           className="absolute inset-0"
           style={{
             background:
-              "linear-gradient(180deg,#0a63b4 0%,#1c7ccb 20%,#3f9cdd 42%,#7bc0ec 66%,#bfe2f7 84%,#eaf6ff 100%)",
+              "linear-gradient(180deg,#07508f 0%,#1268b8 18%,#2f8ad2 40%,#6cb4e6 62%,#b7ddf5 82%,#ecf7ff 100%)",
+          }}
+        />
+
+        {/* warm sunlight wash spilling from the sun-side — ties the sky to the
+            gold accents in the headline instead of leaving a pure cold blue */}
+        <div
+          className="absolute inset-0"
+          style={{
+            background:
+              "radial-gradient(90% 70% at 78% 10%,rgba(255,219,158,0.22) 0%,rgba(255,219,158,0.07) 40%,rgba(255,219,158,0) 68%)",
           }}
         />
 
@@ -195,8 +201,9 @@ export function Hero() {
           />
         </div>
 
-        {/* photographic sea of clouds below the horizon */}
-        <div ref={seaRef} className="absolute inset-x-0 bottom-0 z-[2] h-[68%] will-change-transform">
+        {/* photographic sea of clouds — kept LOW so the upper two-thirds of the
+            frame is open blue sky, like a real cruise-altitude view */}
+        <div ref={seaRef} className="absolute inset-x-0 bottom-0 z-[2] h-[44%] will-change-transform">
           <div className="relative h-full w-full">
             <Image
               src="/assets/sky/sky-bank.png"
@@ -206,36 +213,23 @@ export function Hero() {
               sizes="100vw"
               className="object-cover object-bottom"
               style={{
-                maskImage: "linear-gradient(180deg,transparent 0%,rgba(0,0,0,0.35) 16%,#000 42%)",
-                WebkitMaskImage: "linear-gradient(180deg,transparent 0%,rgba(0,0,0,0.35) 16%,#000 42%)",
+                maskImage: "linear-gradient(180deg,transparent 0%,rgba(0,0,0,0.4) 24%,#000 52%)",
+                WebkitMaskImage: "linear-gradient(180deg,transparent 0%,rgba(0,0,0,0.4) 24%,#000 52%)",
               }}
             />
           </div>
-        </div>
-
-        {/* far cloud band — small, high, slow */}
-        <div ref={cloudFarRef} className="absolute inset-0 z-[3] will-change-transform">
-          <div className="absolute inset-x-[-8%] top-[8%] h-[70%] opacity-70 blur-[1px]">
-            <Image src="/assets/sky/clouds-2-a.png" alt="" fill sizes="120vw" className="scale-[1.15] object-cover" />
-          </div>
-        </div>
-      </div>
-
-      {/* ================= mid clouds (around the aircraft) ================= */}
-      <div ref={cloudMidRef} className="absolute inset-0 z-[4] will-change-transform">
-        <div className="absolute inset-0 opacity-90 blur-[2px]">
-          <Image src="/assets/sky/clouds-1-a.png" alt="" fill sizes="130vw" className="scale-[1.25] object-cover" />
         </div>
       </div>
 
       {/* ================= the aircraft (real RwandAir livery) ================= */}
       <div ref={planePathRef} className="absolute inset-0 z-[5] will-change-transform">
         <div ref={planeIntroRef} className="absolute inset-0 opacity-0 will-change-transform">
-          <div ref={planeBobRef} className="absolute left-[2%] top-[26%] aspect-[3520/1125] w-[72vw] max-w-[760px] will-change-transform sm:left-[4%] sm:top-[24%]">
-            {/* soft haze glow so the jet reads against the bright sky */}
+          <div ref={planeBobRef} className="absolute left-[8%] top-[24%] aspect-[3520/1125] w-[76vw] max-w-[640px] will-change-transform sm:left-[38%] sm:top-[20%] sm:w-[54vw]">
+            {/* whisper of haze so the jet reads against the bright sky — kept
+                faint and tight so it never shows as a dark smudge on the clouds */}
             <div
               className="absolute inset-0"
-              style={{ background: "radial-gradient(58% 46% at 50% 52%,rgba(3,26,58,0.16),rgba(3,26,58,0) 72%)" }}
+              style={{ background: "radial-gradient(48% 38% at 50% 52%,rgba(3,26,58,0.09),rgba(3,26,58,0) 68%)" }}
             />
             <Image
               src="/assets/aircraft/rwandair-transparent.png"
@@ -264,7 +258,7 @@ export function Hero() {
       {/* ================= legibility scrim (soft, keeps the sky bright) ================= */}
       <div
         className="pointer-events-none absolute inset-0 z-[7]"
-        style={{ background: "radial-gradient(130% 95% at 12% 100%,rgba(3,26,58,0.52) 0%,rgba(3,26,58,0.12) 42%,rgba(3,26,58,0) 66%)" }}
+        style={{ background: "radial-gradient(120% 90% at 10% 100%,rgba(3,26,58,0.42) 0%,rgba(3,26,58,0.1) 40%,rgba(3,26,58,0) 62%)" }}
       />
 
       {/* ================= content ================= */}
@@ -272,14 +266,19 @@ export function Hero() {
         <p className="hero-fade mb-5 flex items-center gap-3 text-fluid-xs uppercase tracking-wideish text-white opacity-0 drop-shadow-[0_1px_10px_rgba(3,26,58,0.5)]">
           <span className="h-px w-8 bg-gold-400" /> Rwanda&rsquo;s national carrier
         </p>
+        {/* Two lines instead of a three-word stack — a longer first line reads
+            editorial rather than sing-song, and the display size gives the
+            opening the presence the interior pages already have. */}
         <h1
           ref={titleRef}
-          className="max-w-4xl font-display text-fluid-h1 font-light leading-[0.94] tracking-tightest text-white drop-shadow-[0_2px_28px_rgba(3,26,58,0.45)]"
+          className="max-w-4xl font-display text-fluid-display font-light leading-[0.92] tracking-tightest text-white drop-shadow-[0_2px_28px_rgba(3,26,58,0.45)]"
         >
-          <span className="reveal-mask block overflow-hidden"><span className="hero-line-inner block">Fly the</span></span>
           <span className="reveal-mask block overflow-hidden">
-            <span className="hero-line-inner block italic bg-gradient-to-r from-gold-300 via-gold-400 to-gold-500 bg-clip-text text-transparent">
-              Dream
+            <span className="hero-line-inner block">
+              Fly the{" "}
+              <em className="bg-gradient-to-r from-[#ffe3a1] via-[#f5c15c] to-[#e2a437] bg-clip-text pr-2 italic text-transparent">
+                Dream
+              </em>
             </span>
           </span>
           <span className="reveal-mask block overflow-hidden"><span className="hero-line-inner block">of Africa.</span></span>

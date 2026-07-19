@@ -188,6 +188,119 @@ export const services = [
   { label: "eSIM & eVisa", detail: "Digital travel essentials arranged before you fly." },
 ];
 
+// ── /experience ───────────────────────────────────────────────────────────────
+
+// The two-cabin product in full, as published by RwandAir. The homepage
+// FleetCabin section shows the headline version; this is the detail behind it.
+export const cabinDetail = [
+  {
+    name: "Business Class",
+    tagline: "Lie-flat on long-haul",
+    image: "/assets/fleet/business-cabin.jpg",
+    features: [
+      { title: "Lie-flat seating", body: "Seats convert to a fully flat bed on the A330 fleet, with direct aisle access." },
+      { title: "Priority everything", body: "Dedicated check-in, priority boarding and first baggage delivery on arrival." },
+      { title: "Lounge access", body: "The Pearl Lounge in Kigali, plus partner lounges across the network." },
+      { title: "Elevated dining", body: "Multi-course menus served on request, with a curated wine selection." },
+    ],
+  },
+  {
+    name: "Economy Class",
+    tagline: "Considered comfort, every seat",
+    image: "/assets/fleet/economy-cabin.jpg",
+    features: [
+      { title: "Ergonomic seating", body: "Adjustable headrests and a considered pitch across the whole network." },
+      { title: "Personal entertainment", body: "Seat-back screens with film, music and moving-map on long-haul aircraft." },
+      { title: "Curated dining", body: "Complimentary meals and refreshments, with special meals on request." },
+      { title: "Generous allowance", body: "Checked baggage included on every fare family above Economy Saver." },
+    ],
+  },
+];
+
+export const beforeYouFly = [
+  {
+    q: "What baggage allowance do I get?",
+    a: "Economy fares include 23kg checked (piece concept on long-haul), Business 32kg × 2. Cabin baggage is 7kg in Economy and 12kg in Business. DreamMiles Silver, Gold and Diamond members carry an additional 10kg, 23kg and 32kg respectively.",
+  },
+  {
+    q: "When should I check in?",
+    a: "Online check-in opens 24 hours before departure and closes 2 hours out. At the airport, counters open 3 hours before departure and close 1 hour before for international flights.",
+  },
+  {
+    q: "How do I travel with an infant or unaccompanied minor?",
+    a: "Infants under 2 travel on a lap fare with a 10kg allowance. Children aged 5–11 flying alone must be booked on the Unaccompanied Minor service, arranged at the time of booking.",
+  },
+  {
+    q: "What payment options are available?",
+    a: "Visa, Mastercard and American Express online, plus mobile money in selected markets and cash or card at any RwandAir town office or airport counter.",
+  },
+  {
+    q: "Are there restricted items I should know about?",
+    a: "Lithium batteries, e-cigarettes and power banks must travel in cabin baggage only. Sharp objects, flammables and compressed gases are prohibited entirely. Full list available at any check-in desk.",
+  },
+  {
+    q: "Do I need a visa for Rwanda?",
+    a: "Citizens of all countries receive a visa on arrival in Rwanda. Members of the African Union, Commonwealth and La Francophonie enter visa-free for up to 30 days. eVisa applications can be made in advance through the Directorate General of Immigration.",
+  },
+];
+
+// ── /services ─────────────────────────────────────────────────────────────────
+
+export const travelServices: { name: string; detail: string; href?: string; cta?: string }[] = [
+  {
+    name: "Kigali Stopover",
+    detail: "A layover between 8 and 24 hours becomes a free night in Kigali — hotel, taxes and transfers on us.",
+    href: "/stopover",
+    cta: "Explore the stopover",
+  },
+  {
+    name: "Cargo & freight",
+    detail: "Belly-hold and dedicated freighter capacity connecting Africa with Europe, the Middle East and Asia.",
+    href: "/cargo",
+    cta: "See cargo services",
+  },
+  {
+    name: "eVisa & travel documents",
+    detail: "Rwanda issues a visa on arrival to every nationality, with eVisa applications handled online before you fly.",
+  },
+  {
+    name: "eSIM data",
+    detail: "Arrive connected. Regional and global data plans activated on your phone before you leave home.",
+  },
+  {
+    name: "Hotels & car hire",
+    detail: "Book accommodation and ground transport alongside your flight, in a single itinerary.",
+  },
+  {
+    name: "Travel insurance",
+    detail: "Optional medical, cancellation and baggage cover added at the point of booking.",
+  },
+  {
+    name: "Seat & cabin upgrades",
+    detail: "Choose your seat in advance, or bid to upgrade into Business on eligible long-haul flights.",
+  },
+  {
+    name: "Corporate travel",
+    detail: "Negotiated fares, flexible changes and dedicated account management for organisations flying often.",
+  },
+];
+
+// ── /dreammiles ───────────────────────────────────────────────────────────────
+
+export const milesEarn = [
+  { label: "Flying RwandAir", detail: "Earn on every ticketed flight, scaled by cabin and fare family." },
+  { label: "Partner airlines", detail: "Qatar Airways, Brussels Airlines, Ethiopian and other codeshare partners." },
+  { label: "Hotels & car hire", detail: "Accrue miles through partner accommodation and ground transport bookings." },
+  { label: "Everyday spend", detail: "Co-branded card and merchant partners across the Rwandan market." },
+];
+
+export const milesRedeem = [
+  { label: "Award tickets", detail: "Redeem miles against any RwandAir-operated route in the network." },
+  { label: "Cabin upgrades", detail: "Move from Economy into Business on eligible long-haul flights." },
+  { label: "Extra baggage", detail: "Pay for additional checked allowance with miles instead of cash." },
+  { label: "Lounge access", detail: "Buy entry to the Pearl Lounge in Kigali for you and a guest." },
+];
+
 // Grouped into three balanced columns (each stacking 2-3 sections), mirroring
 // rwandair.com's real footer so no column wraps or dangles alone.
 export const footerColumnGroups: { title: string; links: string[] }[][] = [
