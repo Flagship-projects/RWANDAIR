@@ -17,6 +17,7 @@ import { StopoverStrip } from "@/components/home/StopoverStrip";
 import { TripPlanning } from "@/components/home/TripPlanning";
 import { AwardsMarquee } from "@/components/home/AwardsMarquee";
 import { Footer } from "@/components/home/Footer";
+import { ClosingSignature } from "@/components/home/ClosingSignature";
 
 export default function Home() {
   useSmoothScroll();
@@ -41,6 +42,7 @@ export default function Home() {
         <AwardsMarquee />
       </main>
       <Footer />
+      <ClosingSignature />
     </>
   );
 }
