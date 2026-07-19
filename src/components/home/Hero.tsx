@@ -15,14 +15,13 @@ import { destinations } from "@/lib/data";
  * of clouds below, and RwandAir's A330 flying in from the sun-side as the
  * clouds settle.
  *
- * SCROLLING (the flight): the section PINS and a single scrubbed master
- * timeline plays a choreographed, cinematic flight over ~2.6 screen-heights.
- * The jet moves naturally through distinct beats — throttle up, bank and cut
- * through a cloud, then climb toward the horizon and settle into the distance —
- * while every cloud deck streams past at its own speed and in the opposite
- * direction (deep parallax). Scroll down = flying forward; scroll back up plays
- * the exact same weave in reverse, perfectly smooth, because it is all one
- * scrubbed timeline. The headline hands the stage to the pure flight early.
+ * SCROLLING (the flight): a stable-horizon composition. The background — sky
+ * gradient, sun and the low sea of clouds — NEVER translates; it takes one
+ * whisper of zoom (scale 1.035) for depth and nothing else, exactly like the
+ * view from a cruising aircraft where the horizon holds still. All sensation
+ * of movement comes from the subject and the foreground: the jet cruises
+ * left → right while two blurred wisp layers stream past the lens at different
+ * speeds. Scroll up plays the same pass in reverse — one scrubbed timeline.
  */
 export function Hero() {
   const rootRef = useRef<HTMLElement>(null);
@@ -262,16 +261,14 @@ export function Hero() {
       />
 
       {/* ================= content ================= */}
-      <div ref={contentRef} className="relative z-10 mx-auto w-full max-w-shell px-gutter pb-28 pt-28 sm:pb-32">
-        <p className="hero-fade mb-5 flex items-center gap-3 text-fluid-xs uppercase tracking-wideish text-white opacity-0 drop-shadow-[0_1px_10px_rgba(3,26,58,0.5)]">
+      <div ref={contentRef} className="relative z-10 mx-auto w-full max-w-shell px-gutter pb-32 pt-28 sm:pb-36">
+        <p className="hero-fade mb-6 flex items-center gap-3 text-fluid-xs uppercase tracking-wideish text-white opacity-0 drop-shadow-[0_1px_10px_rgba(3,26,58,0.5)]">
           <span className="h-px w-8 bg-gold-400" /> Rwanda&rsquo;s national carrier
         </p>
-        {/* Two lines instead of a three-word stack — a longer first line reads
-            editorial rather than sing-song, and the display size gives the
-            opening the presence the interior pages already have. */}
+        {/* Restrained scale — the sky is the hero; the type states, it doesn't shout. */}
         <h1
           ref={titleRef}
-          className="max-w-4xl font-display text-fluid-display font-light leading-[0.92] tracking-tightest text-white drop-shadow-[0_2px_28px_rgba(3,26,58,0.45)]"
+          className="max-w-3xl font-display text-fluid-h1 font-light leading-[0.95] tracking-tightest text-white drop-shadow-[0_2px_28px_rgba(3,26,58,0.45)]"
         >
           <span className="reveal-mask block overflow-hidden">
             <span className="hero-line-inner block">
@@ -281,12 +278,16 @@ export function Hero() {
               </em>
             </span>
           </span>
-          <span className="reveal-mask block overflow-hidden"><span className="hero-line-inner block">of Africa.</span></span>
+          <span className="reveal-mask block overflow-hidden">
+            <span className="hero-line-inner block">
+              of Africa<span className="text-gold-400">.</span>
+            </span>
+          </span>
         </h1>
-        <p className="hero-fade mt-8 max-w-md text-fluid-lg font-light leading-relaxed text-white/90 opacity-0 drop-shadow-[0_1px_14px_rgba(3,26,58,0.45)]">
-          From the heart of Rwanda to the world &mdash; rise above with Africa&rsquo;s premium airline.
+        <p className="hero-fade mt-6 max-w-sm text-fluid-body font-light leading-relaxed text-white/85 opacity-0 drop-shadow-[0_1px_14px_rgba(3,26,58,0.45)]">
+          From the heart of Rwanda to the world. Rise above with Africa&rsquo;s premium airline.
         </p>
-        <div className="hero-fade mt-10 flex flex-wrap items-center gap-5 opacity-0">
+        <div className="hero-fade mt-9 flex flex-wrap items-center gap-4 opacity-0">
           <Button href="#book">Book a flight</Button>
           <Button href="#destinations" variant="ghost" className="!text-white hover:!text-gold-300">
             Explore the network ↓
