@@ -28,17 +28,20 @@ export function SkywardWindow() {
   const rootRef = useRef<HTMLDivElement>(null);
   const captionRef = useRef<HTMLParagraphElement>(null);
 
-  // scattered city lights for the night view
-  const lights = useMemo(
-    () =>
-      Array.from({ length: 90 }, () => ({
-        x: Math.random() * 100,
-        y: 55 + Math.random() * 42,
-        s: 0.5 + Math.random() * 1.6,
-        d: Math.random() * 3,
-      })),
-    []
-  );
+  // scattered city lights for the night view — seeded so SSR and client match
+  const lights = useMemo(() => {
+    let seed = 20260720;
+    const rnd = () => {
+      seed = (seed * 1103515245 + 12345) & 0x7fffffff;
+      return seed / 0x7fffffff;
+    };
+    return Array.from({ length: 90 }, () => ({
+      x: rnd() * 100,
+      y: 55 + rnd() * 42,
+      s: 0.5 + rnd() * 1.6,
+      d: rnd() * 3,
+    }));
+  }, []);
 
   useEffect(() => {
     ensureGsapRegistered();

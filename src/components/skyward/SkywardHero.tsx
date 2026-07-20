@@ -26,7 +26,7 @@ export function SkywardHero() {
     if (!root) return;
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-    const ctx = gsap.context(() => {
+    const ctx = gsap.context((self) => {
       const q = gsap.utils.selector(root);
 
       // ---------- entrance ----------
@@ -65,7 +65,7 @@ export function SkywardHero() {
         };
         if (!window.matchMedia("(pointer: coarse)").matches) {
           window.addEventListener("mousemove", onMove);
-          ctx.add(() => window.removeEventListener("mousemove", onMove));
+          self.add(() => window.removeEventListener("mousemove", onMove));
         }
       } else {
         gsap.set(root, { autoAlpha: 1 });
