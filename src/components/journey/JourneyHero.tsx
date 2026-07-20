@@ -8,16 +8,14 @@ import { ensureGsapRegistered } from "@/lib/motion";
 /**
  * Chapter 1 — The Dream.
  *
- * Every journey begins long before the airport — it begins the moment you let
- * yourself imagine it. A breathing dawn sky the visitor drops into: true-alpha
- * cloud plates (no visible bounding boxes) composed as one weather system — a
- * soft deck low on the horizon, a far drifting bank near the sun, one near wisp
- * sweeping the lens. The aircraft banks quietly in, a single line masks up, and
- * on scroll the whole frame lifts into the pre-departure blue of Chapter 2.
+ * Every journey begins the moment you let yourself imagine it. A clean brand-blue
+ * sky falling to a warm horizon; a real cumulus deck banked along the bottom (a
+ * photographic, true-alpha cloud — no cut-out edges), the aircraft banking in
+ * high and to the side so it never fights the type. The headline holds the
+ * centre with clear air around it. On scroll the deck sinks, the plane climbs
+ * away, and the frame dissolves into the deep blue of Chapter 2.
  */
-const CLOUD_SOFT = "/assets/sky/cloud-alpha-hero.png"; // dense, feathered
-const CLOUD_BANK = "/assets/sky/clouds-1-a.png"; // wide bank, true alpha
-const CLOUD_FAR = "/assets/sky/clouds-2-a.png"; // faint, distant
+const CLOUD = "/assets/sky/cloud-real.png";
 const PLANE = "/assets/aircraft/takeoff-cutout.png";
 
 export function JourneyHero() {
@@ -32,47 +30,34 @@ export function JourneyHero() {
     const ctx = gsap.context((self) => {
       const q = gsap.utils.selector(root);
 
-      // ---------- entrance ----------
       if (!reduced) {
         gsap.set(root, { autoAlpha: 1 });
         const tl = gsap.timeline({ defaults: { ease: "power3.out" } });
-        tl.from(".dream-sun", { opacity: 0, scale: 0.8, duration: 2.2 }, 0)
-          .from(".dream-cloud", { opacity: 0, duration: 2.2, stagger: 0.16 }, 0.2)
+        tl.from(".dream-sun", { opacity: 0, scale: 0.85, duration: 2.2 }, 0)
+          .from(".dream-cloud", { opacity: 0, yPercent: 24, duration: 2.4, stagger: 0.2, ease: "power2.out" }, 0.1)
           .from(
             ".dream-plane",
-            { xPercent: -34, yPercent: 22, opacity: 0, rotate: 8, duration: 2.6, ease: "power2.out" },
-            0.4
+            { xPercent: -30, yPercent: 20, opacity: 0, rotate: 7, duration: 2.6, ease: "power2.out" },
+            0.5
           )
-          .from(".dream-line", { yPercent: 120, duration: 1.2, ease: "power4.out", stagger: 0.12 }, 0.9)
-          .from(".dream-eyebrow, .dream-sub, .dream-cue", { opacity: 0, y: 16, duration: 1, stagger: 0.14 }, 1.5);
+          .from(".dream-line", { yPercent: 120, duration: 1.2, ease: "power4.out", stagger: 0.12 }, 0.95)
+          .from(".dream-eyebrow", { opacity: 0, y: 16, duration: 1 }, 0.8)
+          .from(".dream-sub, .dream-cue", { opacity: 0, y: 16, duration: 1, stagger: 0.16 }, 1.7);
 
-        // idle life: the aircraft never quite still, the weather always moving
-        gsap.to(".dream-plane", {
-          yPercent: "+=2.5",
-          rotate: "+=1.2",
-          duration: 6,
-          ease: "sine.inOut",
-          yoyo: true,
-          repeat: -1,
-        });
+        // idle life
+        gsap.to(".dream-plane", { yPercent: "+=2.4", rotate: "+=1", duration: 6.5, ease: "sine.inOut", yoyo: true, repeat: -1 });
         q<HTMLElement>(".dream-cloud").forEach((el, i) => {
-          gsap.to(el, {
-            xPercent: i % 2 ? 3.5 : -3,
-            duration: 26 + i * 7,
-            ease: "sine.inOut",
-            yoyo: true,
-            repeat: -1,
-          });
+          gsap.to(el, { xPercent: i % 2 ? 3 : -2.4, duration: 30 + i * 8, ease: "sine.inOut", yoyo: true, repeat: -1 });
         });
 
-        // ---------- cursor parallax ----------
+        // cursor parallax
         const layers = q<HTMLElement>("[data-depth]");
         const onMove = (e: MouseEvent) => {
           const rx = e.clientX / window.innerWidth - 0.5;
           const ry = e.clientY / window.innerHeight - 0.5;
           layers.forEach((el) => {
             const d = Number(el.dataset.depth);
-            gsap.to(el, { x: -rx * d * 55, y: -ry * d * 32, duration: 1.1, ease: "power3.out" });
+            gsap.to(el, { x: -rx * d * 46, y: -ry * d * 26, duration: 1.2, ease: "power3.out" });
           });
         };
         if (!window.matchMedia("(pointer: coarse)").matches) {
@@ -83,17 +68,14 @@ export function JourneyHero() {
         gsap.set(root, { autoAlpha: 1 });
       }
 
-      // ---------- scroll parallax + exit ----------
-      const tl = gsap.timeline({
-        scrollTrigger: { trigger: root, start: "top top", end: "bottom top", scrub: 1 },
-      });
-      tl.to(".dream-far", { yPercent: -12, ease: "none" }, 0)
-        .to(".dream-mid", { yPercent: -30, ease: "none" }, 0)
-        .to(".dream-near", { yPercent: -55, ease: "none" }, 0)
-        .to(".dream-plane", { yPercent: -60, xPercent: 26, scale: 1.15, ease: "none" }, 0)
-        .to(".dream-copy", { yPercent: -40, opacity: 0, ease: "none" }, 0)
-        .to(".dream-dawn", { opacity: 0, ease: "none" }, 0.25)
-        .to(".dream-dusk", { opacity: 1, ease: "none" }, 0.45);
+      // scroll parallax + exit
+      const tl = gsap.timeline({ scrollTrigger: { trigger: root, start: "top top", end: "bottom top", scrub: 1 } });
+      tl.to(".dream-deck", { yPercent: 26, ease: "none" }, 0)
+        .to(".dream-near", { yPercent: 60, ease: "none" }, 0)
+        .to(".dream-plane", { yPercent: -58, xPercent: 22, scale: 1.14, ease: "none" }, 0)
+        .to(".dream-copy", { yPercent: -32, opacity: 0, ease: "none" }, 0)
+        .to(".dream-dawn", { opacity: 0, ease: "none" }, 0.3)
+        .to(".dream-dusk", { opacity: 1, ease: "none" }, 0.5);
     }, root);
 
     return () => ctx.revert();
@@ -107,100 +89,87 @@ export function JourneyHero() {
       className="relative h-[130svh] overflow-hidden opacity-0"
     >
       <div className="sticky top-0 h-[100svh] overflow-hidden">
-        {/* dawn sky — clean RwandAir blue falling to a warm horizon */}
+        {/* clean brand-blue sky → warm horizon */}
         <div
           className="dream-dawn absolute inset-0"
           style={{
             background:
-              "linear-gradient(180deg,#0d3f86 0%,#1a5cab 32%,#4f8fcd 56%,#a8cbe8 76%,#f3d5ae 92%,#f7c78e 100%)",
+              "linear-gradient(180deg,#0b3d84 0%,#1559a6 30%,#3f83c4 52%,#89b6de 72%,#d9e4ee 86%,#f4ddc0 100%)",
           }}
         />
-        {/* the deeper blue Chapter 2 opens in — fades up as we leave */}
+        {/* the deeper blue Chapter 2 opens in */}
         <div
           className="dream-dusk absolute inset-0 opacity-0"
           style={{ background: "linear-gradient(180deg,#07306a 0%,#0a3d7c 60%,#12509b 100%)" }}
         />
 
-        {/* the sun, low on the horizon */}
+        {/* sun glow low on the horizon */}
         <div
-          className="dream-sun pointer-events-none absolute left-1/2 top-[70%] h-[70vh] w-[70vh] -translate-x-1/2 -translate-y-1/2 rounded-full"
-          data-depth="0.4"
+          className="dream-sun pointer-events-none absolute left-[62%] top-[82%] h-[80vh] w-[80vh] -translate-x-1/2 -translate-y-1/2 rounded-full"
+          data-depth="0.35"
           style={{
             background:
-              "radial-gradient(circle,rgba(255,238,205,0.95) 0%,rgba(255,212,152,0.42) 26%,rgba(255,200,140,0.1) 48%,transparent 66%)",
+              "radial-gradient(circle,rgba(255,241,214,0.9) 0%,rgba(255,216,160,0.36) 26%,rgba(255,205,150,0.08) 48%,transparent 66%)",
           }}
           aria-hidden
         />
 
-        {/* ── the weather system — three believable altitudes ────────────── */}
-
-        {/* far: a faint bank drifting near the sun, softened by distance */}
-        <div className="dream-far absolute inset-0" aria-hidden>
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src={CLOUD_FAR}
-            alt=""
-            data-depth="0.6"
-            className="dream-cloud absolute left-[32%] top-[46%] w-[58%] opacity-60 blur-[2px]"
-          />
-        </div>
-
-        {/* mid: the main deck resting on the horizon, bottoms out of frame */}
-        <div className="dream-mid absolute inset-0" aria-hidden>
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src={CLOUD_BANK}
-            alt=""
-            data-depth="1.1"
-            className="dream-cloud absolute bottom-[-6%] left-[-12%] w-[78%] opacity-90"
-          />
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src={CLOUD_SOFT}
-            alt=""
-            data-depth="1.3"
-            className="dream-cloud absolute bottom-[-14%] right-[-14%] w-[74%] opacity-80"
-          />
-        </div>
-
-        {/* the aircraft, banking through the deck */}
+        {/* the aircraft — high and to the side, clear of the type */}
         <div
-          className="dream-plane absolute left-[54%] top-[40%] w-[clamp(320px,52vw,880px)] -translate-x-1/2 -translate-y-1/2"
-          data-depth="1.6"
+          className="dream-plane absolute left-[68%] top-[30%] w-[clamp(280px,42vw,720px)] -translate-x-1/2 -translate-y-1/2"
+          data-depth="1.5"
           aria-hidden
         >
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={PLANE}
             alt="A RwandAir Airbus A330 banking into a dawn sky"
-            className="w-full drop-shadow-[0_40px_80px_rgba(6,26,58,0.45)]"
+            className="w-full drop-shadow-[0_40px_80px_rgba(6,26,58,0.4)]"
           />
         </div>
 
-        {/* near: one wisp sweeping the bottom of the lens, above the aircraft */}
-        <div className="dream-near pointer-events-none absolute inset-0 z-[6]" aria-hidden>
+        {/* real cumulus deck banked along the bottom (photographic alpha) */}
+        <div className="dream-deck pointer-events-none absolute inset-x-0 bottom-0 h-[62%]" aria-hidden>
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
-            src={CLOUD_SOFT}
+            src={CLOUD}
             alt=""
-            data-depth="2.4"
-            className="dream-cloud absolute bottom-[-44%] left-[2%] w-[115%] opacity-55"
+            data-depth="0.9"
+            className="dream-cloud absolute bottom-[8%] left-[-14%] w-[62%] opacity-80"
+          />
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={CLOUD}
+            alt=""
+            data-depth="1.1"
+            className="dream-cloud absolute bottom-[-4%] right-[-12%] w-[66%] opacity-90"
           />
         </div>
 
-        {/* soft vignette for legibility */}
+        {/* one near cloud sweeping the very bottom of the lens */}
+        <div className="dream-near pointer-events-none absolute inset-x-0 bottom-0 z-[6] h-[40%]" aria-hidden>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={CLOUD}
+            alt=""
+            data-depth="2.1"
+            className="dream-cloud absolute bottom-[-42%] left-[8%] w-[90%] opacity-70"
+          />
+        </div>
+
+        {/* legibility vignette */}
         <div
           className="pointer-events-none absolute inset-0 z-[8]"
-          style={{ background: "radial-gradient(120% 80% at 50% 30%,transparent 42%,rgba(7,34,72,0.3) 100%)" }}
+          style={{ background: "radial-gradient(115% 78% at 42% 42%,rgba(7,34,72,0.34) 0%,transparent 52%)" }}
           aria-hidden
         />
 
-        {/* copy */}
-        <div className="dream-copy absolute inset-0 z-[10] flex flex-col items-center justify-center px-gutter text-center">
-          <p className="dream-eyebrow mb-6 text-fluid-xs uppercase tracking-[0.32em] text-white/85 drop-shadow-[0_1px_16px_rgba(7,34,72,0.6)]">
+        {/* copy — left-anchored, generous air */}
+        <div className="dream-copy absolute inset-0 z-[10] mx-auto flex max-w-shell flex-col justify-center px-gutter">
+          <p className="dream-eyebrow mb-6 text-fluid-xs uppercase tracking-[0.34em] text-white/85 drop-shadow-[0_1px_16px_rgba(7,34,72,0.55)]">
             RwandAir — one journey, seven chapters
           </p>
-          <h1 className="font-display text-fluid-display font-light leading-[0.92] tracking-tightest text-white drop-shadow-[0_4px_40px_rgba(7,34,72,0.5)]">
+          <h1 className="max-w-4xl font-display text-fluid-display font-light leading-[0.9] tracking-tightest text-white drop-shadow-[0_4px_44px_rgba(7,34,72,0.45)]">
             <span className="reveal-mask block">
               <span className="dream-line block">Every journey</span>
             </span>
@@ -210,7 +179,7 @@ export function JourneyHero() {
               </span>
             </span>
           </h1>
-          <p className="dream-sub mt-8 max-w-md text-fluid-body font-light leading-relaxed text-white/80 drop-shadow-[0_1px_16px_rgba(7,34,72,0.6)]">
+          <p className="dream-sub mt-8 max-w-md text-fluid-lg font-light leading-relaxed text-white/85 drop-shadow-[0_1px_16px_rgba(7,34,72,0.55)]">
             Come travel one with us — from the first flutter of anticipation to
             the moment the wheels touch home.
           </p>

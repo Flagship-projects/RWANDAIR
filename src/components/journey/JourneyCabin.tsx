@@ -4,6 +4,7 @@ import { useEffect, useRef } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { ensureGsapRegistered } from "@/lib/motion";
+import { JourneyVideo } from "./JourneyVideo";
 
 /**
  * Chapter 4 — Life On Board.
@@ -188,15 +189,35 @@ function BlueprintScan() {
         {/* the blueprint beneath the livery — only inside the scan light */}
         <div
           ref={wireRef}
-          className="absolute inset-0 bg-contain bg-center bg-no-repeat"
+          className="absolute inset-0"
           style={{
-            backgroundImage: `url("${encodeURI(TOPVIEW_WIRE)}")`,
-            filter: "invert(1) brightness(1.6) drop-shadow(0 0 6px rgba(127,204,239,0.35))",
             WebkitMaskImage: "radial-gradient(circle 0px at 50% 40%, black 0%, transparent 100%)",
             maskImage: "radial-gradient(circle 0px at 50% 40%, black 0%, transparent 100%)",
           }}
           aria-hidden
-        />
+        >
+          {/* blueprint paper — washes the livery out inside the beam… */}
+          <div
+            className="absolute inset-0"
+            style={{
+              background:
+                "radial-gradient(circle at 50% 45%, rgba(219,236,250,0.9) 0%, rgba(199,222,242,0.85) 100%)",
+              WebkitMaskImage: `url("${encodeURI(TOPVIEW_REAL)}")`,
+              maskImage: `url("${encodeURI(TOPVIEW_REAL)}")`,
+              WebkitMaskSize: "contain",
+              maskSize: "contain",
+              WebkitMaskPosition: "center",
+              maskPosition: "center",
+              WebkitMaskRepeat: "no-repeat",
+              maskRepeat: "no-repeat",
+            }}
+          />
+          {/* …and the engineering prints on top */}
+          <div
+            className="absolute inset-0 bg-contain bg-center bg-no-repeat"
+            style={{ backgroundImage: `url("${encodeURI(TOPVIEW_WIRE)}")`, filter: "contrast(1.15)" }}
+          />
+        </div>
         {/* the scanning light itself — a soft halo trailing the same point */}
         <div
           ref={beamRef}
@@ -304,6 +325,20 @@ export function JourneyCabin() {
       <div className="px-gutter pb-section-md pt-section-md">
         <BlueprintScan />
       </div>
+
+      {/* the film — life on board, in RwandAir's own footage */}
+      <figure className="relative mx-auto mb-section-md h-[68vh] w-full overflow-hidden">
+        <JourneyVideo id="zvTmK9Eg3Sc" />
+        <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#062a5c] via-transparent to-[#062a5c]/60" />
+        <figcaption className="pointer-events-none absolute inset-x-gutter bottom-10 mx-auto max-w-shell">
+          <span className="mb-4 block text-fluid-xs uppercase tracking-[0.3em] text-gold-300/90">
+            The film — on board
+          </span>
+          <p className="max-w-lg font-display text-fluid-h3 font-light leading-[1.1] tracking-tight text-white">
+            Not just a flight — an experience. Their words, our chapter.
+          </p>
+        </figcaption>
+      </figure>
 
       {/* pinned horizontal walkthrough */}
       <div ref={rootRef} className="relative h-[100svh] overflow-hidden">

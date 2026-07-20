@@ -4,6 +4,7 @@ import { useEffect, useRef } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { ensureGsapRegistered } from "@/lib/motion";
+import { JourneyVideo } from "./JourneyVideo";
 
 /**
  * Chapter 2 — Every Journey Begins.
@@ -146,6 +147,23 @@ export function JourneyDeparture() {
           </figure>
         ))}
       </div>
+
+      {/* the film — real RwandAir footage, ambient and muted */}
+      <figure className="mx-auto mt-section-md max-w-shell">
+        <div className="dep-plate relative aspect-video w-full overflow-hidden rounded-[24px]">
+          <JourneyVideo id="fuU80ktVTFQ" />
+          {/* legibility grade + caption */}
+          <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#07306a]/70 via-transparent to-[#07306a]/20" />
+          <figcaption className="pointer-events-none absolute bottom-0 left-0 p-7 sm:p-10">
+            <span className="mb-4 block text-fluid-xs uppercase tracking-[0.3em] text-gold-300/90">
+              The film — welcome on board
+            </span>
+            <p className="max-w-md font-display text-fluid-h3 font-light leading-[1.1] tracking-tight text-white">
+              Watch the doors open on the real thing.
+            </p>
+          </figcaption>
+        </div>
+      </figure>
 
       {/* bridge into the sky */}
       <p className="mx-auto mt-section-md max-w-xl text-center font-display text-fluid-lg font-light italic leading-relaxed text-white/45">

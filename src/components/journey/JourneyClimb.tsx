@@ -22,10 +22,8 @@ import { ensureGsapRegistered } from "@/lib/motion";
  * nothing re-renders on scroll.
  */
 const PLANE_TOP = "/assets/Rwandair new assets/rwandair topview.png";
-const CLOUD_SOFT = "/assets/sky/cloud-alpha-hero.png";
-const CLOUD_BANK = "/assets/sky/clouds-1-a.png";
-const CLOUD_FAR = "/assets/sky/clouds-2-a.png";
-const CLOUD_THIN = "/assets/sky/cloud-alpha-thin.png";
+const CLOUDSCAPE = "/assets/sky/cloudscape-aerial.png"; // real aerial sea of clouds
+const CLOUD = "/assets/sky/cloud-real.png"; // real cumulus, true alpha
 
 /* The four altitude thoughts — each drifts up through its scroll window. */
 const BEATS = [
@@ -190,26 +188,33 @@ export function JourneyClimb() {
           aria-hidden
         />
 
-        {/* ---- cloud decks streaming down as we climb (true-alpha plates) ---- */}
-        <div className="climb-deck-low pointer-events-none absolute inset-0" aria-hidden>
+        {/* ---- the world falling away: a real sea of clouds + rising plates ---- */}
+        {/* low: the full aerial cloudscape the take-off breaks through —
+            masked so it dissolves into whatever sky is behind it, no seam */}
+        <div
+          className="climb-deck-low pointer-events-none absolute inset-x-0 bottom-0 h-[85%]"
+          style={{
+            WebkitMaskImage: "linear-gradient(180deg,transparent 0%,black 34%)",
+            maskImage: "linear-gradient(180deg,transparent 0%,black 34%)",
+          }}
+          aria-hidden
+        >
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={CLOUD_SOFT} alt="" className="absolute left-[-14%] top-[30%] w-[75%]" />
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={CLOUD_BANK} alt="" className="absolute right-[-16%] top-[52%] w-[80%]" />
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={CLOUD_SOFT} alt="" className="absolute left-[24%] top-[74%] w-[66%] opacity-90" />
+          <img src={CLOUDSCAPE} alt="" className="absolute inset-0 h-full w-full object-cover" />
         </div>
-        <div className="climb-deck-mid pointer-events-none absolute inset-0 opacity-80" aria-hidden>
+        {/* mid: individual cumulus rushing the lens as we punch through */}
+        <div className="climb-deck-mid pointer-events-none absolute inset-0" aria-hidden>
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={CLOUD_FAR} alt="" className="absolute left-[6%] top-[18%] w-[52%] blur-[1px]" />
+          <img src={CLOUD} alt="" className="absolute left-[-18%] top-[40%] w-[62%] opacity-95" />
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={CLOUD_BANK} alt="" className="absolute right-[-8%] top-[38%] w-[56%] opacity-80" />
+          <img src={CLOUD} alt="" className="absolute right-[-16%] top-[58%] w-[58%] opacity-90" />
         </div>
+        {/* high: thin wisps far below, faint at cruise */}
         <div className="climb-deck-high pointer-events-none absolute inset-0 opacity-0" aria-hidden>
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={CLOUD_THIN} alt="" className="absolute left-[10%] top-[22%] w-[64%] blur-[1px]" />
+          <img src={CLOUD} alt="" className="absolute left-[8%] top-[24%] w-[40%] opacity-45 blur-[2px]" />
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={CLOUD_THIN} alt="" className="absolute right-[-6%] top-[54%] w-[58%] opacity-70 blur-[2px]" />
+          <img src={CLOUD} alt="" className="absolute right-[2%] top-[56%] w-[34%] opacity-35 blur-[3px]" />
         </div>
 
         {/* ---- the aircraft, seen from above, climbing with you ---- */}
