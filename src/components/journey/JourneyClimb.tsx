@@ -33,13 +33,11 @@ const BEATS = [
   { at: 0.8, alt: "39,000 ft", line: "Cruise. A whole continent ahead of you.", side: "right" },
 ];
 
-const TICKS = [0, 10, 20, 30, 39];
 
 export function JourneyClimb() {
   const rootRef = useRef<HTMLDivElement>(null);
   const altRef = useRef<HTMLSpanElement>(null);
   const phaseRef = useRef<HTMLSpanElement>(null);
-  const fillRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     ensureGsapRegistered();
@@ -49,7 +47,6 @@ export function JourneyClimb() {
 
     const ctx = gsap.context(() => {
       const beats = gsap.utils.toArray<HTMLElement>(".climb-beat", root);
-      const ticks = gsap.utils.toArray<HTMLElement>(".climb-tick", root);
 
       if (reduced) {
         // calm still: cruise sky, plane centred, last thought visible
@@ -58,8 +55,6 @@ export function JourneyClimb() {
         beats.forEach((b, i) => gsap.set(b, { opacity: i === beats.length - 1 ? 1 : 0, yPercent: 0 }));
         if (altRef.current) altRef.current.textContent = "39,000";
         if (phaseRef.current) phaseRef.current.textContent = "CRUISE";
-        if (fillRef.current) fillRef.current.style.transform = "scaleY(1)";
-        ticks.forEach((t) => t.classList.add("!bg-gold-300", "!text-white"));
         return;
       }
 
@@ -75,37 +70,23 @@ export function JourneyClimb() {
             // altimeter
             if (altRef.current)
               altRef.current.textContent = (Math.round((p * 39000) / 100) * 100).toLocaleString("en-US");
-            if (fillRef.current) fillRef.current.style.transform = `scaleY(${p})`;
             // flight phase
             if (phaseRef.current) {
               const phase = p < 0.16 ? "TAKEOFF" : p < 0.74 ? "CLIMB" : "CRUISE";
               if (phaseRef.current.textContent !== phase) phaseRef.current.textContent = phase;
             }
-            // altitude gates light as passed
-            ticks.forEach((t, i) => {
-              const passed = p * 39 >= TICKS[i] - 0.01;
-              t.classList.toggle("tick-on", passed);
-            });
           },
         },
       });
 
-      /* ---- the sky: morning haze → vivid day → clean high blue ---- */
-      tl.to(".climb-sky-low", { opacity: 0, duration: 0.35 }, 0.15);
-      tl.fromTo(".climb-sky-high", { opacity: 0 }, { opacity: 1, duration: 0.35 }, 0.5);
-      // ground haze burns off early
-      tl.to(".climb-haze", { opacity: 0, duration: 0.3 }, 0.05);
-      // thin-air brightness washes in near the top
-      tl.fromTo(".climb-thinair", { opacity: 0 }, { opacity: 0.22, duration: 0.3 }, 0.62);
+      /* ---- the sky: one slow deepening, nothing else ---- */
+      tl.fromTo(".climb-sky-high", { opacity: 0 }, { opacity: 1, duration: 0.5 }, 0.35);
 
-      /* ---- the world falls away: cloud decks stream down, thinning ---- */
+      /* ---- the world falls away: one sea of clouds, one passing cumulus ---- */
       tl.fromTo(".climb-deck-low", { yPercent: 6 }, { yPercent: 135, duration: 0.62 }, 0);
       tl.to(".climb-deck-low", { opacity: 0, duration: 0.2 }, 0.42);
-      tl.fromTo(".climb-deck-mid", { yPercent: -12 }, { yPercent: 110, duration: 0.85 }, 0.05);
-      tl.to(".climb-deck-mid", { opacity: 0.14, duration: 0.35 }, 0.55);
-      tl.fromTo(".climb-deck-high", { yPercent: -6, opacity: 0 }, { opacity: 0.5, duration: 0.2 }, 0.48);
-      tl.to(".climb-deck-high", { yPercent: 46, duration: 0.5 }, 0.5);
-      tl.to(".climb-deck-high", { opacity: 0.22, duration: 0.25 }, 0.75);
+      tl.fromTo(".climb-deck-mid", { yPercent: -16 }, { yPercent: 120, duration: 0.7 }, 0.16);
+      tl.to(".climb-deck-mid", { opacity: 0, duration: 0.2 }, 0.66);
 
       /* ---- the aircraft: in at once, whole and centre-stage, the visual
              focus of the climb — then it slips out overhead at the top ---- */
@@ -160,38 +141,17 @@ export function JourneyClimb() {
       className="relative h-[560vh]"
     >
       <div className="sticky top-0 h-[100svh] overflow-hidden">
-        {/* ---- sky grades (stacked, cross-faded) ---- */}
-        {/* vivid day — the base */}
+        {/* ---- the sky: one gradient, one slow deepening. Let it breathe. ---- */}
         <div
           className="absolute inset-0"
           style={{ background: "linear-gradient(180deg,#0d55a6 0%,#1e7ac9 50%,#79c0ef 85%,#cfe9fa 100%)" }}
         />
-        {/* hazy morning after take-off — fades out first */}
-        <div
-          className="climb-sky-low absolute inset-0"
-          style={{ background: "linear-gradient(180deg,#0a3d7c 0%,#2a6cb4 45%,#7fb3de 74%,#e9d8bf 96%)" }}
-        />
-        {/* clean high-altitude blue — fades in last */}
         <div
           className="climb-sky-high absolute inset-0 opacity-0"
           style={{ background: "linear-gradient(180deg,#063a80 0%,#1266b4 38%,#3f9ad8 68%,#a8dcf5 100%)" }}
         />
-        {/* ground haze hugging the bottom, burns off as we rise */}
-        <div
-          className="climb-haze pointer-events-none absolute inset-x-0 bottom-0 h-[45%]"
-          style={{ background: "linear-gradient(180deg,transparent,rgba(233,216,191,0.5) 70%,rgba(233,216,191,0.7))" }}
-          aria-hidden
-        />
-        {/* thin-air brightness at cruise */}
-        <div
-          className="climb-thinair pointer-events-none absolute inset-0 opacity-0"
-          style={{ background: "radial-gradient(100% 70% at 50% 20%,rgba(255,255,255,0.55),transparent 60%)" }}
-          aria-hidden
-        />
 
-        {/* ---- the world falling away: a real sea of clouds + rising plates ---- */}
-        {/* low: the full aerial cloudscape the take-off breaks through —
-            masked so it dissolves into whatever sky is behind it, no seam */}
+        {/* ---- the world falling away: one sea of clouds, one passing cumulus ---- */}
         <div
           className="climb-deck-low pointer-events-none absolute inset-x-0 bottom-0 h-[85%]"
           style={{
@@ -203,19 +163,9 @@ export function JourneyClimb() {
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src={CLOUDSCAPE} alt="" className="absolute inset-0 h-full w-full object-cover" />
         </div>
-        {/* mid: individual cumulus rushing the lens as we punch through */}
         <div className="climb-deck-mid pointer-events-none absolute inset-0" aria-hidden>
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={CLOUD} alt="" className="absolute left-[-18%] top-[40%] w-[62%] opacity-95" />
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={CLOUD} alt="" className="absolute right-[-16%] top-[58%] w-[58%] opacity-90" />
-        </div>
-        {/* high: thin wisps far below, faint at cruise */}
-        <div className="climb-deck-high pointer-events-none absolute inset-0 opacity-0" aria-hidden>
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={CLOUD} alt="" className="absolute left-[8%] top-[24%] w-[40%] opacity-45 blur-[2px]" />
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={CLOUD} alt="" className="absolute right-[2%] top-[56%] w-[34%] opacity-35 blur-[3px]" />
+          <img src={CLOUD} alt="" className="absolute left-[-14%] top-[46%] w-[58%] opacity-90" />
         </div>
 
         {/* ---- the aircraft, seen from above, climbing with you ---- */}
@@ -259,28 +209,7 @@ export function JourneyClimb() {
           ))}
         </div>
 
-        {/* ---- instruments: the altimeter column + flight phase ---- */}
-        <div className="climb-hud pointer-events-none absolute inset-y-0 right-gutter z-[12] hidden items-center opacity-0 md:flex">
-          <div className="flex items-center gap-5">
-            {/* altitude gates */}
-            <div className="flex flex-col items-end gap-[4.2vh] text-right">
-              {[...TICKS].reverse().map((t) => (
-                <div key={t} className="climb-tick flex items-center gap-2 text-[9px] uppercase tracking-[0.2em] text-white/45 transition-colors duration-500 [&.tick-on]:text-white">
-                  <span>{t === 0 ? "GND" : `${t}k`}</span>
-                  <span className="block h-px w-3 bg-white/30 transition-colors duration-500 [.tick-on_&]:bg-gold-300" />
-                </div>
-              ))}
-            </div>
-            {/* the tape */}
-            <div className="relative h-[46vh] w-[3px] overflow-hidden rounded-full bg-white/20">
-              <div
-                ref={fillRef}
-                className="absolute inset-x-0 bottom-0 h-full origin-bottom scale-y-0 bg-gradient-to-t from-gold-500 via-gold-400 to-gold-300"
-              />
-            </div>
-          </div>
-        </div>
-        {/* readout: bottom-left, like a quiet instrument */}
+        {/* ---- one quiet instrument: altitude + phase, bottom-left ---- */}
         <div className="climb-hud pointer-events-none absolute bottom-8 left-gutter z-[12] opacity-0">
           <div className="flex items-end gap-5 text-white">
             <div className="leading-none">

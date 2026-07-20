@@ -4,6 +4,7 @@ import { useEffect, useRef } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { ensureGsapRegistered } from "@/lib/motion";
+import { WINDOW_EXIT_SKY } from "./JourneyWindow";
 
 /**
  * Chapter 6 — Africa From Above.
@@ -37,6 +38,7 @@ export function JourneyAfrica() {
 
       if (reduced) {
         slides.forEach((s, i) => gsap.set(s, { opacity: i === 0 ? 1 : 0 }));
+        gsap.set(".atlas-veil", { opacity: 0 });
         return;
       }
       gsap.set(slides, { opacity: 0 });
@@ -55,6 +57,10 @@ export function JourneyAfrica() {
           anticipatePin: 1,
         },
       });
+
+      // the sky inherited from the window fly-through dissolves into the first
+      // destination — the landing of one continuous camera move, not a cut
+      tl.to(".atlas-veil", { opacity: 0, duration: step * 0.55 }, 0.01);
 
       slides.forEach((slide, i) => {
         const img = slide.querySelector(".atlas-img");
@@ -95,8 +101,8 @@ export function JourneyAfrica() {
       ref={rootRef}
       id="journey-5"
       data-journey-chapter="5"
-      className="relative bg-black"
-      style={{ height: `${PLACES.length * 100}vh` }}
+      className="relative"
+      style={{ height: `${PLACES.length * 100}vh`, background: WINDOW_EXIT_SKY }}
     >
       <div className="atlas-stage relative h-[100svh] overflow-hidden">
         {PLACES.map((p) => (
@@ -124,6 +130,9 @@ export function JourneyAfrica() {
             </div>
           </div>
         ))}
+
+        {/* the sky carried over from the window — fades as the first place appears */}
+        <div className="atlas-veil pointer-events-none absolute inset-0 z-[15]" style={{ background: WINDOW_EXIT_SKY }} aria-hidden />
 
         {/* fixed chapter marker + region rail */}
         <p className="pointer-events-none absolute left-gutter top-[13%] z-10 text-fluid-xs uppercase tracking-[0.32em] text-white/50">
