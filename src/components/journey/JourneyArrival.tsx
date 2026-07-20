@@ -16,7 +16,7 @@ const PLANE = "/assets/aircraft/takeoff-cutout.png";
  * quiet cue hands the visitor back to the rest of the site (the shared Footer
  * that follows). The one warm, resolved breath after the whole climb.
  */
-export function SkywardArrival() {
+export function JourneyArrival() {
   const rootRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -62,13 +62,13 @@ export function SkywardArrival() {
   return (
     <section
       ref={rootRef}
-      id="skyward-6"
-      data-skyward-chapter="6"
-      className="relative h-[220vh] bg-[#050b18]"
+      id="journey-6"
+      data-journey-chapter="6"
+      className="relative h-[220vh] bg-[#07306a]"
     >
       <div className="sticky top-0 flex h-[100svh] flex-col items-center justify-center overflow-hidden">
         {/* graded arrival sky */}
-        <div className="absolute inset-0" style={{ background: "linear-gradient(180deg,#0a1430 0%,#243a63 40%,#6b5a7a 66%,#c98a5a 84%,#f2b878 100%)" }} />
+        <div className="absolute inset-0" style={{ background: "linear-gradient(180deg,#0a2a5e 0%,#25497a 40%,#6b5a7a 66%,#c98a5a 84%,#f2b878 100%)" }} />
         {/* golden horizon bloom rising from the bottom */}
         <div className="arr-glow pointer-events-none absolute inset-x-0 bottom-0 h-[70%]" style={{ background: "radial-gradient(120% 100% at 50% 100%,rgba(255,224,150,0.9) 0%,rgba(255,200,120,0.4) 34%,transparent 66%)" }} />
         {/* the horizon line */}

@@ -34,7 +34,7 @@ const MOMENTS = [
   },
 ];
 
-export function SkywardDeparture() {
+export function JourneyDeparture() {
   const rootRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -101,14 +101,14 @@ export function SkywardDeparture() {
   return (
     <section
       ref={rootRef}
-      id="skyward-1"
-      data-skyward-chapter="1"
-      className="relative bg-[#050b18] px-gutter pb-section-lg pt-section-md"
+      id="journey-1"
+      data-journey-chapter="1"
+      className="relative bg-[#07306a] px-gutter pb-section-lg pt-section-md"
     >
       {/* lead */}
       <div className="dep-lead mx-auto max-w-shell">
         <p className="mb-6 text-fluid-xs uppercase tracking-[0.32em] text-sky-300/80">
-          Chapter Two — Every journey begins
+          Chapter Two — Anticipation
         </p>
         <h2 className="max-w-4xl font-display text-fluid-h1 font-light leading-[0.98] tracking-tightest text-white">
           <span className="reveal-mask block">
@@ -133,7 +133,7 @@ export function SkywardDeparture() {
             <div className="dep-plate relative aspect-[4/3] w-full overflow-hidden rounded-[24px] lg:w-[58%]">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src={m.img} alt="" className="dep-img absolute inset-0 h-full w-full object-cover" />
-              <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#050b18]/60 via-transparent to-transparent" />
+              <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#07306a]/60 via-transparent to-transparent" />
             </div>
             <figcaption className="dep-cap lg:w-[42%]">
               <span className="mb-5 block text-fluid-xs uppercase tracking-[0.3em] text-gold-300/90">
@@ -149,7 +149,7 @@ export function SkywardDeparture() {
 
       {/* bridge into the sky */}
       <p className="mx-auto mt-section-md max-w-xl text-center font-display text-fluid-lg font-light italic leading-relaxed text-white/45">
-        And then, the ground lets go.
+        Then the engines gather their breath —
       </p>
     </section>
   );

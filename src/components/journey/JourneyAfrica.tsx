@@ -23,7 +23,7 @@ const PLACES = [
   { name: "Johannesburg", country: "South Africa", coord: "26.1°S 28.2°E", line: "The city of gold, laid out below like a circuit.", img: "/assets/destinations/johannesburg.jpg" },
 ];
 
-export function SkywardAfrica() {
+export function JourneyAfrica() {
   const rootRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -92,8 +92,8 @@ export function SkywardAfrica() {
   return (
     <section
       ref={rootRef}
-      id="skyward-5"
-      data-skyward-chapter="5"
+      id="journey-5"
+      data-journey-chapter="5"
       className="relative bg-black"
       style={{ height: `${PLACES.length * 100}vh` }}
     >
@@ -126,7 +126,7 @@ export function SkywardAfrica() {
 
         {/* fixed chapter marker + region rail */}
         <p className="pointer-events-none absolute left-gutter top-[13%] z-10 text-fluid-xs uppercase tracking-[0.32em] text-white/50">
-          Chapter Six — Africa From Above
+          Chapter Six — Where journeys lead
         </p>
       </div>
     </section>

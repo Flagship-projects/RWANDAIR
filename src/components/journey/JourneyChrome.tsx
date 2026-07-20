@@ -4,25 +4,25 @@ import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { cn } from "@/lib/cn";
 
-/** The seven chapters, in order — shared by the rail and the counter. */
-export const SKYWARD_CHAPTERS = [
-  "The Invitation",
-  "Every Journey Begins",
-  "Into the Sky",
-  "The Cabin",
+/** The seven chapters of the journey, in order — shared by the rail and the counter. */
+export const JOURNEY_CHAPTERS = [
+  "The Dream",
+  "Anticipation",
+  "The Climb",
+  "Life On Board",
   "The Window",
-  "Africa From Above",
+  "Where Journeys Lead",
   "Arrival",
 ];
 
 /**
- * Skyward's own minimal dark chrome. It never uses the light site Nav: a hairline
+ * Journey's own minimal dark chrome. It never uses the light site Nav: a hairline
  * progress bar across the very top, the reversed logo, a live chapter counter,
  * a vertical chapter rail (desktop), and a quiet way back to the site. Everything
  * reads scroll directly — nothing re-renders on scroll except the active index,
  * which only changes seven times across the whole journey.
  */
-export function SkywardChrome() {
+export function JourneyChrome() {
   const barRef = useRef<HTMLDivElement>(null);
   const [active, setActive] = useState(0);
   const [dark, setDark] = useState(true);
@@ -43,14 +43,14 @@ export function SkywardChrome() {
     window.addEventListener("scroll", onScroll, { passive: true });
 
     // active chapter + chrome tint, driven by whichever chapter owns the middle band
-    const sections = Array.from(document.querySelectorAll<HTMLElement>("[data-skyward-chapter]"));
+    const sections = Array.from(document.querySelectorAll<HTMLElement>("[data-journey-chapter]"));
     const io = new IntersectionObserver(
       (entries) => {
         entries.forEach((e) => {
           if (!e.isIntersecting) return;
-          const i = Number(e.target.getAttribute("data-skyward-chapter"));
+          const i = Number(e.target.getAttribute("data-journey-chapter"));
           setActive(i);
-          setDark(e.target.getAttribute("data-skyward-light") !== "true");
+          setDark(e.target.getAttribute("data-journey-light") !== "true");
         });
       },
       { rootMargin: "-45% 0px -45% 0px", threshold: 0 }
@@ -98,7 +98,7 @@ export function SkywardChrome() {
               <span className="text-fluid-xs opacity-40">/</span>
               <span className="text-fluid-xs opacity-40 tabular-nums">07</span>
               <span className="ml-3 hidden text-fluid-xs uppercase tracking-wideish opacity-70 lg:inline">
-                {SKYWARD_CHAPTERS[active]}
+                {JOURNEY_CHAPTERS[active]}
               </span>
             </div>
             <a
@@ -122,10 +122,10 @@ export function SkywardChrome() {
         aria-label="Chapters"
         className="pointer-events-none fixed right-gutter top-1/2 z-[65] hidden -translate-y-1/2 flex-col items-end gap-3.5 xl:flex"
       >
-        {SKYWARD_CHAPTERS.map((label, i) => (
+        {JOURNEY_CHAPTERS.map((label, i) => (
           <a
             key={label}
-            href={`#skyward-${i}`}
+            href={`#journey-${i}`}
             className="group pointer-events-auto flex items-center gap-3"
           >
             <span

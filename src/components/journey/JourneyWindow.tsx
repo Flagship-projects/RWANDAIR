@@ -24,7 +24,7 @@ const VIEWS = [
   { key: "night", caption: "Then night, and a city breathing below.", in: 0.8 },
 ];
 
-export function SkywardWindow() {
+export function JourneyWindow() {
   const rootRef = useRef<HTMLDivElement>(null);
   const captionRef = useRef<HTMLParagraphElement>(null);
 
@@ -111,13 +111,13 @@ export function SkywardWindow() {
   return (
     <section
       ref={rootRef}
-      id="skyward-4"
-      data-skyward-chapter="4"
-      className="relative h-[420vh] bg-[#050810]"
+      id="journey-4"
+      data-journey-chapter="4"
+      className="relative h-[420vh] bg-[#041c3f]"
     >
       <div className="win-stage relative flex h-[100svh] items-center justify-center overflow-hidden">
         {/* dim cabin wall */}
-        <div className="absolute inset-0" style={{ background: "radial-gradient(120% 100% at 50% 40%,#0e141f 0%,#070a12 60%,#04060c 100%)" }} />
+        <div className="absolute inset-0" style={{ background: "radial-gradient(120% 100% at 50% 40%,#0d2c55 0%,#072045 60%,#041730 100%)" }} />
 
         {/* the window */}
         <div className="win-frame relative z-10 aspect-[10/16] h-[74vh] max-h-[820px]">
