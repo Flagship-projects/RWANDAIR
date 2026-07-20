@@ -107,10 +107,11 @@ export function JourneyClimb() {
       tl.to(".climb-deck-high", { yPercent: 46, duration: 0.5 }, 0.5);
       tl.to(".climb-deck-high", { opacity: 0.22, duration: 0.25 }, 0.75);
 
-      /* ---- the aircraft: rise in, hang in the climb, slip out on top ---- */
-      tl.fromTo(".climb-plane", { yPercent: 130 }, { yPercent: -32, duration: 0.3, ease: "power1.out" }, 0.02)
-        .to(".climb-plane", { yPercent: -58, scale: 0.94, duration: 0.52 }, 0.32)
-        .to(".climb-plane", { yPercent: -190, scale: 0.9, duration: 0.16, ease: "power1.in" }, 0.86);
+      /* ---- the aircraft: in at once, whole and centre-stage, the visual
+             focus of the climb — then it slips out overhead at the top ---- */
+      tl.fromTo(".climb-plane", { yPercent: 112 }, { yPercent: -100, duration: 0.18, ease: "power2.out" }, 0)
+        .to(".climb-plane", { yPercent: -118, scale: 0.95, duration: 0.66 }, 0.18)
+        .to(".climb-plane", { yPercent: -300, scale: 0.9, duration: 0.16, ease: "power1.in" }, 0.84);
       // constant gentle sway — time-based, layered on top of the scrub
       gsap.to(".climb-plane-inner", {
         rotate: 1.6,
@@ -120,8 +121,8 @@ export function JourneyClimb() {
         yoyo: true,
         repeat: -1,
       });
-      // wingtip vortices: visible only in the heart of the climb
-      tl.fromTo(".climb-streak", { opacity: 0 }, { opacity: 0.32, duration: 0.12 }, 0.34);
+      // wingtip vortices: streaming almost the whole climb
+      tl.fromTo(".climb-streak", { opacity: 0 }, { opacity: 0.32, duration: 0.12 }, 0.16);
       tl.to(".climb-streak", { opacity: 0, duration: 0.12 }, 0.78);
 
       /* ---- the four altitude thoughts drift up alongside the aircraft ---- */
@@ -244,7 +245,7 @@ export function JourneyClimb() {
             <div
               key={b.alt}
               className={
-                "climb-beat absolute inset-x-gutter top-[38%] opacity-0 md:inset-x-auto md:max-w-sm " +
+                "climb-beat absolute inset-x-gutter top-[14%] opacity-0 md:top-[38%] md:inset-x-auto md:max-w-sm " +
                 (b.side === "left" ? "md:left-[8%]" : "md:right-[8%] md:text-right")
               }
             >

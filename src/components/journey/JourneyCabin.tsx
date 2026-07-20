@@ -4,7 +4,7 @@ import { useEffect, useRef } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { ensureGsapRegistered } from "@/lib/motion";
-import { JourneyVideo } from "./JourneyVideo";
+import { JourneyFilm } from "./JourneyVideo";
 
 /**
  * Chapter 4 — Life On Board.
@@ -326,18 +326,13 @@ export function JourneyCabin() {
         <BlueprintScan />
       </div>
 
-      {/* the film — life on board, in RwandAir's own footage */}
-      <figure className="relative mx-auto mb-section-md h-[68vh] w-full overflow-hidden">
-        <JourneyVideo id="zvTmK9Eg3Sc" />
-        <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#062a5c] via-transparent to-[#062a5c]/60" />
-        <figcaption className="pointer-events-none absolute inset-x-gutter bottom-10 mx-auto max-w-shell">
-          <span className="mb-4 block text-fluid-xs uppercase tracking-[0.3em] text-gold-300/90">
-            The film — on board
-          </span>
-          <p className="max-w-lg font-display text-fluid-h3 font-light leading-[1.1] tracking-tight text-white">
-            Not just a flight — an experience. Their words, our chapter.
-          </p>
-        </figcaption>
+      {/* the film — life on board, a real player once you press play */}
+      <figure className="mx-auto mb-section-md max-w-shell px-gutter">
+        <JourneyFilm
+          id="zvTmK9Eg3Sc"
+          kicker="The film — on board"
+          line="Not just a flight — an experience. Their words, our chapter."
+        />
       </figure>
 
       {/* pinned horizontal walkthrough */}

@@ -51,6 +51,7 @@ export function JourneyAfrica() {
           end: "bottom bottom",
           scrub: 1,
           pin: ".atlas-stage",
+          pinSpacing: false, // the section's own height reserves the travel
           anticipatePin: 1,
         },
       });

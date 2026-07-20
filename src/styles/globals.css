@@ -31,6 +31,11 @@ html.lenis {
   pointer-events: none;
 }
 
+/* The Journey's film player must stay interactive under Lenis. */
+.lenis.lenis-smooth iframe.journey-player {
+  pointer-events: auto;
+}
+
 body {
   background: #f6f3ec;
   color: #0b1f3a;
