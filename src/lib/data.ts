@@ -57,6 +57,7 @@ export type NavItem = { label: string; href: string; children?: NavChild[] };
 // deep-utility rows, so the demo never hands the viewer to the real site
 // mid-journey.
 export const navLinks: NavItem[] = [
+  { label: "Skyward", href: "/skyward" },
   {
     label: "Book & Travel",
     href: "/#book",
