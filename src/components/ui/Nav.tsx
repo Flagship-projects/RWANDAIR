@@ -6,6 +6,14 @@ import { cn } from "@/lib/cn";
 import { navLinks } from "@/lib/data";
 import { Button } from "./Button";
 
+function Caret({ className }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 10 6" fill="none" className={cn("h-1.5 w-2.5", className)} aria-hidden>
+      <path d="M1 1l4 4 4-4" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
 export function Nav() {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
@@ -36,7 +44,7 @@ export function Nav() {
       )}
 
       <div className="mx-auto flex max-w-shell items-center justify-between px-gutter py-4">
-        <a href="#top" className="focus-ring flex items-center gap-2">
+        <a href="/" className="focus-ring flex items-center gap-2">
           <Image
             src="/assets/brand/logotype.png"
             alt="RwandAir"
@@ -47,20 +55,61 @@ export function Nav() {
           />
         </a>
 
-        <nav className="hidden items-center gap-8 lg:flex">
+        {/* ============ desktop: real IA with hover dropdowns ============ */}
+        <nav className="hidden items-center gap-7 lg:flex">
           {navLinks.map((link) => (
-            <a
-              key={link.label}
-              href={link.href}
-              className="focus-ring text-fluid-xs uppercase tracking-wideish text-ink/70 transition-colors duration-300 hover:text-blue-500"
-            >
-              {link.label}
-            </a>
+            <div key={link.label} className="group relative">
+              <a
+                href={link.href}
+                className="focus-ring flex items-center gap-1.5 py-2 text-fluid-xs uppercase tracking-wideish text-ink/70 transition-colors duration-300 hover:text-blue-500"
+              >
+                {link.label}
+                {link.children && (
+                  <Caret className="text-ink/40 transition-transform duration-300 group-hover:rotate-180 group-hover:text-blue-500" />
+                )}
+              </a>
+
+              {link.children && (
+                <div
+                  className={cn(
+                    "pointer-events-none absolute left-1/2 top-full -translate-x-1/2 pt-3 opacity-0",
+                    "translate-y-1 transition-all duration-300 ease-premium",
+                    "group-hover:pointer-events-auto group-hover:translate-y-0 group-hover:opacity-100",
+                    "group-focus-within:pointer-events-auto group-focus-within:translate-y-0 group-focus-within:opacity-100"
+                  )}
+                >
+                  <div className="min-w-[230px] rounded-2xl border border-line bg-paper/97 p-2 shadow-[0_24px_60px_-20px_rgba(3,26,58,0.25)] backdrop-blur-md">
+                    {link.children.map((child) =>
+                      child.external ? (
+                        <a
+                          key={child.label}
+                          href={child.href}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="focus-ring flex items-center justify-between gap-6 rounded-xl px-4 py-2.5 text-fluid-sm text-ink/70 transition-colors duration-200 hover:bg-paper-dim hover:text-blue-500"
+                        >
+                          {child.label}
+                          <span aria-hidden className="text-fluid-xs text-ink/35">↗</span>
+                        </a>
+                      ) : (
+                        <a
+                          key={child.label}
+                          href={child.href}
+                          className="focus-ring flex items-center rounded-xl px-4 py-2.5 text-fluid-sm text-ink/70 transition-colors duration-200 hover:bg-paper-dim hover:text-blue-500"
+                        >
+                          {child.label}
+                        </a>
+                      )
+                    )}
+                  </div>
+                </div>
+              )}
+            </div>
           ))}
         </nav>
 
         <div className="hidden lg:block">
-          <Button href="#book" variant="outline" className="!px-6 !py-2.5">
+          <Button href="/#book" variant="outline" className="!px-6 !py-2.5">
             Book a flight
           </Button>
         </div>
@@ -88,6 +137,7 @@ export function Nav() {
         </button>
       </div>
 
+      {/* ============ mobile: grouped accordion of the same IA ============ */}
       <div
         className={cn(
           "grid overflow-hidden bg-paper/97 backdrop-blur-md transition-[grid-template-rows] duration-500 ease-premium lg:hidden",
@@ -95,18 +145,35 @@ export function Nav() {
         )}
       >
         <div className="overflow-hidden">
-          <nav className="flex flex-col gap-1 px-gutter pb-8 pt-2">
+          <nav className="flex max-h-[calc(100svh-72px)] flex-col overflow-y-auto px-gutter pb-8 pt-2">
             {navLinks.map((link) => (
-              <a
-                key={link.label}
-                href={link.href}
-                onClick={() => setOpen(false)}
-                className="focus-ring border-b border-line py-4 text-fluid-lg font-display text-ink"
-              >
-                {link.label}
-              </a>
+              <div key={link.label} className="border-b border-line py-4">
+                <a
+                  href={link.href}
+                  onClick={() => setOpen(false)}
+                  className="focus-ring font-display text-fluid-lg text-ink"
+                >
+                  {link.label}
+                </a>
+                {link.children && (
+                  <div className="mt-3 flex flex-col gap-2.5">
+                    {link.children.map((child) => (
+                      <a
+                        key={child.label}
+                        href={child.href}
+                        onClick={() => setOpen(false)}
+                        {...(child.external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+                        className="focus-ring text-fluid-sm text-ink/60 transition-colors hover:text-blue-500"
+                      >
+                        {child.label}
+                        {child.external && <span aria-hidden className="ml-1.5 text-ink/35">↗</span>}
+                      </a>
+                    ))}
+                  </div>
+                )}
+              </div>
             ))}
-            <Button href="#book" variant="primary" className="mt-6 w-full">
+            <Button href="/#book" variant="primary" className="mt-6 w-full">
               Book a flight
             </Button>
           </nav>

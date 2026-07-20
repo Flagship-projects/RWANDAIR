@@ -55,12 +55,13 @@ export function Footer() {
                   <p className="text-fluid-xs font-semibold uppercase tracking-wideish text-ink">{col.title}</p>
                   <ul className="mt-4 space-y-2.5">
                     {col.links.map((l) => (
-                      <li key={l}>
+                      <li key={l.label}>
                         <a
-                          href={l === "Cargo" ? "/cargo" : "#"}
+                          href={l.href}
+                          {...(l.external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
                           className="focus-ring text-fluid-sm text-ink/55 transition-colors hover:text-blue-500"
                         >
-                          {l}
+                          {l.label}
                         </a>
                       </li>
                     ))}

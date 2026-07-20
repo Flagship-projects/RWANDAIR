@@ -113,8 +113,9 @@ export function Hero() {
              all. Every sensation of movement comes from the aircraft and the
              two foreground wisp layers streaming past the lens. --- */
 
-      /* --- the aircraft: a steady left-to-right cruise, gentle climb + bank --- */
-      tl.to(planePathRef.current, { xPercent: 34, yPercent: -6, rotation: -2, scale: 1.02, duration: 1 }, 0);
+      /* --- the aircraft: starts left-of-centre so the cruise crosses the whole
+             frame — a long, readable flight before it clears the right edge --- */
+      tl.to(planePathRef.current, { xPercent: 52, yPercent: -6, rotation: -2, scale: 1.02, duration: 1 }, 0);
 
       /* --- background: subtle zoom only — no x/y drift anywhere --- */
       tl.to(atmosRef.current, { scale: 1.035, duration: 1 }, 0);
@@ -167,7 +168,7 @@ export function Hero() {
           className="absolute inset-0"
           style={{
             background:
-              "radial-gradient(90% 70% at 78% 10%,rgba(255,219,158,0.22) 0%,rgba(255,219,158,0.07) 40%,rgba(255,219,158,0) 68%)",
+              "radial-gradient(90% 70% at 78% 10%,rgba(255,219,158,0.14) 0%,rgba(255,219,158,0.05) 40%,rgba(255,219,158,0) 68%)",
           }}
         />
 
@@ -178,7 +179,7 @@ export function Hero() {
             className="absolute inset-0 mix-blend-screen"
             style={{
               background:
-                "conic-gradient(from 195deg at 50% 40%,rgba(255,255,255,0) 0deg,rgba(255,255,255,0.30) 7deg,rgba(255,255,255,0) 15deg,rgba(255,255,255,0) 28deg,rgba(255,255,255,0.22) 38deg,rgba(255,255,255,0) 48deg,rgba(255,255,255,0) 66deg,rgba(255,255,255,0.26) 80deg,rgba(255,255,255,0) 92deg,rgba(255,255,255,0) 116deg,rgba(255,255,255,0.18) 130deg,rgba(255,255,255,0) 142deg)",
+                "conic-gradient(from 195deg at 50% 40%,rgba(255,255,255,0) 0deg,rgba(255,255,255,0.14) 7deg,rgba(255,255,255,0) 15deg,rgba(255,255,255,0) 28deg,rgba(255,255,255,0.10) 38deg,rgba(255,255,255,0) 48deg,rgba(255,255,255,0) 66deg,rgba(255,255,255,0.12) 80deg,rgba(255,255,255,0) 92deg,rgba(255,255,255,0) 116deg,rgba(255,255,255,0.08) 130deg,rgba(255,255,255,0) 142deg)",
               maskImage: "radial-gradient(circle at 50% 40%,transparent 4%,#000 26%,transparent 82%)",
               WebkitMaskImage: "radial-gradient(circle at 50% 40%,transparent 4%,#000 26%,transparent 82%)",
             }}
@@ -187,15 +188,15 @@ export function Hero() {
             className="absolute inset-0"
             style={{
               background:
-                "radial-gradient(circle at 50% 40%,rgba(255,255,255,0.85) 0%,rgba(255,250,235,0.42) 22%,rgba(255,244,214,0.14) 42%,rgba(255,244,214,0) 62%)",
+                "radial-gradient(circle at 50% 40%,rgba(255,255,255,0.5) 0%,rgba(255,250,235,0.26) 22%,rgba(255,244,214,0.08) 42%,rgba(255,244,214,0) 60%)",
             }}
           />
           <div
             ref={sunCoreRef}
-            className="absolute left-1/2 top-[40%] h-[26vh] w-[26vh] -translate-x-1/2 -translate-y-1/2 rounded-full"
+            className="absolute left-1/2 top-[40%] h-[20vh] w-[20vh] -translate-x-1/2 -translate-y-1/2 rounded-full"
             style={{
               background:
-                "radial-gradient(circle at 50% 50%,rgba(255,255,255,0.98) 0%,rgba(255,252,240,0.7) 38%,rgba(255,246,220,0) 72%)",
+                "radial-gradient(circle at 50% 50%,rgba(255,255,255,0.75) 0%,rgba(255,252,240,0.45) 36%,rgba(255,246,220,0) 70%)",
             }}
           />
         </div>
@@ -223,7 +224,7 @@ export function Hero() {
       {/* ================= the aircraft (real RwandAir livery) ================= */}
       <div ref={planePathRef} className="absolute inset-0 z-[5] will-change-transform">
         <div ref={planeIntroRef} className="absolute inset-0 opacity-0 will-change-transform">
-          <div ref={planeBobRef} className="absolute left-[8%] top-[24%] aspect-[3520/1125] w-[76vw] max-w-[640px] will-change-transform sm:left-[38%] sm:top-[20%] sm:w-[54vw]">
+          <div ref={planeBobRef} className="absolute left-[4%] top-[24%] aspect-[3520/1125] w-[76vw] max-w-[640px] will-change-transform sm:left-[16%] sm:top-[20%] sm:w-[54vw]">
             {/* whisper of haze so the jet reads against the bright sky — kept
                 faint and tight so it never shows as a dark smudge on the clouds */}
             <div

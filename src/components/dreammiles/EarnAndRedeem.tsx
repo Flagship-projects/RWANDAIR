@@ -56,7 +56,7 @@ export function EarnAndRedeem() {
   }, []);
 
   return (
-    <section ref={rootRef} className="bg-paper py-section-lg">
+    <section ref={rootRef} id="earn" className="bg-paper py-section-lg">
       <div className="mx-auto max-w-shell px-gutter">
         <div className="grid gap-16 lg:grid-cols-2 lg:gap-24">
           <Column label="Earning" title="Miles add up faster than you'd think" items={milesEarn} />

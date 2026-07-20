@@ -49,12 +49,60 @@ export const destinations: Destination[] = [
   { city: "Doha", country: "Qatar", code: "DOH", region: "Middle East", lat: 25.2609, lon: 51.6138 },
 ];
 
-export const navLinks = [
-  { label: "Book & Travel", href: "#book" },
-  { label: "Destinations & Offers", href: "#destinations" },
-  { label: "Experience & Info", href: "#experience" },
-  { label: "Loyalty", href: "#loyalty" },
-  { label: "Holidays", href: "#holidays" },
+export type NavChild = { label: string; href: string; external?: boolean };
+export type NavItem = { label: string; href: string; children?: NavChild[] };
+
+// Mirrors rwandair.com's real information architecture. Every dropdown item
+// points at a page WE built — external links are reserved for the footer's
+// deep-utility rows, so the demo never hands the viewer to the real site
+// mid-journey.
+export const navLinks: NavItem[] = [
+  {
+    label: "Book & Travel",
+    href: "/#book",
+    children: [
+      { label: "Search & book", href: "/#book" },
+      { label: "Manage my booking", href: "/#book" },
+      { label: "Check-in", href: "/#book" },
+      { label: "Travel services", href: "/services" },
+    ],
+  },
+  {
+    label: "Destinations & Offers",
+    href: "/destinations",
+    children: [
+      { label: "The route network", href: "/destinations" },
+      { label: "Flight schedule", href: "/#book" },
+      { label: "Kigali Stopover", href: "/stopover" },
+    ],
+  },
+  {
+    label: "Experience & Info",
+    href: "/experience",
+    children: [
+      { label: "On board", href: "/experience#onboard" },
+      { label: "The fleet", href: "/experience#fleet" },
+      { label: "Before you fly", href: "/experience#before-you-fly" },
+      { label: "Cargo", href: "/cargo" },
+    ],
+  },
+  {
+    label: "Loyalty",
+    href: "/dreammiles",
+    children: [
+      { label: "About DreamMiles", href: "/dreammiles" },
+      { label: "Tiers & benefits", href: "/dreammiles#tiers" },
+      { label: "Earn & redeem", href: "/dreammiles#earn" },
+    ],
+  },
+  {
+    label: "Holidays",
+    href: "/stopover",
+    children: [
+      { label: "Kigali Stopover", href: "/stopover" },
+      { label: "Visit Rwanda", href: "https://visitrwanda.com", external: true },
+    ],
+  },
 ];
 
 export const fleet = [
@@ -301,32 +349,77 @@ export const milesRedeem = [
   { label: "Lounge access", detail: "Buy entry to the Pearl Lounge in Kigali for you and a guest." },
 ];
 
+export type FooterLink = { label: string; href: string; external?: boolean };
+
 // Grouped into three balanced columns (each stacking 2-3 sections), mirroring
 // rwandair.com's real footer so no column wraps or dangles alone.
-export const footerColumnGroups: { title: string; links: string[] }[][] = [
+// Links point at our pages where we built them; deep-utility rows go to the
+// real rwandair.com URLs (verified live) — nobody clicks Webmail in a demo,
+// but real obligations signal a real airline.
+export const footerColumnGroups: { title: string; links: FooterLink[] }[][] = [
   [
-    { title: "About us", links: ["Who we are", "Fleet"] },
-    { title: "Business solutions", links: ["Cargo", "Cargo Tracking"] },
-    { title: "Internal Links", links: ["Webmail", "Q-pulse"] },
-  ],
-  [
-    { title: "Media Center", links: ["Inzozi", "Newsroom", "Gallery", "Travel alerts"] },
     {
-      title: "Our policies",
+      title: "About us",
       links: [
-        "Terms & Conditions of carriage",
-        "Terms & Conditions of use",
-        "Private & Cookie Policy",
-        "Terms & Conditions for Online Payment",
-        "General rules for the US market",
-        "ADM Policy",
-        "GESE Policy",
+        { label: "Who we are", href: "https://www.rwandair.com/about-us/who-we-are-n/", external: true },
+        { label: "Fleet", href: "/experience#fleet" },
+      ],
+    },
+    {
+      title: "Business solutions",
+      links: [
+        { label: "Cargo", href: "/cargo" },
+        { label: "Cargo Tracking", href: "https://www.rwandair.com/business-solutions/cargo-tracking/", external: true },
+      ],
+    },
+    {
+      title: "Internal Links",
+      links: [
+        { label: "Webmail", href: "https://mail.rwandair.com/owa/", external: true },
+        { label: "Q-pulse", href: "https://q-pulse-svr.rwandair.com:2444/qpulse", external: true },
       ],
     },
   ],
   [
-    { title: "Connect with us", links: ["Careers", "Contact us", "Tenders"] },
-    { title: "External links", links: ["Immigration and Emigration", "Rwanda Development Board", "Visit Rwanda"] },
+    {
+      title: "Media Center",
+      links: [
+        { label: "Inzozi", href: "https://www.rwandair.com/media-center/inzozi-magazine/", external: true },
+        { label: "Newsroom", href: "https://www.rwandair.com/media-center/newsroom/", external: true },
+        { label: "Gallery", href: "https://www.rwandair.com/media-center/gallery/", external: true },
+        { label: "Travel alerts", href: "https://www.rwandair.com/media-center/travel-alerts/", external: true },
+      ],
+    },
+    {
+      title: "Our policies",
+      links: [
+        { label: "Terms & Conditions of carriage", href: "https://www.rwandair.com/our-policies/terms-conditions-of-carriage/", external: true },
+        { label: "Terms & Conditions of use", href: "https://www.rwandair.com/our-policies/terms-conditions-of-use/", external: true },
+        { label: "Private & Cookie Policy", href: "https://www.rwandair.com/our-policies/privacy-policy/", external: true },
+        { label: "Terms & Conditions for Online Payment", href: "https://www.rwandair.com/our-policies/terms-conditions-for-online-payment/", external: true },
+        { label: "General rules for the US market", href: "https://www.rwandair.com/wp-content/uploads/2021/12/WB-WB1.pdf", external: true },
+        { label: "ADM Policy", href: "https://www.rwandair.com/wp-content/uploads/2021/07/ADM-POLICY.pdf", external: true },
+        { label: "GESE Policy", href: "https://www.rwandair.com/our-policies/guest-experience-and-service-excellence-policy/", external: true },
+      ],
+    },
+  ],
+  [
+    {
+      title: "Connect with us",
+      links: [
+        { label: "Careers", href: "https://www.rwandair.com/connect-with-us/careers/", external: true },
+        { label: "Contact us", href: "https://www.rwandair.com/connect-with-us/contact-us/", external: true },
+        { label: "Tenders", href: "https://www.rwandair.com/connect-with-us/tenders/", external: true },
+      ],
+    },
+    {
+      title: "External links",
+      links: [
+        { label: "Immigration and Emigration", href: "https://www.migration.gov.rw/", external: true },
+        { label: "Rwanda Development Board", href: "https://rdb.rw/", external: true },
+        { label: "Visit Rwanda", href: "https://visitrwanda.com", external: true },
+      ],
+    },
   ],
 ];
 
