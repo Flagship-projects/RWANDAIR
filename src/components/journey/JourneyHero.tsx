@@ -8,15 +8,16 @@ import { ensureGsapRegistered } from "@/lib/motion";
 /**
  * Chapter 1 — The Dream.
  *
- * Every journey begins the moment you let yourself imagine it. A clean brand-blue
- * sky falling to a warm horizon; a real cumulus deck banked along the bottom (a
- * photographic, true-alpha cloud — no cut-out edges), the aircraft banking in
- * high and to the side so it never fights the type. The headline holds the
- * centre with clear air around it. On scroll the deck sinks, the plane climbs
- * away, and the frame dissolves into the deep blue of Chapter 2.
+ * A centred, symmetrical opening: eyebrow, headline, one line of copy and a
+ * single quiet pill, with the A330 laid broadside across the full width of the
+ * frame beneath them and mirrored into a soft reflection. Clean brand-blue sky
+ * falling to a warm horizon; one real cumulus deck for depth. The moment you
+ * start scrolling the aircraft leaves — it accelerates to the right, lifts and
+ * grows past the lens while the copy sinks away and the frame dissolves into
+ * the deep blue of Chapter 2.
  */
 const CLOUD = "/assets/sky/cloud-real.png";
-const PLANE = "/assets/aircraft/takeoff-cutout.png";
+const PLANE = "/assets/aircraft/rwandair-transparent.png";
 
 export function JourneyHero() {
   const rootRef = useRef<HTMLDivElement>(null);
@@ -35,17 +36,19 @@ export function JourneyHero() {
         const tl = gsap.timeline({ defaults: { ease: "power3.out" } });
         tl.from(".dream-sun", { opacity: 0, scale: 0.85, duration: 2.2 }, 0)
           .from(".dream-cloud", { opacity: 0, yPercent: 24, duration: 2.4, stagger: 0.2, ease: "power2.out" }, 0.1)
+          .from(".dream-line", { yPercent: 120, duration: 1.2, ease: "power4.out", stagger: 0.12 }, 0.45)
+          .from(".dream-eyebrow", { opacity: 0, y: 16, duration: 1 }, 0.3)
+          .from(".dream-sub, .dream-cta", { opacity: 0, y: 16, duration: 1, stagger: 0.14 }, 1.05)
+          // the aircraft taxis in broadside, low and unhurried
           .from(
             ".dream-plane",
-            { xPercent: -30, yPercent: 20, opacity: 0, rotate: 7, duration: 2.6, ease: "power2.out" },
-            0.5
+            { xPercent: -22, opacity: 0, duration: 2.8, ease: "power2.out" },
+            0.9
           )
-          .from(".dream-line", { yPercent: 120, duration: 1.2, ease: "power4.out", stagger: 0.12 }, 0.95)
-          .from(".dream-eyebrow", { opacity: 0, y: 16, duration: 1 }, 0.8)
-          .from(".dream-sub, .dream-cue", { opacity: 0, y: 16, duration: 1, stagger: 0.16 }, 1.7);
+          .from(".dream-cue", { opacity: 0, y: 16, duration: 1 }, 2.1);
 
-        // idle life
-        gsap.to(".dream-plane", { yPercent: "+=2.4", rotate: "+=1", duration: 6.5, ease: "sine.inOut", yoyo: true, repeat: -1 });
+        // idle life — the aircraft breathes on its own axis, not the scroll axis
+        gsap.to(".dream-plane-float", { yPercent: -1.6, duration: 6.5, ease: "sine.inOut", yoyo: true, repeat: -1 });
         q<HTMLElement>(".dream-cloud").forEach((el, i) => {
           gsap.to(el, { xPercent: i % 2 ? 3 : -2.4, duration: 30 + i * 8, ease: "sine.inOut", yoyo: true, repeat: -1 });
         });
@@ -72,7 +75,10 @@ export function JourneyHero() {
       const tl = gsap.timeline({ scrollTrigger: { trigger: root, start: "top top", end: "bottom top", scrub: 1 } });
       tl.to(".dream-deck", { yPercent: 26, ease: "none" }, 0)
         .to(".dream-near", { yPercent: 60, ease: "none" }, 0)
-        .to(".dream-plane", { yPercent: -58, xPercent: 22, scale: 1.14, ease: "none" }, 0)
+        // the departure: it rolls, rotates, lifts away to the right and past the lens
+        .to(".dream-plane", { xPercent: 46, yPercent: -34, scale: 1.22, duration: 0.85, ease: "power1.in" }, 0)
+        .to(".dream-plane-tilt", { rotate: -7, duration: 0.85, ease: "power2.in" }, 0)
+        .to(".dream-reflection", { opacity: 0, ease: "none" }, 0)
         .to(".dream-copy", { yPercent: -32, opacity: 0, ease: "none" }, 0)
         .to(".dream-dawn", { opacity: 0, ease: "none" }, 0.3)
         .to(".dream-dusk", { opacity: 1, ease: "none" }, 0.5);
@@ -114,18 +120,37 @@ export function JourneyHero() {
           aria-hidden
         />
 
-        {/* the aircraft — high and to the side, clear of the type */}
+        {/* the aircraft — broadside across the full width, sitting under the type */}
+        {/* anchor carries the centring translate; GSAP only ever touches the
+            inner layers, since an xPercent tween would overwrite it */}
         <div
-          className="dream-plane absolute left-[68%] top-[30%] w-[clamp(280px,42vw,720px)] -translate-x-1/2 -translate-y-1/2"
-          data-depth="1.5"
+          className="absolute left-1/2 top-[76%] z-[7] w-[min(1380px,112vw)] -translate-x-1/2 -translate-y-1/2"
           aria-hidden
         >
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src={PLANE}
-            alt="A RwandAir Airbus A330 banking into a dawn sky"
-            className="w-full drop-shadow-[0_40px_80px_rgba(6,26,58,0.4)]"
-          />
+          <div className="dream-plane" data-depth="1.2">
+            <div className="dream-plane-float">
+              <div className="dream-plane-tilt relative origin-center">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={PLANE}
+                  alt="A RwandAir Airbus A330 in profile"
+                  className="w-full drop-shadow-[0_60px_90px_rgba(6,26,58,0.38)]"
+                />
+                {/* mirrored reflection, dissolving downward */}
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={PLANE}
+                  alt=""
+                  className="dream-reflection absolute inset-x-0 top-[92%] w-full -scale-y-100 opacity-20 blur-[2px]"
+                  style={{
+                    maskImage: "linear-gradient(to top,transparent 10%,rgba(0,0,0,0.5) 60%,#000 100%)",
+                    WebkitMaskImage:
+                      "linear-gradient(to top,transparent 10%,rgba(0,0,0,0.5) 60%,#000 100%)",
+                  }}
+                />
+              </div>
+            </div>
+          </div>
         </div>
 
         {/* real cumulus deck banked along the bottom (photographic alpha) */}
@@ -164,12 +189,12 @@ export function JourneyHero() {
           aria-hidden
         />
 
-        {/* copy — left-anchored, generous air */}
-        <div className="dream-copy absolute inset-0 z-[10] mx-auto flex max-w-shell flex-col justify-center px-gutter">
+        {/* copy — centred, sitting above the aircraft */}
+        <div className="dream-copy absolute inset-x-0 top-[7%] z-[10] mx-auto flex max-w-shell flex-col items-center px-gutter text-center">
           <p className="dream-eyebrow mb-6 text-fluid-xs uppercase tracking-[0.34em] text-white/85 drop-shadow-[0_1px_16px_rgba(7,34,72,0.55)]">
             RwandAir — one journey, seven chapters
           </p>
-          <h1 className="max-w-4xl font-display text-fluid-display font-light leading-[0.9] tracking-tightest text-white drop-shadow-[0_4px_44px_rgba(7,34,72,0.45)]">
+          <h1 className="max-w-5xl font-display text-fluid-h1 font-light leading-[0.92] tracking-tightest text-white drop-shadow-[0_4px_44px_rgba(7,34,72,0.45)]">
             <span className="reveal-mask block">
               <span className="dream-line block">Every journey</span>
             </span>
@@ -179,10 +204,16 @@ export function JourneyHero() {
               </span>
             </span>
           </h1>
-          <p className="dream-sub mt-8 max-w-md text-fluid-lg font-light leading-relaxed text-white/85 drop-shadow-[0_1px_16px_rgba(7,34,72,0.55)]">
+          <p className="dream-sub mt-7 max-w-lg text-fluid-lg font-light leading-relaxed text-white/85 drop-shadow-[0_1px_16px_rgba(7,34,72,0.55)]">
             Come travel one with us — from the first flutter of anticipation to
             the moment the wheels touch home.
           </p>
+          <a
+            href="#journey-1"
+            className="dream-cta mt-9 inline-flex items-center rounded-full border border-white/45 px-8 py-3 text-fluid-sm uppercase tracking-[0.22em] text-white backdrop-blur-sm transition-all duration-500 ease-premium hover:border-white hover:bg-white hover:text-blue-700"
+          >
+            Begin the journey
+          </a>
         </div>
 
         {/* scroll cue */}
