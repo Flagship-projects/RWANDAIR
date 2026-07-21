@@ -133,19 +133,19 @@ export function JourneyPrologue() {
           className="absolute inset-0"
           style={{
             background:
-              "linear-gradient(180deg,rgba(4,18,43,0.66) 0%,rgba(4,18,43,0.3) 24%,rgba(4,18,43,0.46) 58%,rgba(4,18,43,0.88) 100%)",
+              "linear-gradient(180deg,rgba(4,18,43,0.5) 0%,rgba(4,18,43,0.12) 26%,rgba(4,18,43,0.24) 58%,rgba(4,18,43,0.72) 100%)",
           }}
         />
         {/* lens vignette */}
         <div
           className="absolute inset-0"
-          style={{ background: "radial-gradient(120% 84% at 50% 46%,transparent 38%,rgba(3,14,34,0.6) 100%)" }}
+          style={{ background: "radial-gradient(120% 84% at 50% 46%,transparent 44%,rgba(3,14,34,0.4) 100%)" }}
         />
-        {/* a soft pool of shade under the title card — the footage is bright,
-            daylit and busy, and the type has to hold on every frame of it */}
+        {/* a whisper of shade under the title card — just enough for the type to
+            hold on the brightest frames, without greying out the footage */}
         <div
           className="absolute inset-0"
-          style={{ background: "radial-gradient(58% 44% at 50% 44%,rgba(3,13,32,0.5) 0%,rgba(3,13,32,0.24) 52%,transparent 78%)" }}
+          style={{ background: "radial-gradient(56% 42% at 50% 44%,rgba(3,13,32,0.28) 0%,rgba(3,13,32,0.12) 54%,transparent 78%)" }}
         />
         {/* one drifting bloom — the only light that moves */}
         <div
@@ -160,13 +160,13 @@ export function JourneyPrologue() {
       {/* ---------------- the title card ---------------- */}
       {/* pb keeps the title card clear of the scroll cue on short viewports */}
       <div className="pro-content absolute inset-0 z-10 flex flex-col items-center justify-center px-gutter pb-[13vh] text-center">
-        <p className="pro-eyebrow mb-8 text-fluid-xs uppercase tracking-[0.4em] text-white/70">
+        <p className="pro-eyebrow mb-8 text-fluid-xs uppercase tracking-[0.4em] text-white/75 drop-shadow-[0_1px_14px_rgba(3,13,32,0.7)]">
           RwandAir presents
         </p>
 
         {/* display scale only once there's width for it — at 375px it wraps to
             four lines and swallows the frame */}
-        <h1 className="max-w-5xl font-display text-fluid-h1 font-light leading-[0.94] tracking-tightest text-white md:text-fluid-display md:leading-[0.92]">
+        <h1 className="max-w-5xl font-display text-fluid-h1 font-light leading-[0.94] tracking-tightest text-white drop-shadow-[0_2px_30px_rgba(3,13,32,0.6)] md:text-fluid-display md:leading-[0.92]">
           <span className="reveal-mask block overflow-hidden">
             <span className="pro-line block">Some journeys</span>
           </span>
@@ -177,7 +177,7 @@ export function JourneyPrologue() {
           </span>
         </h1>
 
-        <p className="pro-sub mt-10 max-w-xl text-fluid-lg font-light leading-relaxed text-white/80">
+        <p className="pro-sub mt-10 max-w-xl text-fluid-lg font-light leading-relaxed text-white/85 drop-shadow-[0_1px_18px_rgba(3,13,32,0.7)]">
           Seven chapters, one flight — from the first flutter of anticipation to
           the moment the wheels touch home.
         </p>
