@@ -5,6 +5,7 @@ import { Footer } from "@/components/home/Footer";
 import { JourneyChrome } from "@/components/journey/JourneyChrome";
 import { JourneyPrologue } from "@/components/journey/JourneyPrologue";
 import { JourneyHero } from "@/components/journey/JourneyHero";
+import { JourneyTaxi } from "@/components/journey/JourneyTaxi";
 import { JourneyDeparture } from "@/components/journey/JourneyDeparture";
 import { JourneyClimb } from "@/components/journey/JourneyClimb";
 import { JourneyCabin } from "@/components/journey/JourneyCabin";
@@ -42,6 +43,9 @@ export default function JourneyPage() {
             system; delete this one line to fall back to the original opening. */}
         <JourneyPrologue />
         <JourneyHero />
+        {/* EXPERIMENTAL — the studio-floor taxi scene, also outside the chapter
+            system. Sitting here for review; move or delete freely. */}
+        <JourneyTaxi />
         <JourneyDeparture />
         <JourneyClimb />
         <JourneyCabin />

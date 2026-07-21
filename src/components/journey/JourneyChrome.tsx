@@ -43,13 +43,18 @@ export function JourneyChrome() {
     window.addEventListener("scroll", onScroll, { passive: true });
 
     // active chapter + chrome tint, driven by whichever chapter owns the middle band
-    const sections = Array.from(document.querySelectorAll<HTMLElement>("[data-journey-chapter]"));
+    // chapters, plus any standalone scene that only needs to set the chrome tint
+    // (the experimental light sections carry data-journey-light but no chapter
+    // index — they must not move the counter)
+    const sections = Array.from(
+      document.querySelectorAll<HTMLElement>("[data-journey-chapter], [data-journey-light]")
+    );
     const io = new IntersectionObserver(
       (entries) => {
         entries.forEach((e) => {
           if (!e.isIntersecting) return;
-          const i = Number(e.target.getAttribute("data-journey-chapter"));
-          setActive(i);
+          const chapter = e.target.getAttribute("data-journey-chapter");
+          if (chapter !== null) setActive(Number(chapter));
           setDark(e.target.getAttribute("data-journey-light") !== "true");
         });
       },
