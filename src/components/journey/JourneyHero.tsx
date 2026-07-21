@@ -124,7 +124,7 @@ export function JourneyHero() {
         {/* anchor carries the centring translate; GSAP only ever touches the
             inner layers, since an xPercent tween would overwrite it */}
         <div
-          className="absolute left-1/2 top-[76%] z-[7] w-[min(1380px,112vw)] -translate-x-1/2 -translate-y-1/2"
+          className="absolute left-1/2 top-[72%] z-[7] w-[min(1180px,104vw)] -translate-x-1/2 -translate-y-1/2"
           aria-hidden
         >
           <div className="dream-plane" data-depth="1.2">
