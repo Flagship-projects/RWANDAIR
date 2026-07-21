@@ -10,7 +10,7 @@ export const JOURNEY_CHAPTERS = [
   "Anticipation",
   "The Climb",
   "Life On Board",
-  "The Window",
+  "First Light",
   "Where Journeys Lead",
   "Arrival",
 ];

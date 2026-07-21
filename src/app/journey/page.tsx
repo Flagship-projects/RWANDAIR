@@ -7,7 +7,7 @@ import { JourneyHero } from "@/components/journey/JourneyHero";
 import { JourneyDeparture } from "@/components/journey/JourneyDeparture";
 import { JourneyClimb } from "@/components/journey/JourneyClimb";
 import { JourneyCabin } from "@/components/journey/JourneyCabin";
-import { JourneyWindow } from "@/components/journey/JourneyWindow";
+import { JourneyDaybreak } from "@/components/journey/JourneyDaybreak";
 import { JourneyAfrica } from "@/components/journey/JourneyAfrica";
 import { JourneyArrival } from "@/components/journey/JourneyArrival";
 
@@ -25,7 +25,7 @@ import { JourneyArrival } from "@/components/journey/JourneyArrival";
  *   2  Anticipation         the charged quiet before departure
  *   3  The Climb            the ascent, felt: the aircraft climbs as you scroll
  *   4  Life On Board        the machine revealed, then lived in
- *   5  The Window           one held, wordless moment at the glass
+  *   5  First Light           the overnight hours, told as one sunrise
  *   6  Where Journeys Lead  the continent, revealed like weather
  *   7  Arrival              the descent, and the way back home
  */
@@ -40,7 +40,7 @@ export default function JourneyPage() {
         <JourneyDeparture />
         <JourneyClimb />
         <JourneyCabin />
-        <JourneyWindow />
+        <JourneyDaybreak />
         <JourneyAfrica />
         <JourneyArrival />
       </main>

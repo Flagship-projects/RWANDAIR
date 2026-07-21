@@ -4,7 +4,7 @@ import { useEffect, useRef } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { ensureGsapRegistered } from "@/lib/motion";
-import { WINDOW_EXIT_SKY } from "./JourneyWindow";
+import { DAYBREAK_EXIT_SKY } from "./JourneyDaybreak";
 
 /**
  * Chapter 6 — Africa From Above.
@@ -58,9 +58,9 @@ export function JourneyAfrica() {
         },
       });
 
-      // the sky inherited from the window fly-through dissolves into the first
-      // destination — the landing of one continuous camera move, not a cut
-      tl.to(".atlas-veil", { opacity: 0, duration: step * 0.55 }, 0.01);
+      // the morning sky inherited from First Light dissolves into the first
+      // destination — daybreak resolving into land, not a cut
+      tl.to(".atlas-veil", { opacity: 0, duration: step * 0.22 }, 0);
 
       slides.forEach((slide, i) => {
         const img = slide.querySelector(".atlas-img");
@@ -102,7 +102,7 @@ export function JourneyAfrica() {
       id="journey-5"
       data-journey-chapter="5"
       className="relative"
-      style={{ height: `${PLACES.length * 100}vh`, background: WINDOW_EXIT_SKY }}
+      style={{ height: `${PLACES.length * 100}vh`, background: DAYBREAK_EXIT_SKY }}
     >
       <div className="atlas-stage relative h-[100svh] overflow-hidden">
         {PLACES.map((p) => (
@@ -131,8 +131,8 @@ export function JourneyAfrica() {
           </div>
         ))}
 
-        {/* the sky carried over from the window — fades as the first place appears */}
-        <div className="atlas-veil pointer-events-none absolute inset-0 z-[15]" style={{ background: WINDOW_EXIT_SKY }} aria-hidden />
+        {/* the sky carried over from First Light — fades as the first place appears */}
+        <div className="atlas-veil pointer-events-none absolute inset-0 z-[15]" style={{ background: DAYBREAK_EXIT_SKY }} aria-hidden />
 
         {/* fixed chapter marker + region rail */}
         <p className="pointer-events-none absolute left-gutter top-[13%] z-10 text-fluid-xs uppercase tracking-[0.32em] text-white/50">
