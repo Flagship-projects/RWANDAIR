@@ -226,6 +226,29 @@ export function JourneyHero() {
       </div>
 
       <style jsx>{`
+        /* Landscape phones / short windows: the centred title stack is taller
+           than the viewport and the CTA lands on top of the scroll cue. Tighten
+           the rhythm, lift the block, drop the cue. */
+        @media (max-height: 560px) {
+          .dream-copy {
+            top: 3% !important;
+          }
+          .dream-eyebrow {
+            margin-bottom: 0.6rem !important;
+          }
+          .dream-sub {
+            margin-top: 0.9rem !important;
+          }
+          .dream-cta {
+            margin-top: 1rem !important;
+            padding-top: 0.55rem !important;
+            padding-bottom: 0.55rem !important;
+          }
+          .dream-cue {
+            display: none !important;
+          }
+        }
+
         @keyframes cueDrop {
           0% {
             transform: translateY(-100%);

@@ -214,6 +214,31 @@ export function JourneyPrologue() {
       />
 
       <style jsx>{`
+        /* Landscape phones (and short windows): the title card is taller than the
+           viewport, so the CTA collides with the scroll cue. Tighten the rhythm
+           and drop the cue — on a 390px-tall screen the scroll affordance is
+           obvious anyway. !important because these compete with Tailwind
+           utilities of equal specificity. */
+        @media (max-height: 560px) {
+          .pro-content {
+            padding-bottom: 0 !important;
+          }
+          .pro-eyebrow {
+            margin-bottom: 0.75rem !important;
+          }
+          .pro-sub {
+            margin-top: 1rem !important;
+          }
+          .pro-cta {
+            margin-top: 1.25rem !important;
+            padding-top: 0.6rem !important;
+            padding-bottom: 0.6rem !important;
+          }
+          .pro-cue {
+            display: none !important;
+          }
+        }
+
         @keyframes proCue {
           0% {
             transform: translateY(-120%);

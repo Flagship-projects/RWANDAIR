@@ -23,19 +23,27 @@ import { ensureGsapRegistered } from "@/lib/motion";
  * featureless floor can carry the plane across it with no parallax tell.
  */
 /**
- * Derived from the supplied `side view plane.png`, processed once (in-browser,
- * canvas) and committed as an asset:
- *  - cropped to y 180–600 of the original, which drops the empty cyc above the
- *    tail AND the decorative sparkle sitting in the source's bottom-right
- *    corner (it was visible in the composite);
+ * Derived from the supplied `Rwandair High res.png` (3168×1344), processed once
+ * (in-browser, canvas) and committed as an asset:
+ *  - cropped to y 160–1150 of the original, dropping the empty cyc above the
+ *    tail and the dead floor below the shadow;
  *  - flat-fielded — the studio backdrop is modelled per column as a vertical
  *    lerp between the crop's top and bottom rows (both clean backdrop) and
  *    divided out, so the cyc becomes pure #fff while the livery and the contact
  *    shadow keep their relative values.
  * Pure white is what makes `multiply` seamless: white leaves the section's own
  * gradient untouched, so the plate has no edge left to give itself away.
+ *
+ * Delivered at 2400×750 as JPEG (146KB): the plate is opaque by design — the
+ * blend mode, not an alpha channel, does the compositing — so PNG's lossless
+ * cost buys nothing here (the same frame as PNG is 1.6MB).
  */
-const PLANE = "/assets/aircraft/side-view-floor-clean.png";
+const PLANE = "/assets/aircraft/side-view-floor-clean.jpg";
+
+/** Plate geometry. The processed asset is 2400×750; its rendered width lives in
+ *  the `--plate-w` custom property (set responsively below) so the width and the
+ *  two calc() offsets that centre it can never drift apart. */
+const PLATE_RATIO = 750 / 2400;
 
 /** Sampled from the plate itself so the composite has nothing to seam against. */
 const STUDIO_TOP = "#fcfcfe";
@@ -106,14 +114,22 @@ export function JourneyTaxi() {
             It cannot be split into wrapper + inner: a transform on the wrapper
             opens a stacking context, which isolates mix-blend-mode so the child
             has nothing to multiply against and the plate renders as a white box.
-            Centring therefore uses the standalone `translate` property: GSAP
-            folds it into its own matrix baseline on first write (then sets
-            `translate:none`), so the -50%/-50% survives instead of being wiped
-            the way Tailwind's `-translate-x-1/2` transform utility would be. */}
+            So centring uses NO transform at all — plain `calc()` offsets, which
+            leaves the transform channel exclusively to GSAP's scroll tween.
+            (Tailwind's -translate-x-1/2 gets wiped by an xPercent tween; the
+            standalone `translate` property survives it, but only ships in Chrome
+            104+ / Safari 14.1+ and this scene shouldn't need that.) The vertical
+            offset does by hand what translateY(-50%) would, using the plate's
+            own aspect ratio. */}
         <div
-            className="taxi-plane absolute left-1/2 top-[54%] w-[min(1240px,124vw)] will-change-transform"
+            className="taxi-plane absolute will-change-transform"
             style={{
-              translate: "-50% -50%",
+              width: "var(--plate-w)",
+              left: "calc(50% - var(--plate-w) / 2)",
+              // --plate-y is where the aircraft's centreline sits; both it and
+              // --plate-w are retuned per breakpoint below, and this calc simply
+              // follows them
+              top: `calc(var(--plate-y) - var(--plate-w) * ${PLATE_RATIO / 2})`,
               mixBlendMode: "multiply",
               // a 1% feather on the outer columns — cheap insurance against any
               // residual edge from the flat-field, without touching the tail or
@@ -145,6 +161,33 @@ export function JourneyTaxi() {
           </h2>
         </div>
       </div>
+
+      <style jsx>{`
+        .taxi-plane {
+          --plate-w: min(1240px, 124vw);
+          --plate-y: 47%;
+        }
+        /* on a narrow portrait screen a frame-width aircraft reads as a toy in a
+           big empty room — go past the edges instead, so what crosses the screen
+           is fuselage at scale */
+        @media (max-width: 767px) {
+          .taxi-plane {
+            --plate-w: 215vw;
+          }
+        }
+        /* landscape phones / short windows: at full width the plate fills the
+           frame top to bottom and the type ends up on the fuselage. Shrink it
+           and lift the centreline so the floor — and the copy — keep their air. */
+        @media (max-height: 560px) {
+          .taxi-plane {
+            --plate-w: 86vw;
+            --plate-y: 40%;
+          }
+          .taxi-copy {
+            bottom: 5% !important;
+          }
+        }
+      `}</style>
     </section>
   );
 }
