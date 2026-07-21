@@ -331,7 +331,11 @@ export function FlightSearch() {
   }
 
   return (
-    <section id="book" className="relative z-20 -mt-24 px-gutter sm:-mt-20">
+    // Pulled hard up into the hero's floor: booking is the primary action, so
+    // the panel should read as the hero's own footer rather than as the next
+    // section down. The hero's last frame is empty studio floor, which is
+    // exactly what the card wants to sit on.
+    <section id="book" className="relative z-20 -mt-[38svh] px-gutter sm:-mt-[34svh]">
       <datalist id="ra-cities">
         {cities.map((c) => (
           <option key={c} value={c} />

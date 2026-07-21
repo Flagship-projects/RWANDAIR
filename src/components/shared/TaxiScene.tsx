@@ -77,6 +77,7 @@ export function TaxiScene({
 }: TaxiSceneProps) {
   const rootRef = useRef<HTMLElement>(null);
   const Heading = as;
+  const hero = variant === "hero";
 
   useEffect(() => {
     ensureGsapRegistered();
@@ -89,6 +90,20 @@ export function TaxiScene({
         gsap.set(".taxi-plane", { xPercent: 0 });
         gsap.set(".taxi-copy", { opacity: 1, y: 0 });
         return;
+      }
+
+      // A hero must be legible the instant the page arrives, so its type plays
+      // an intro on load and then simply holds. (The Journey scene instead
+      // reveals its line mid-roll, which is a narrative beat, not a headline.)
+      if (hero) {
+        gsap
+          .timeline({ defaults: { ease: "power3.out" } })
+          .from(".taxi-plane", { xPercent: -8, opacity: 0, duration: 1.6, ease: "power2.out" }, 0)
+          .from(".taxi-rule", { scaleX: 0, duration: 1.1 }, 0.25)
+          .from(".taxi-eyebrow", { opacity: 0, y: 12, duration: 0.9 }, 0.3)
+          .from(".taxi-head-line", { yPercent: 115, duration: 1.2, ease: "power4.out", stagger: 0.09 }, 0.4)
+          .from(".taxi-body", { opacity: 0, y: 16, duration: 0.9 }, 0.85)
+          .from(".taxi-actions", { opacity: 0, y: 16, duration: 0.9 }, 1);
       }
 
       const tl = gsap.timeline({
@@ -108,13 +123,22 @@ export function TaxiScene({
       // linear on purpose — an eased taxi reads as a slide, not as weight.
       tl.fromTo(".taxi-plane", { xPercent: -62 }, { xPercent: 62, duration: 1 }, 0);
 
-      // the type holds the middle of the move, then clears out
-      tl.fromTo(".taxi-copy", { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: 0.14, ease: "power2.out" }, 0.16);
-      tl.to(".taxi-copy", { opacity: 0, y: -18, duration: 0.12, ease: "power2.in" }, 0.72);
+      if (hero) {
+        // The booking panel rises over the still-pinned stage, so the two blocks
+        // leave at different times: the lower one clears out as the card reaches
+        // it, while the headline holds above — for a beat you see the title card
+        // and the search panel together, which is the association we want.
+        tl.to(".taxi-copy-bottom", { opacity: 0, y: -16, duration: 0.12, ease: "power2.in" }, 0.46);
+        tl.to(".taxi-copy-top", { opacity: 0, y: -20, duration: 0.14, ease: "power2.in" }, 0.78);
+      } else {
+        // the Journey scene: the line arrives mid-roll and clears out
+        tl.fromTo(".taxi-copy", { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: 0.14, ease: "power2.out" }, 0.16);
+        tl.to(".taxi-copy", { opacity: 0, y: -18, duration: 0.12, ease: "power2.in" }, 0.72);
+      }
     }, root);
 
     return () => ctx.revert();
-  }, []);
+  }, [hero]);
 
   return (
     <section
@@ -122,7 +146,9 @@ export function TaxiScene({
       id={id}
       data-taxi-variant={variant}
       className="relative"
-      style={{ height: "300svh" }}
+      // The hero runs a shorter roll: its job is to hand over to the booking
+      // panel quickly, not to hold the screen for three viewports.
+      style={{ height: hero ? "190svh" : "300svh" }}
       {...sectionProps}
     >
       <div
@@ -174,19 +200,44 @@ export function TaxiScene({
           aria-hidden
         />
 
-        {/* type — ink on white, low and out of the aircraft's line */}
-        <div className="taxi-copy absolute inset-x-0 bottom-[9%] z-10 mx-auto max-w-shell px-gutter">
-          <p className="mb-5 text-fluid-xs uppercase tracking-[0.34em] text-ink-muted">{eyebrow}</p>
-          <Heading className="max-w-3xl font-display text-fluid-h2 font-light leading-[0.95] tracking-tightest text-ink">
-            {heading}
-          </Heading>
-          {body ? (
-            <p className="taxi-body mt-6 max-w-xl text-fluid-lg font-light leading-relaxed text-ink-soft">
-              {body}
-            </p>
-          ) : null}
-          {actions ? <div className="mt-9 flex flex-wrap items-center gap-4">{actions}</div> : null}
-        </div>
+        {hero ? (
+          /* The hero composition is built AROUND the aircraft: title card above
+             it, supporting line and actions below, both centred on the same
+             axis, so the plane is the middle of a symmetrical stack rather than
+             a backdrop behind a corner of type. */
+          <>
+            <div className="taxi-copy taxi-copy-top absolute inset-x-0 top-[8%] z-10 mx-auto max-w-shell px-gutter text-center">
+              <span className="taxi-rule mx-auto mb-6 block h-px w-16 origin-center bg-gradient-to-r from-transparent via-gold-500 to-transparent" />
+              <p className="taxi-eyebrow mb-5 text-fluid-xs uppercase tracking-[0.34em] text-ink-muted">
+                {eyebrow}
+              </p>
+              <Heading className="taxi-head mx-auto max-w-4xl font-display font-light leading-[0.98] tracking-tightest text-ink">
+                {heading}
+              </Heading>
+            </div>
+
+            <div className="taxi-copy taxi-copy-bottom absolute inset-x-0 bottom-[8%] z-10 mx-auto max-w-shell px-gutter text-center">
+              {body ? (
+                <p className="taxi-body mx-auto max-w-xl text-fluid-lg font-light leading-relaxed text-ink-soft">
+                  {body}
+                </p>
+              ) : null}
+              {actions ? (
+                <div className="taxi-actions mt-7 flex flex-wrap items-center justify-center gap-4">
+                  {actions}
+                </div>
+              ) : null}
+            </div>
+          </>
+        ) : (
+          /* the Journey scene — ink on white, low and out of the aircraft's line */
+          <div className="taxi-copy absolute inset-x-0 bottom-[9%] z-10 mx-auto max-w-shell px-gutter">
+            <p className="mb-5 text-fluid-xs uppercase tracking-[0.34em] text-ink-muted">{eyebrow}</p>
+            <Heading className="max-w-3xl font-display text-fluid-h2 font-light leading-[0.95] tracking-tightest text-ink">
+              {heading}
+            </Heading>
+          </div>
+        )}
       </div>
 
       <style jsx>{`
@@ -194,11 +245,16 @@ export function TaxiScene({
           --plate-w: min(1240px, 124vw);
           --plate-y: 47%;
         }
-        /* the hero carries a much taller copy block, so the aircraft flies
-           higher in the frame and gives up a little scale for it */
+        /* the hero puts the aircraft dead centre and lets the type sit above and
+           below it; the plate gives up a little width so both blocks get air */
         [data-taxi-variant="hero"] .taxi-plane {
-          --plate-w: min(1080px, 112vw);
-          --plate-y: 31%;
+          --plate-w: min(1020px, 104vw);
+          --plate-y: 50%;
+        }
+        /* a touch smaller than the section scale — the hero has more to say, and
+           the aircraft, not the type, is meant to be the loudest thing here */
+        .taxi-head {
+          font-size: clamp(2.1rem, 1.2rem + 3.1vw, 4rem);
         }
         /* on a narrow portrait screen a frame-width aircraft reads as a toy in a
            big empty room — go past the edges instead, so what crosses the screen
@@ -206,6 +262,13 @@ export function TaxiScene({
         @media (max-width: 767px) {
           .taxi-plane {
             --plate-w: 215vw;
+          }
+          /* the hero keeps the whole aircraft in frame (it is the subject of a
+             symmetrical stack, not a passing detail) but at full width it reads
+             small between the two copy blocks — so push it wider than the frame
+             just enough to have presence */
+          [data-taxi-variant="hero"] .taxi-plane {
+            --plate-w: 190vw;
           }
         }
         /* landscape phones / short windows: at full width the plate fills the

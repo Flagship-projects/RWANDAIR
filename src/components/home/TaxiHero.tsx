@@ -20,8 +20,20 @@ export function TaxiHero() {
       eyebrow="RwandAir · The national carrier of Rwanda"
       heading={
         <>
-          Fly the dream of
-          <span className="italic text-blue-500"> Africa.</span>
+          <span className="reveal-mask block overflow-hidden">
+            <span className="taxi-head-line block">Fly the dream</span>
+          </span>
+          <span className="reveal-mask block overflow-hidden">
+            <span className="taxi-head-line block">
+              of{" "}
+              {/* the sunshine from the tail fin, carried into the word it belongs
+                  to. Gradient biased to the deeper end of the gold so display
+                  type still clears contrast on a white floor. */}
+              <span className="bg-gradient-to-br from-gold-400 via-gold-500 to-[#a8690a] bg-clip-text italic text-transparent">
+                Africa.
+              </span>
+            </span>
+          </span>
         </>
       }
       body="From Kigali to the rest of the continent and beyond — on one of the youngest fleets in the sky, flown by people who treat every journey as their own."
