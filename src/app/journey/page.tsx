@@ -3,6 +3,7 @@
 import { useSmoothScroll } from "@/lib/motion";
 import { Footer } from "@/components/home/Footer";
 import { JourneyChrome } from "@/components/journey/JourneyChrome";
+import { JourneyPrologue } from "@/components/journey/JourneyPrologue";
 import { JourneyHero } from "@/components/journey/JourneyHero";
 import { JourneyDeparture } from "@/components/journey/JourneyDeparture";
 import { JourneyClimb } from "@/components/journey/JourneyClimb";
@@ -36,6 +37,10 @@ export default function JourneyPage() {
     <>
       <JourneyChrome />
       <main className="bg-[#07306a] text-white">
+        {/* EXPERIMENTAL — the video prologue, under evaluation against the
+            existing Chapter One hero below it. It sits outside the chapter
+            system; delete this one line to fall back to the original opening. */}
+        <JourneyPrologue />
         <JourneyHero />
         <JourneyDeparture />
         <JourneyClimb />
