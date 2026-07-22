@@ -138,17 +138,12 @@ export function TaxiScene({
       // the taxi itself: one constant, unhurried roll across the floor.
       // linear on purpose — an eased taxi reads as a slide, not as weight.
       //
-      // The hero's roll STARTS where the page lands — dead centre — and only
-      // leaves to the right. A hero can't open with its subject two thirds off
-      // the left edge, so instead of matching the scene's symmetric sweep the
-      // range is shifted: the aircraft is the thing you arrive on, and the
-      // scroll taxis it out of frame to hand the floor to the booking panel.
-      tl.fromTo(
-        ".taxi-plane",
-        { xPercent: hero ? 0 : -62 },
-        { xPercent: hero ? 92 : 62, duration: 1 },
-        0
-      );
+      // The hero uses the SAME sweep as the scene (user's call, 2026-07-22):
+      // the page lands on roughly the front third of the aircraft entering at
+      // the left, and scrolling walks the whole airframe across the frame and
+      // out. Centring it on load instead left it clipped on both edges with no
+      // travel to explain the crop — this reads as an aircraft arriving.
+      tl.fromTo(".taxi-plane", { xPercent: -62 }, { xPercent: 62, duration: 1 }, 0);
 
       if (hero) {
         // The booking panel rises over the still-pinned stage, so the two blocks
@@ -179,7 +174,7 @@ export function TaxiScene({
       {...sectionProps}
     >
       <div
-        className="taxi-stage relative h-[100svh] overflow-hidden"
+        className="taxi-stage stage-vh relative overflow-hidden"
         style={{
           background: `linear-gradient(180deg,${STUDIO_TOP} 0%,${STUDIO_MID} 52%,${STUDIO_FLOOR} 100%)`,
         }}

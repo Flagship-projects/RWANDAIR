@@ -30,9 +30,10 @@ export function BookingDock() {
 
   /* -- reveal: past the fold, and never while the booking section is in view -- */
   useEffect(() => {
-    // Places the dock has no business covering: the booking panel itself, and
-    // the footer / closing brand lockup that end the page.
-    const quiet = ["book", "holidays"]
+    // Places the dock has no business covering: the booking panel itself, the
+    // full-bleed cloud corridor (a cinematic pause — booking chrome sitting on
+    // it reads as a banner ad), and the footer / closing brand lockup.
+    const quiet = ["book", "corridor", "holidays"]
       .map((id) => document.getElementById(id))
       .concat(document.querySelector<HTMLElement>("[aria-label^='RwandAir —']"))
       .filter(Boolean) as HTMLElement[];
@@ -69,9 +70,12 @@ export function BookingDock() {
     }
     document.addEventListener("keydown", onKey);
 
-    // move focus into the panel so a keyboard user lands on the form, not
-    // wherever they happened to be down the page
-    panelRef.current?.querySelector<HTMLInputElement>("input")?.focus({ preventScroll: true });
+    // Move focus to the panel itself — NOT to the first input. Focusing an
+    // input raises the soft keyboard and the autofill toolbar the instant the
+    // sheet opens, which covers the trip-type controls and collapses the
+    // visual viewport out from under the panel. The visitor should see the
+    // form first and summon the keyboard by tapping a field themselves.
+    panelRef.current?.focus({ preventScroll: true });
 
     return () => {
       document.removeEventListener("keydown", onKey);
@@ -140,32 +144,44 @@ export function BookingDock() {
           role="dialog"
           aria-modal="true"
           aria-label="Book a flight"
+          tabIndex={-1}
+          // Lenis intercepts wheel and touch globally, so an overflow container
+          // inside it never receives the gesture — the panel looked frozen on a
+          // phone. `data-lenis-prevent` is Lenis's own opt-out for exactly this.
+          data-lenis-prevent
           className={cn(
-            "absolute inset-x-0 bottom-0 mx-auto max-h-[92svh] w-full max-w-shell overflow-y-auto px-gutter",
-            "pb-[max(1.25rem,env(safe-area-inset-bottom))] pt-14",
+            "absolute inset-x-0 bottom-0 mx-auto max-h-[92svh] w-full max-w-shell overflow-y-auto overscroll-contain px-gutter focus:outline-none",
+            "pb-[max(1.25rem,env(safe-area-inset-bottom))] pt-2",
             "transition-transform duration-[650ms] ease-premium",
             open ? "translate-y-0" : "translate-y-full"
           )}
+          style={{ WebkitOverflowScrolling: "touch" }}
         >
-          {/* close, floating clear of the card on its top edge */}
-          <button
-            type="button"
-            onClick={() => setOpen(false)}
-            className={cn(
-              "focus-ring absolute left-1/2 top-2 z-10 flex h-11 w-11 -translate-x-1/2 items-center justify-center rounded-full bg-white text-ink shadow-[0_10px_30px_-8px_rgba(11,31,58,0.5)]",
-              "transition-[transform,background-color,color] duration-300 ease-premium hover:rotate-90 hover:bg-ink hover:text-white"
-            )}
-          >
-            <span className="sr-only">Close</span>
-            <svg viewBox="0 0 16 16" className="h-3.5 w-3.5" aria-hidden>
-              <path
-                d="M2 2l12 12M14 2L2 14"
-                stroke="currentColor"
-                strokeWidth={1.6}
-                strokeLinecap="round"
-              />
-            </svg>
-          </button>
+          {/* Close, floating clear of the card on its top edge. Sticky, not
+              absolute: the panel scrolls when the form is taller than the
+              screen, and a close that scrolls away with it is a trap. */}
+          <div className="sticky top-0 z-20 flex justify-center pb-3">
+            <button
+              type="button"
+              onClick={() => setOpen(false)}
+              className={cn(
+                // ring, because once the panel scrolls this floats over the
+                // white card and a shadow alone leaves it edgeless
+                "focus-ring flex h-11 w-11 items-center justify-center rounded-full bg-white text-ink ring-1 ring-line shadow-[0_10px_30px_-8px_rgba(11,31,58,0.5)]",
+                "transition-[transform,background-color,color] duration-300 ease-premium hover:rotate-90 hover:bg-ink hover:text-white"
+              )}
+            >
+              <span className="sr-only">Close</span>
+              <svg viewBox="0 0 16 16" className="h-3.5 w-3.5" aria-hidden>
+                <path
+                  d="M2 2l12 12M14 2L2 14"
+                  stroke="currentColor"
+                  strokeWidth={1.6}
+                  strokeLinecap="round"
+                />
+              </svg>
+            </button>
+          </div>
 
           <FlightSearchCard />
         </div>

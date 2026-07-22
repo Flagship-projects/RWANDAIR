@@ -155,7 +155,7 @@ export function ClosingSignature() {
       aria-label="RwandAir — Fly the dream of Africa"
       className="relative h-[190svh] bg-blue-500 md:h-[280vh]"
     >
-      <div className="sticky top-0 h-[100svh] overflow-hidden">
+      <div className="sticky top-0 stage-vh overflow-hidden">
         {/* Deep-blue field with a warm centre glow behind the lockup */}
         <div className="absolute inset-0 bg-[radial-gradient(120%_90%_at_50%_45%,#0a63bd_0%,#0050a0_38%,#00305f_100%)]" />
         <div

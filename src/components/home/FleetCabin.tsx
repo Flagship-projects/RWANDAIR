@@ -212,7 +212,7 @@ export function FleetCabin() {
 
       {/* ============================ ACT 2 — THE CABINS ============================ */}
       <div ref={cabinsRef} className="relative h-[210svh] md:h-[300vh]">
-        <div className="sticky top-0 h-[100svh] overflow-hidden">
+        <div className="sticky top-0 stage-vh overflow-hidden">
           {/* cross-fading media */}
           <div ref={bizMediaRef} className="absolute inset-0">
             <div className="absolute inset-0 will-change-transform">

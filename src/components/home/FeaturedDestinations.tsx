@@ -186,7 +186,7 @@ export function FeaturedDestinations() {
   return (
     <section id="featured" className="relative bg-paper">
       <div ref={rootRef} style={{ height: `${(featured.length + 1) * 100}vh` }}>
-        <div className="sticky top-0 h-[100svh] overflow-hidden">
+        <div className="sticky top-0 stage-vh overflow-hidden">
           <div ref={trackRef} className="flex h-full w-max will-change-transform">
             {/* intro panel */}
             <div data-panel className="relative flex h-full w-screen shrink-0 flex-col justify-center px-gutter">

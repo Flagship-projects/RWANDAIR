@@ -60,6 +60,25 @@ body {
   }
 }
 
+/**
+ * Full-bleed sticky/pinned stage height.
+ *
+ * `100svh` is the SMALL viewport — the height with the mobile browser's URL bar
+ * expanded. Once the bar retracts the real viewport is taller, so a stage sized
+ * in svh no longer reaches the bottom of the screen and the section's own
+ * background shows through as a solid band under the artwork (the light-blue
+ * strip under the cloud corridor, the blue block under the closing lockup).
+ *
+ * `100lvh` is the LARGE viewport, so the stage always covers. The cost is that
+ * while the bar IS showing the stage overruns the fold by the bar's height —
+ * invisible on full-bleed cover imagery, and far better than a dead colour band.
+ * The svh line stays first as the fallback for browsers without lvh.
+ */
+.stage-vh {
+  height: 100svh;
+  height: 100lvh;
+}
+
 .hide-scrollbar::-webkit-scrollbar {
   display: none;
 }
