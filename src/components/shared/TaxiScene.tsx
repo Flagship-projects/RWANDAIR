@@ -98,7 +98,23 @@ export function TaxiScene({
       if (hero) {
         gsap
           .timeline({ defaults: { ease: "power3.out" } })
-          .from(".taxi-plane", { xPercent: -8, opacity: 0, duration: 1.6, ease: "power2.out" }, 0)
+          // The intro must NOT touch xPercent: that channel belongs to the
+          // scroll tween, and writing to it here parks the plate somewhere the
+          // scrub does not start from — which is exactly what made the aircraft
+          // snap back the moment you scrolled. It arrives on scale + opacity
+          // instead: different components of the same transform, which GSAP
+          // composes in one matrix, so the two tweens never fight and the
+          // hand-off into the scroll is pixel-exact.
+          //
+          // (The standalone `translate` property is not an escape hatch either —
+          // GSAP folds it into its transform baseline on first write and it then
+          // sticks as a permanent offset.)
+          .fromTo(
+            ".taxi-plane",
+            { opacity: 0, scale: 1.07 },
+            { opacity: 1, scale: 1, duration: 1.8, ease: "power2.out" },
+            0
+          )
           .from(".taxi-rule", { scaleX: 0, duration: 1.1 }, 0.25)
           .from(".taxi-eyebrow", { opacity: 0, y: 12, duration: 0.9 }, 0.3)
           .from(".taxi-head-line", { yPercent: 115, duration: 1.2, ease: "power4.out", stagger: 0.09 }, 0.4)
@@ -121,7 +137,18 @@ export function TaxiScene({
 
       // the taxi itself: one constant, unhurried roll across the floor.
       // linear on purpose — an eased taxi reads as a slide, not as weight.
-      tl.fromTo(".taxi-plane", { xPercent: -62 }, { xPercent: 62, duration: 1 }, 0);
+      //
+      // The hero's roll STARTS where the page lands — dead centre — and only
+      // leaves to the right. A hero can't open with its subject two thirds off
+      // the left edge, so instead of matching the scene's symmetric sweep the
+      // range is shifted: the aircraft is the thing you arrive on, and the
+      // scroll taxis it out of frame to hand the floor to the booking panel.
+      tl.fromTo(
+        ".taxi-plane",
+        { xPercent: hero ? 0 : -62 },
+        { xPercent: hero ? 92 : 62, duration: 1 },
+        0
+      );
 
       if (hero) {
         // The booking panel rises over the still-pinned stage, so the two blocks
@@ -246,9 +273,10 @@ export function TaxiScene({
           --plate-y: 47%;
         }
         /* the hero puts the aircraft dead centre and lets the type sit above and
-           below it; the plate gives up a little width so both blocks get air */
+           below it, at the same presence as the Journey scene — it is the first
+           thing the site says, so it is sized to be the loudest */
         [data-taxi-variant="hero"] .taxi-plane {
-          --plate-w: min(1020px, 104vw);
+          --plate-w: min(1200px, 120vw);
           --plate-y: 50%;
         }
         /* a touch smaller than the section scale — the hero has more to say, and
@@ -265,10 +293,25 @@ export function TaxiScene({
           }
           /* the hero keeps the whole aircraft in frame (it is the subject of a
              symmetrical stack, not a passing detail) but at full width it reads
-             small between the two copy blocks — so push it wider than the frame
-             just enough to have presence */
+             small between the two copy blocks — so push it well past the frame,
+             matching the scene's mobile presence */
           [data-taxi-variant="hero"] .taxi-plane {
-            --plate-w: 190vw;
+            --plate-w: 200vw;
+            /* lifted off the true centre: the copy block below is the taller of
+               the two, and at this scale a dead-centre plate leaves a visible
+               band of empty floor between the headline and the fuselage */
+            --plate-y: 46%;
+          }
+          /* the eyebrow is a long line; at the desktop tracking it wraps to two
+             and the title card loses its top edge */
+          [data-taxi-variant="hero"] .taxi-eyebrow {
+            letter-spacing: 0.2em;
+          }
+          [data-taxi-variant="hero"] .taxi-copy-bottom {
+            bottom: 6%;
+          }
+          [data-taxi-variant="hero"] .taxi-copy-top {
+            top: 6%;
           }
         }
         /* landscape phones / short windows: at full width the plate fills the
@@ -285,7 +328,7 @@ export function TaxiScene({
           /* the hero's paragraph is the first thing to go on a landscape phone:
              headline + buttons are what the visitor actually needs there */
           [data-taxi-variant="hero"] .taxi-plane {
-            --plate-w: 72vw;
+            --plate-w: 84vw;
             --plate-y: 26%;
           }
           [data-taxi-variant="hero"] .taxi-body {

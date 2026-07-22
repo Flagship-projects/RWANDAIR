@@ -216,14 +216,14 @@ export function Loyalty() {
           </div>
 
           {/* the four tiers, an ascending alternating climb */}
-          <div className="mt-20 flex flex-col gap-24 sm:mt-28 sm:gap-32 lg:gap-40">
+          <div className="mt-12 flex flex-col gap-14 sm:mt-28 sm:gap-32 lg:gap-40">
             {loyaltyTiers.map((tier, i) => (
               <TierAct key={tier.name} tier={tier} order={i} />
             ))}
           </div>
 
           {/* close */}
-          <div className="tier-outro mx-auto mt-28 max-w-2xl text-center sm:mt-36">
+          <div className="tier-outro mx-auto mt-16 max-w-2xl text-center sm:mt-36">
             <p className="outro-reveal font-display text-fluid-h3 font-light tracking-tightest text-ink">
               Your climb starts with a single flight.
             </p>
@@ -250,7 +250,7 @@ function TierAct({ tier, order }: { tier: LoyaltyTier; order: number }) {
   const flipped = order % 2 === 1; // alternate the card side down the climb
 
   return (
-    <div className="tier-act grid items-center gap-10 lg:grid-cols-2 lg:gap-16">
+    <div className="tier-act grid items-center gap-7 lg:grid-cols-2 lg:gap-16">
       {/* card */}
       <div className={cn("[perspective:1400px]", flipped && "lg:order-2")}>
         <CardVisual tier={tier} />

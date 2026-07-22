@@ -1,6 +1,6 @@
 "use client";
 
-import { Suspense, useEffect, useMemo, useRef, useState } from "react";
+import { Suspense, useEffect, useMemo, useRef, useState, type PointerEvent as ReactPointerEvent } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
 import { Html, QuadraticBezierLine, OrbitControls } from "@react-three/drei";
 import * as THREE from "three";
@@ -136,7 +136,7 @@ function Atmosphere() {
 
 /* ---------------------------------- globe --------------------------------- */
 
-function Globe() {
+function Globe({ spin, coarse }: { spin: SpinState; coarse: boolean }) {
   const groupRef = useRef<THREE.Group>(null);
   const [active, setActive] = useState<Destination | null>(null);
   const hub = destinations.find((d) => d.hub)!;
@@ -149,8 +149,19 @@ function Globe() {
   const initialRotY = -(hub.lon + 90) * (Math.PI / 180);
 
   useFrame((_, delta) => {
-    if (groupRef.current) groupRef.current.rotation.y += delta * 0.014;
+    const g = groupRef.current;
+    if (!g) return;
+    // Touch drag adds to the idle drift and then decays, so a flick keeps the
+    // globe turning and coasts to a stop rather than snapping still.
+    g.rotation.y += delta * (spin.dragging ? 0.002 : 0.014) + spin.velocity;
+    spin.velocity *= spin.dragging ? 0 : 0.94;
   });
+
+  /** On touch there is no hover, so a tap selects — and taps elsewhere clear it. */
+  const select = (d: Destination) => (e: { stopPropagation: () => void }) => {
+    e.stopPropagation();
+    setActive((cur) => (coarse && cur?.code === d.code ? null : d));
+  };
 
   return (
     <group ref={groupRef} rotation={[0.22, initialRotY, 0.1]}>
@@ -216,14 +227,22 @@ function Globe() {
             )}
             <mesh
               position={pos}
-              onPointerOver={(e) => {
-                e.stopPropagation();
-                setActive(d);
-              }}
-              onPointerOut={() => setActive((cur) => (cur?.code === d.code ? null : cur))}
+              onClick={select(d)}
+              onPointerOver={coarse ? undefined : select(d)}
+              onPointerOut={
+                coarse ? undefined : () => setActive((cur) => (cur?.code === d.code ? null : cur))
+              }
             >
+              {/* a finger needs a bigger target than a cursor does — the visible
+                  dot stays small, an invisible sphere takes the tap */}
               <sphereGeometry args={[isHub ? 0.055 : 0.03, 16, 16]} />
               <meshBasicMaterial color={isHub ? "#f7c623" : "#ffffff"} />
+              {coarse && (
+                <mesh onClick={select(d)}>
+                  <sphereGeometry args={[0.16, 8, 8]} />
+                  <meshBasicMaterial transparent opacity={0} depthWrite={false} />
+                </mesh>
+              )}
             </mesh>
             {isActive && (
               <Html position={pos} center distanceFactor={6.5} className="pointer-events-none">
@@ -239,13 +258,14 @@ function Globe() {
   );
 }
 
+type SpinState = { velocity: number; dragging: boolean };
+
 export function DestinationGlobe() {
   const wrapRef = useRef<HTMLDivElement>(null);
   const [inView, setInView] = useState(true);
-  // On touch devices, one-finger drag-to-rotate would swallow vertical page
-  // scroll (a scroll-trap). There we disable manual rotation and let the globe
-  // auto-spin as a self-running showpiece; desktop keeps full drag control.
   const [coarse, setCoarse] = useState(false);
+  const [touched, setTouched] = useState(false);
+  const spin = useRef<SpinState>({ velocity: 0, dragging: false }).current;
 
   useEffect(() => {
     setCoarse(window.matchMedia("(pointer: coarse)").matches);
@@ -259,29 +279,80 @@ export function DestinationGlobe() {
     return () => io.disconnect();
   }, []);
 
+  /* ------------------------- touch: spin, never trap ------------------------
+     OrbitControls on a touch screen swallows the vertical pan, so the globe
+     used to be a scroll-trap — which is why it had been frozen into a static
+     ornament on phones. `touch-action: pan-y` fixes that at the source: the
+     browser keeps every vertical gesture for the page and hands us only the
+     horizontal ones, so a sideways drag spins the globe while a downward swipe
+     scrolls straight past it. No preventDefault, no gesture arbitration.       */
+  const lastX = useRef<number | null>(null);
+
+  function onPointerDown(e: ReactPointerEvent) {
+    if (e.pointerType === "mouse") return;
+    lastX.current = e.clientX;
+    spin.dragging = true;
+    setTouched(true);
+  }
+  function onPointerMove(e: ReactPointerEvent) {
+    if (lastX.current === null) return;
+    const dx = e.clientX - lastX.current;
+    lastX.current = e.clientX;
+    spin.velocity = dx * 0.006;
+  }
+  function endDrag() {
+    lastX.current = null;
+    spin.dragging = false;
+  }
+
   return (
-    <div ref={wrapRef} className="relative mx-auto aspect-square w-full max-w-[620px] lg:aspect-auto lg:h-[560px]">
+    <div
+      ref={wrapRef}
+      className="relative mx-auto aspect-square w-full max-w-[620px] lg:aspect-auto lg:h-[560px]"
+      style={{ touchAction: "pan-y" }}
+      onPointerDown={onPointerDown}
+      onPointerMove={onPointerMove}
+      onPointerUp={endDrag}
+      onPointerCancel={endDrag}
+      onPointerLeave={endDrag}
+    >
       <Canvas
         frameloop={inView ? "always" : "never"}
         camera={{ position: [0, 0.2, 10], fov: 30 }}
-        gl={{ antialias: true, alpha: true, powerPreference: "low-power" }}
-        dpr={[1, 2]}
+        gl={{ antialias: !coarse, alpha: true, powerPreference: "low-power" }}
+        // phones do not need a 3× buffer for a dot globe, and the fill cost of
+        // one is exactly where a mid-range device drops frames
+        dpr={coarse ? [1, 1.6] : [1, 2]}
       >
         <ambientLight intensity={0.75} />
         <directionalLight position={[5, 3, 5]} intensity={1.6} color="#eaf4ff" />
         <directionalLight position={[-6, -2, -4]} intensity={0.35} color="#2a8fe0" />
         <Suspense fallback={null}>
-          <Globe />
+          <Globe spin={spin} coarse={coarse} />
         </Suspense>
-        <OrbitControls
-          enablePan={false}
-          enableZoom={false}
-          enableRotate={!coarse}
-          minPolarAngle={Math.PI / 2.8}
-          maxPolarAngle={Math.PI / 1.7}
-          rotateSpeed={0.4}
-        />
+        {!coarse && (
+          <OrbitControls
+            enablePan={false}
+            enableZoom={false}
+            minPolarAngle={Math.PI / 2.8}
+            maxPolarAngle={Math.PI / 1.7}
+            rotateSpeed={0.4}
+          />
+        )}
       </Canvas>
+
+      {/* a one-time hint, so the interaction is discoverable on a screen with
+          no cursor to reveal it */}
+      {coarse && (
+        <p
+          // top, not bottom: the floating booking pill lives at the bottom edge
+          className={`pointer-events-none absolute inset-x-0 top-1 text-center text-fluid-xs uppercase tracking-wideish text-ink/40 transition-opacity duration-500 ${
+            touched ? "opacity-0" : "opacity-100"
+          }`}
+        >
+          Drag to spin · tap a city
+        </p>
+      )}
     </div>
   );
 }

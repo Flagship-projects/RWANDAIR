@@ -17,6 +17,21 @@ export function ensureGsapRegistered() {
   }
 }
 
+/** The live Lenis instance, so overlays can freeze the page behind them. */
+let lenisInstance: Lenis | null = null;
+
+/**
+ * Freeze / release page scroll for a modal surface. Lenis owns the wheel, so
+ * `overflow: hidden` alone would not stop it — and Lenis alone would not stop a
+ * touch drag (it leaves touch scrolling native). Both are needed.
+ */
+export function setPageScrollLocked(locked: boolean) {
+  if (typeof document === "undefined") return;
+  if (locked) lenisInstance?.stop();
+  else lenisInstance?.start();
+  document.documentElement.style.overflow = locked ? "hidden" : "";
+}
+
 /** Drives Lenis smooth scroll and keeps GSAP's ScrollTrigger in sync with it. */
 export function useSmoothScroll() {
   useEffect(() => {
@@ -37,6 +52,7 @@ export function useSmoothScroll() {
       easing: (t: number) => 1 - Math.pow(1 - t, 3),
       smoothWheel: true,
     });
+    lenisInstance = lenis;
 
     lenis.on("scroll", ScrollTrigger.update);
 
@@ -68,6 +84,7 @@ export function useSmoothScroll() {
       window.removeEventListener("load", settle);
       gsap.ticker.remove(update);
       lenis.destroy();
+      lenisInstance = null;
     };
   }, []);
 }

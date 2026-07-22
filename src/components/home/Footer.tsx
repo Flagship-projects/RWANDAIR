@@ -21,6 +21,67 @@ function AppButton({ store, line1, line2, icon }: { store: string; line1: string
   );
 }
 
+type FooterColumn = (typeof footerColumnGroups)[number][number];
+
+/**
+ * A footer column. On a wide screen it is simply a heading and its list — but
+ * on a phone the five stacked groups run to well over a thousand pixels of
+ * undifferentiated links, so there they collapse into an accordion: every
+ * heading stays scannable and the visitor opens only what they came for.
+ * The rows are always mounted (a `grid-rows` transition rather than a mount
+ * toggle) so the markup a wide screen renders is identical.
+ */
+function LinkColumn({ col }: { col: FooterColumn }) {
+  const [open, setOpen] = useState(false);
+
+  return (
+    <div className="border-b border-line sm:border-0">
+      <button
+        type="button"
+        onClick={() => setOpen((v) => !v)}
+        aria-expanded={open}
+        className="focus-ring flex w-full items-center justify-between gap-4 py-4 text-left sm:pointer-events-none sm:py-0"
+      >
+        <span className="text-fluid-xs font-semibold uppercase tracking-wideish text-ink">
+          {col.title}
+        </span>
+        <svg
+          viewBox="0 0 10 6"
+          className={`h-1.5 w-2.5 shrink-0 text-ink/40 transition-transform duration-300 sm:hidden ${
+            open ? "rotate-180" : ""
+          }`}
+          fill="none"
+          aria-hidden
+        >
+          <path d="M1 1l4 4 4-4" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
+      </button>
+
+      <div
+        className={`grid overflow-hidden transition-[grid-template-rows] duration-500 ease-premium sm:grid-rows-[1fr] ${
+          open ? "grid-rows-[1fr]" : "grid-rows-[0fr]"
+        }`}
+      >
+        <div className="overflow-hidden">
+          <ul className="space-y-2.5 pb-5 sm:mt-4 sm:pb-0">
+            {col.links.map((l) => (
+              <li key={l.label}>
+                <a
+                  href={l.href}
+                  {...(l.external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+                  className="focus-ring text-fluid-sm text-ink/55 transition-colors hover:text-blue-500"
+                >
+                  {l.label}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export function Footer() {
   const [subscribed, setSubscribed] = useState(false);
 
@@ -33,7 +94,7 @@ export function Footer() {
     <footer id="holidays" className="border-t border-line bg-paper-dim">
       <div className="mx-auto max-w-shell px-gutter py-section-md">
         {/* brand block — its own full-width row, so everything below shares one top edge */}
-        <div className="mb-14 lg:mb-16">
+        <div className="mb-8 sm:mb-14 lg:mb-16">
           <Image
             src="/assets/brand/logotype.png"
             alt="RwandAir"
@@ -46,33 +107,21 @@ export function Footer() {
           </p>
         </div>
 
-        <div className="grid gap-x-10 gap-y-14 sm:grid-cols-2 lg:grid-cols-[1fr_1fr_1fr_340px] lg:gap-x-12">
+        {/* no row gap on a phone: the three groups are one continuous divided
+            list of accordion rows there, and a gap between them would read as
+            three unrelated blocks */}
+        <div className="grid gap-x-10 sm:grid-cols-2 sm:gap-y-14 lg:grid-cols-[1fr_1fr_1fr_340px] lg:gap-x-12">
           {/* three balanced link columns, each stacking its sections top-aligned */}
           {footerColumnGroups.map((group, i) => (
-            <div key={i} className="space-y-10">
+            <div key={i} className="sm:space-y-10">
               {group.map((col) => (
-                <div key={col.title}>
-                  <p className="text-fluid-xs font-semibold uppercase tracking-wideish text-ink">{col.title}</p>
-                  <ul className="mt-4 space-y-2.5">
-                    {col.links.map((l) => (
-                      <li key={l.label}>
-                        <a
-                          href={l.href}
-                          {...(l.external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
-                          className="focus-ring text-fluid-sm text-ink/55 transition-colors hover:text-blue-500"
-                        >
-                          {l.label}
-                        </a>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
+                <LinkColumn key={col.title} col={col} />
               ))}
             </div>
           ))}
 
           {/* connect rail — same top edge as the link columns */}
-          <div className="flex flex-col gap-10">
+          <div className="mt-4 flex flex-col gap-10 sm:mt-0">
             <div>
               <p className="font-display text-fluid-lg text-ink">Let&rsquo;s be connected</p>
               <div className="mt-5 flex flex-wrap gap-3">
@@ -129,7 +178,7 @@ export function Footer() {
           </div>
         </div>
 
-        <div className="mt-16 flex flex-col gap-4 border-t border-line pt-8 text-fluid-xs text-ink/40 sm:flex-row sm:items-center sm:justify-between">
+        <div className="mt-10 flex flex-col gap-4 border-t border-line pt-8 sm:mt-16 text-fluid-xs text-ink/40 sm:flex-row sm:items-center sm:justify-between">
           <p>© {new Date().getFullYear()} RwandAir. Concept redesign — not an official site.</p>
           <p>Fly the Dream of Africa</p>
         </div>

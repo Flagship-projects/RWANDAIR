@@ -181,7 +181,7 @@ export function FleetCabin() {
 
         <div className="relative z-10 mx-auto flex min-h-[100svh] max-w-shell flex-col justify-between px-gutter py-section-md">
           {/* intro */}
-          <div className="max-w-2xl pt-16">
+          <div className="max-w-2xl pt-10 sm:pt-16">
             <p className="fleet-reveal mb-5 text-fluid-xs uppercase tracking-wideish text-gold-400">The fleet</p>
             <h2 className="fleet-reveal font-display text-fluid-h1 font-light leading-[0.95] tracking-tightest">
               Built for the <span className="italic">long haul</span>.
@@ -193,9 +193,9 @@ export function FleetCabin() {
           </div>
 
           {/* the two variants, as editorial entries */}
-          <div className="mt-16 grid gap-px overflow-hidden rounded-2xl border border-white/12 bg-white/[0.04] backdrop-blur-sm sm:grid-cols-2">
+          <div className="mt-10 grid gap-px overflow-hidden rounded-2xl border border-white/12 bg-white/[0.04] backdrop-blur-sm sm:mt-16 sm:grid-cols-2">
             {fleet.map((f, i) => (
-              <div key={f.name} className="fleet-reveal group relative p-7 sm:p-9">
+              <div key={f.name} className="fleet-reveal group relative p-6 sm:p-9">
                 <div className="flex items-start justify-between gap-4">
                   <span className="font-display text-fluid-lg text-gold-400/80">0{i + 1}</span>
                   <span className="text-fluid-xs uppercase tracking-wideish text-sky-300">{f.role}</span>
@@ -211,7 +211,7 @@ export function FleetCabin() {
       </div>
 
       {/* ============================ ACT 2 — THE CABINS ============================ */}
-      <div ref={cabinsRef} className="relative h-[300vh]">
+      <div ref={cabinsRef} className="relative h-[210svh] md:h-[300vh]">
         <div className="sticky top-0 h-[100svh] overflow-hidden">
           {/* cross-fading media */}
           <div ref={bizMediaRef} className="absolute inset-0">
@@ -234,7 +234,10 @@ export function FleetCabin() {
             <div className="mx-auto w-full max-w-shell px-gutter pb-16 sm:pb-24">
               <div className="grid items-end gap-10 lg:grid-cols-[1.1fr_0.9fr]">
                 {/* stacked copy — only the active cabin is visible */}
-                <div className="relative min-h-[16rem]">
+                {/* the two cabins are stacked absolutely, so this reserves the
+                    taller of them — on a narrow column the benefit list wraps
+                    and needs noticeably more room than it does on a desktop */}
+                <div className="relative min-h-[23rem] sm:min-h-[16rem]">
                   <div ref={bizCopyRef} className="absolute inset-0">
                     <CabinCopy index="01" label="Business Class" accent="text-green-300" points={business.points} note="Lie-flat, forward-facing and quietly generous." />
                   </div>

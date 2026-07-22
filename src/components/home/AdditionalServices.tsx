@@ -31,15 +31,15 @@ export function AdditionalServices() {
         </div>
 
         {/* cards */}
-        <div className="mt-16 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-6 lg:gap-5">
+        <div className="mt-10 grid grid-cols-2 gap-3 sm:mt-16 sm:grid-cols-3 sm:gap-4 lg:grid-cols-6 lg:gap-5">
           {services.map((s, i) => (
             <a
               key={s.title}
               href="#"
-              className="reveal-item group flex flex-col items-center rounded-2xl border border-line bg-paper-bright px-5 py-9 text-center transition-all duration-300 ease-premium hover:-translate-y-2 hover:border-blue-500/40 hover:shadow-xl hover:shadow-blue-900/5"
+              className="reveal-item group flex flex-col items-center rounded-2xl border border-line bg-paper-bright px-4 py-6 text-center transition-all duration-300 ease-premium hover:-translate-y-2 hover:border-blue-500/40 hover:shadow-xl hover:shadow-blue-900/5 sm:px-5 sm:py-9"
             >
               <span
-                className="svc-float mb-6 inline-block"
+                className="svc-float mb-4 inline-block sm:mb-6"
                 style={{ animationDelay: `${i * 0.28}s` }}
               >
                 <span className="block text-4xl transition-transform duration-300 ease-premium group-hover:-rotate-6 group-hover:scale-125 sm:text-5xl">

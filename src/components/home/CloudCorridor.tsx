@@ -113,7 +113,10 @@ export function CloudCorridor() {
   }, []);
 
   return (
-    <div ref={rootRef} className="relative h-[300vh] bg-[#bcdcf3]">
+    // Three viewports of scroll for one line of type is a considered pause on a
+    // desktop and a chore on a phone, where it is three full thumb-swipes of
+    // sky. The beat keeps its shape, at two thirds the length.
+    <div ref={rootRef} className="relative h-[200svh] bg-[#bcdcf3] md:h-[300vh]">
       <div className="sticky top-0 h-[100svh] overflow-hidden">
         {/* Sea of clouds — the world the camera flies through */}
         <div ref={skyRef} className="absolute inset-0 will-change-transform">

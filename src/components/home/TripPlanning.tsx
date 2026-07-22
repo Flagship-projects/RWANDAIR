@@ -29,7 +29,7 @@ export function TripPlanning() {
           </div>
         </div>
 
-        <div className="mt-14 grid grid-cols-2 gap-5 lg:grid-cols-4">
+        <div className="mt-8 grid grid-cols-2 gap-3 sm:mt-14 sm:gap-5 lg:grid-cols-4">
           {trending.map((t, i) => (
             <a
               key={t.city}
@@ -47,7 +47,7 @@ export function TripPlanning() {
               <span className="absolute left-4 top-4 rounded-full bg-white/90 px-3 py-1 text-[10px] font-semibold uppercase tracking-wideish text-blue-600">
                 #{i + 1} Trending
               </span>
-              <div className="absolute inset-x-0 bottom-0 p-5">
+              <div className="absolute inset-x-0 bottom-0 p-4 sm:p-5">
                 <h3 className="font-display text-fluid-h3 font-light leading-none tracking-tightest text-white">{t.city}</h3>
                 <p className="mt-1.5 text-fluid-sm text-white/70">{t.country}</p>
               </div>

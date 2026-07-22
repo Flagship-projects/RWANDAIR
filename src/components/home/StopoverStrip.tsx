@@ -39,7 +39,7 @@ export function StopoverStrip() {
   return (
     <section id="stopover" className="relative overflow-hidden border-t border-line" ref={ref}>
       <div className="relative grid lg:grid-cols-2">
-        <div ref={imgRef} className="relative min-h-[440px] overflow-hidden">
+        <div ref={imgRef} className="relative min-h-[300px] overflow-hidden sm:min-h-[440px]">
           <Image
             src="/assets/stopover/hero.jpg"
             alt="The landscapes of Rwanda"
@@ -54,7 +54,7 @@ export function StopoverStrip() {
           </div>
         </div>
 
-        <div className="flex flex-col justify-center gap-8 bg-paper-bright px-gutter py-section-md">
+        <div className="flex flex-col justify-center gap-6 bg-paper-bright px-gutter py-section-md sm:gap-8">
           <div className="reveal-item">
             <p className="text-fluid-xs uppercase tracking-wideish text-blue-500">Kigali Stopover</p>
             <h2 className="mt-4 max-w-lg font-display text-fluid-h2 font-light leading-[1.04] tracking-tightest text-ink">

@@ -1,6 +1,6 @@
 "use client";
 
-import { FormEvent, ReactNode, useState } from "react";
+import { FormEvent, ReactNode, createContext, useContext, useId, useState } from "react";
 import { cn } from "@/lib/cn";
 import { destinations } from "@/lib/data";
 
@@ -94,10 +94,14 @@ function Group({ children, className }: { children: ReactNode; className?: strin
   );
 }
 
+/** The card can be mounted more than once (page section + floating dock), and a
+ *  duplicated element id would be invalid — so each instance owns its own. */
+const CityListId = createContext("ra-cities");
+
 function CityInput({ label, placeholder }: { label: string; placeholder: string }) {
   return (
     <Cell label={label}>
-      <input list="ra-cities" className={inputCls} placeholder={placeholder} />
+      <input list={useContext(CityListId)} className={inputCls} placeholder={placeholder} />
     </Cell>
   );
 }
@@ -321,9 +325,15 @@ function SubmitButton({ label }: { label: string }) {
 
 /* --------------------------------- widget --------------------------------- */
 
-export function FlightSearch() {
+/**
+ * The booking card on its own, with no page placement of its own — the homepage
+ * section below and the floating booking dock both mount this, so there is only
+ * ever one definition of what booking looks like.
+ */
+export function FlightSearchCard({ className }: { className?: string }) {
   const [active, setActive] = useState<TabId>("book");
   const [submitted, setSubmitted] = useState<string | null>(null);
+  const listId = `ra-cities${useId()}`;
 
   function handleSubmit(e: FormEvent) {
     e.preventDefault();
@@ -331,63 +341,71 @@ export function FlightSearch() {
   }
 
   return (
-    // Pulled hard up into the hero's floor: booking is the primary action, so
-    // the panel should read as the hero's own footer rather than as the next
-    // section down. The hero's last frame is empty studio floor, which is
-    // exactly what the card wants to sit on.
-    <section id="book" className="relative z-20 -mt-[38svh] px-gutter sm:-mt-[34svh]">
-      <datalist id="ra-cities">
+    <CityListId.Provider value={listId}>
+    <div className={className}>
+      <datalist id={listId}>
         {cities.map((c) => (
           <option key={c} value={c} />
         ))}
       </datalist>
 
-      <div className="mx-auto max-w-shell">
-        <div className="overflow-hidden rounded-[28px] border border-line bg-white shadow-2xl shadow-blue-900/15">
-          {/* tab bar */}
-          <div className="hide-scrollbar overflow-x-auto border-b border-line px-3 sm:px-6">
-            <div className="flex min-w-max items-center gap-1 sm:gap-3">
-              {tabs.map(({ id, label, Icon }) => {
-                const isActive = active === id;
-                return (
-                  <button
-                    key={id}
-                    type="button"
-                    onClick={() => {
-                      setActive(id);
-                      setSubmitted(null);
-                    }}
-                    aria-current={isActive ? "page" : undefined}
-                    className={cn(
-                      "relative flex items-center gap-2 whitespace-nowrap px-3 pb-4 pt-5 text-[12px] font-semibold uppercase tracking-[0.12em] transition-colors sm:px-4",
-                      isActive ? "text-blue-600" : "text-ink/45 hover:text-ink/80"
-                    )}
-                  >
-                    <Icon className={cn("h-4 w-4", isActive ? "text-blue-500" : "text-ink/40")} />
-                    {label}
-                    {isActive && (
-                      <span className="absolute inset-x-2 -bottom-px h-0.5 rounded-full bg-blue-500" />
-                    )}
-                  </button>
-                );
-              })}
-            </div>
+      <div className="overflow-hidden rounded-[28px] border border-line bg-white shadow-2xl shadow-blue-900/15">
+        {/* tab bar */}
+        <div className="hide-scrollbar overflow-x-auto border-b border-line px-3 sm:px-6">
+          <div className="flex min-w-max items-center gap-1 sm:gap-3">
+            {tabs.map(({ id, label, Icon }) => {
+              const isActive = active === id;
+              return (
+                <button
+                  key={id}
+                  type="button"
+                  onClick={() => {
+                    setActive(id);
+                    setSubmitted(null);
+                  }}
+                  aria-current={isActive ? "page" : undefined}
+                  className={cn(
+                    "relative flex items-center gap-2 whitespace-nowrap px-3 pb-4 pt-5 text-[12px] font-semibold uppercase tracking-[0.12em] transition-colors sm:px-4",
+                    isActive ? "text-blue-600" : "text-ink/45 hover:text-ink/80"
+                  )}
+                >
+                  <Icon className={cn("h-4 w-4", isActive ? "text-blue-500" : "text-ink/40")} />
+                  {label}
+                  {isActive && (
+                    <span className="absolute inset-x-2 -bottom-px h-0.5 rounded-full bg-blue-500" />
+                  )}
+                </button>
+              );
+            })}
           </div>
-
-          {/* panel */}
-          <form onSubmit={handleSubmit} className="px-5 py-6 sm:px-7 sm:py-7">
-            {active === "book" && <BookingPanel />}
-            {active === "hotel" && <BookingPanel hotel />}
-            {active !== "book" && active !== "hotel" && <SimplePanel tab={active} />}
-          </form>
         </div>
 
-        {submitted && (
-          <div className="mt-4 rounded-2xl border border-line bg-blue-50 px-6 py-4 text-fluid-sm text-ink/70">
-            Sample only — this preview isn&rsquo;t connected to a live booking system yet.
-          </div>
-        )}
+        {/* panel */}
+        <form onSubmit={handleSubmit} className="px-5 py-6 sm:px-7 sm:py-7">
+          {active === "book" && <BookingPanel />}
+          {active === "hotel" && <BookingPanel hotel />}
+          {active !== "book" && active !== "hotel" && <SimplePanel tab={active} />}
+        </form>
       </div>
+
+      {submitted && (
+        <div className="mt-4 rounded-2xl border border-line bg-blue-50 px-6 py-4 text-fluid-sm text-ink/70">
+          Sample only — this preview isn&rsquo;t connected to a live booking system yet.
+        </div>
+      )}
+    </div>
+    </CityListId.Provider>
+  );
+}
+
+export function FlightSearch() {
+  return (
+    // Pulled hard up into the hero's floor: booking is the primary action, so
+    // the panel should read as the hero's own footer rather than as the next
+    // section down. The hero's last frame is empty studio floor, which is
+    // exactly what the card wants to sit on.
+    <section id="book" className="relative z-20 -mt-[30svh] px-gutter sm:-mt-[34svh]">
+      <FlightSearchCard className="mx-auto max-w-shell" />
     </section>
   );
 }

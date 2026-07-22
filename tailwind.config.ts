@@ -74,9 +74,15 @@ const config: Config = {
         "fluid-display": "clamp(3.5rem, 1.8rem + 7vw, 10rem)",
       },
       spacing: {
-        "section-sm": "clamp(3rem, 2rem + 4vw, 6rem)",
-        "section-md": "clamp(5rem, 3rem + 7vw, 9rem)",
-        "section-lg": "clamp(7rem, 4rem + 10vw, 13rem)",
+        // The lower bound of each clamp is what a phone actually gets, and it
+        // was set from the desktop end — 112px of dead air above and below every
+        // section, which on a 390px screen reads as sections that have come
+        // apart rather than as breathing room. The minimums are tuned for the
+        // small screen now; the vw term still carries the desktop values, which
+        // are unchanged from ~1024px up.
+        "section-sm": "clamp(2.25rem, 0.75rem + 5vw, 6rem)",
+        "section-md": "clamp(3.25rem, 1rem + 9vw, 9rem)",
+        "section-lg": "clamp(4.5rem, 1.5rem + 12.8vw, 13rem)",
         gutter: "clamp(1.25rem, 1rem + 2vw, 3.5rem)",
       },
       maxWidth: {

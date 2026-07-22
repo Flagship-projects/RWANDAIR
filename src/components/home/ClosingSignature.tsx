@@ -153,7 +153,7 @@ export function ClosingSignature() {
     <section
       ref={rootRef}
       aria-label="RwandAir — Fly the dream of Africa"
-      className="relative h-[280vh] bg-blue-500"
+      className="relative h-[190svh] bg-blue-500 md:h-[280vh]"
     >
       <div className="sticky top-0 h-[100svh] overflow-hidden">
         {/* Deep-blue field with a warm centre glow behind the lockup */}
