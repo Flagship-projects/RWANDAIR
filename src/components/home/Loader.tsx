@@ -43,16 +43,29 @@ export function Loader() {
   if (!visible || skip) return null;
 
   return (
+    // Deep brand blue, not paper. The transparent lockup ("Logo 2") is the
+    // white-on-dark cut of the mark — the same asset the closing signature
+    // uses — so the site now opens and closes on the identical blue lockup,
+    // and the loader lifting away to the white hero is the first transition
+    // the visitor sees. (The old loader used mark.png, which is a flat opaque
+    // rectangle: that was the "logo with a background".)
     <div
       ref={rootRef}
-      className="fixed inset-0 z-[100] flex flex-col items-center justify-center gap-6 bg-paper"
+      className="fixed inset-0 z-[100] flex flex-col items-center justify-center gap-8 bg-[radial-gradient(120%_90%_at_50%_45%,#0a63bd_0%,#0050a0_38%,#00305f_100%)]"
       aria-hidden="true"
     >
-      <div ref={markRef} className="opacity-0">
-        <Image src="/assets/brand/mark.png" alt="" width={56} height={56} className="h-12 w-auto" />
+      <div ref={markRef} className="opacity-0 px-gutter">
+        <Image
+          src="/assets/brand/logotype-transparent.png"
+          alt=""
+          width={1081}
+          height={298}
+          priority
+          className="h-auto w-[min(62vw,340px)]"
+        />
       </div>
-      <div className="h-px w-40 overflow-hidden bg-line">
-        <div ref={barRef} className="h-full w-full bg-blue-500" />
+      <div className="h-px w-40 overflow-hidden bg-white/20">
+        <div ref={barRef} className="h-full w-full bg-gold-400" />
       </div>
     </div>
   );

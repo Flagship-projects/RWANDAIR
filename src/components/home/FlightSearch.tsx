@@ -1,6 +1,15 @@
 "use client";
 
-import { FormEvent, ReactNode, createContext, useContext, useId, useState } from "react";
+import {
+  FormEvent,
+  ReactNode,
+  createContext,
+  useContext,
+  useEffect,
+  useId,
+  useRef,
+  useState,
+} from "react";
 import { cn } from "@/lib/cn";
 import { destinations } from "@/lib/data";
 
@@ -323,6 +332,100 @@ function SubmitButton({ label }: { label: string }) {
   );
 }
 
+/* --------------------------------- tab bar -------------------------------- */
+
+/**
+ * Six tabs never fit a phone, and the old strip just clipped at the card edge —
+ * "Book a Flight" and "Flight + Hotel" looked like the whole offer. Three things
+ * now say otherwise, without adding chrome on a desktop where they all fit:
+ *
+ *  - the strip is padded so a tab is always cut mid-word at the edge rather than
+ *    landing flush against it (a clean edge reads as the end of the list),
+ *  - the cut is softened by a fade, so it reads as "continues" not "cropped",
+ *  - and the fade carries a tappable chevron, because on touch the cheapest way
+ *    to discover a scroller is to be handed a button that scrolls it.
+ *
+ * All three appear only on the side that actually has more to show.
+ */
+function TabBar({ active, onSelect }: { active: TabId; onSelect: (id: TabId) => void }) {
+  const scrollerRef = useRef<HTMLDivElement>(null);
+  const [more, setMore] = useState({ start: false, end: false });
+
+  useEffect(() => {
+    const el = scrollerRef.current;
+    if (!el) return;
+    const update = () =>
+      setMore({
+        start: el.scrollLeft > 4,
+        end: el.scrollLeft + el.clientWidth < el.scrollWidth - 4,
+      });
+    update();
+    el.addEventListener("scroll", update, { passive: true });
+    const ro = new ResizeObserver(update);
+    ro.observe(el);
+    return () => {
+      el.removeEventListener("scroll", update);
+      ro.disconnect();
+    };
+  }, []);
+
+  function nudge(dir: 1 | -1) {
+    scrollerRef.current?.scrollBy({ left: dir * 180, behavior: "smooth" });
+  }
+
+  return (
+    <div className="relative border-b border-line">
+      <div ref={scrollerRef} className="hide-scrollbar overflow-x-auto">
+        {/* the trailing pad is what guarantees a partial tab at the edge */}
+        <div className="flex min-w-max items-center gap-1 px-3 pr-14 sm:gap-3 sm:px-6 sm:pr-6">
+          {tabs.map(({ id, label, Icon }) => {
+            const isActive = active === id;
+            return (
+              <button
+                key={id}
+                type="button"
+                onClick={() => onSelect(id)}
+                aria-current={isActive ? "page" : undefined}
+                className={cn(
+                  "relative flex items-center gap-2 whitespace-nowrap px-3 pb-4 pt-5 text-[12px] font-semibold uppercase tracking-[0.12em] transition-colors sm:px-4",
+                  isActive ? "text-blue-600" : "text-ink/45 hover:text-ink/80"
+                )}
+              >
+                <Icon className={cn("h-4 w-4", isActive ? "text-blue-500" : "text-ink/40")} />
+                {label}
+                {isActive && (
+                  <span className="absolute inset-x-2 -bottom-px h-0.5 rounded-full bg-blue-500" />
+                )}
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
+      {more.start && (
+        <button
+          type="button"
+          aria-label="Previous options"
+          onClick={() => nudge(-1)}
+          className="absolute inset-y-0 left-0 flex w-12 items-center justify-start bg-gradient-to-r from-white via-white/90 to-transparent pl-1 text-ink/50"
+        >
+          <IconChevron className="h-4 w-4 rotate-90" />
+        </button>
+      )}
+      {more.end && (
+        <button
+          type="button"
+          aria-label="More booking options"
+          onClick={() => nudge(1)}
+          className="absolute inset-y-0 right-0 flex w-14 items-center justify-end bg-gradient-to-l from-white via-white/90 to-transparent pr-1 text-ink/50"
+        >
+          <IconChevron className="h-4 w-4 -rotate-90" />
+        </button>
+      )}
+    </div>
+  );
+}
+
 /* --------------------------------- widget --------------------------------- */
 
 /**
@@ -350,38 +453,10 @@ export function FlightSearchCard({ className }: { className?: string }) {
       </datalist>
 
       <div className="overflow-hidden rounded-[28px] border border-line bg-white shadow-2xl shadow-blue-900/15">
-        {/* tab bar */}
-        <div className="hide-scrollbar overflow-x-auto border-b border-line px-3 sm:px-6">
-          <div className="flex min-w-max items-center gap-1 sm:gap-3">
-            {tabs.map(({ id, label, Icon }) => {
-              const isActive = active === id;
-              return (
-                <button
-                  key={id}
-                  type="button"
-                  onClick={() => {
-                    setActive(id);
-                    setSubmitted(null);
-                  }}
-                  aria-current={isActive ? "page" : undefined}
-                  className={cn(
-                    "relative flex items-center gap-2 whitespace-nowrap px-3 pb-4 pt-5 text-[12px] font-semibold uppercase tracking-[0.12em] transition-colors sm:px-4",
-                    isActive ? "text-blue-600" : "text-ink/45 hover:text-ink/80"
-                  )}
-                >
-                  <Icon className={cn("h-4 w-4", isActive ? "text-blue-500" : "text-ink/40")} />
-                  {label}
-                  {isActive && (
-                    <span className="absolute inset-x-2 -bottom-px h-0.5 rounded-full bg-blue-500" />
-                  )}
-                </button>
-              );
-            })}
-          </div>
-        </div>
+        <TabBar active={active} onSelect={(id) => { setActive(id); setSubmitted(null); }} />
 
         {/* panel */}
-        <form onSubmit={handleSubmit} className="px-5 py-6 sm:px-7 sm:py-7">
+        <form onSubmit={handleSubmit} className="px-4 py-5 sm:px-7 sm:py-7">
           {active === "book" && <BookingPanel />}
           {active === "hotel" && <BookingPanel hotel />}
           {active !== "book" && active !== "hotel" && <SimplePanel tab={active} />}
@@ -404,7 +479,10 @@ export function FlightSearch() {
     // the panel should read as the hero's own footer rather than as the next
     // section down. The hero's last frame is empty studio floor, which is
     // exactly what the card wants to sit on.
-    <section id="book" className="relative z-20 -mt-[30svh] px-gutter sm:-mt-[34svh]">
+    // A phone gives up ~40px of card to the page gutter, which is a lot when
+    // the fields inside are already stacked — the widget gets a tighter margin
+    // of its own and hands the width back to the form.
+    <section id="book" className="relative z-20 -mt-[30svh] px-3 sm:-mt-[34svh] sm:px-gutter">
       <FlightSearchCard className="mx-auto max-w-shell" />
     </section>
   );

@@ -138,12 +138,19 @@ export function TaxiScene({
       // the taxi itself: one constant, unhurried roll across the floor.
       // linear on purpose — an eased taxi reads as a slide, not as weight.
       //
-      // The hero uses the SAME sweep as the scene (user's call, 2026-07-22):
-      // the page lands on roughly the front third of the aircraft entering at
-      // the left, and scrolling walks the whole airframe across the frame and
-      // out. Centring it on load instead left it clipped on both edges with no
-      // travel to explain the crop — this reads as an aircraft arriving.
-      tl.fromTo(".taxi-plane", { xPercent: -62 }, { xPercent: 62, duration: 1 }, 0);
+      // The hero's roll is shifted later than the scene's. At the scene's -62
+      // start only the cockpit is in frame, which is right for a passing beat
+      // but too little aircraft to open a site on; -44 lands the nose around
+      // three fifths across with the forward fuselage, titles and gear read (the
+      // framing the user picked), and it is still the exact value the scrub
+      // begins at, so nothing moves when the scroll starts. It runs further out
+      // to compensate, clearing the floor for the booking panel.
+      tl.fromTo(
+        ".taxi-plane",
+        { xPercent: hero ? -44 : -62 },
+        { xPercent: hero ? 80 : 62, duration: 1 },
+        0
+      );
 
       if (hero) {
         // The booking panel rises over the still-pinned stage, so the two blocks
@@ -271,7 +278,7 @@ export function TaxiScene({
            below it, at the same presence as the Journey scene — it is the first
            thing the site says, so it is sized to be the loudest */
         [data-taxi-variant="hero"] .taxi-plane {
-          --plate-w: min(1200px, 120vw);
+          --plate-w: min(1260px, 126vw);
           --plate-y: 50%;
         }
         /* a touch smaller than the section scale — the hero has more to say, and
@@ -291,7 +298,7 @@ export function TaxiScene({
              small between the two copy blocks — so push it well past the frame,
              matching the scene's mobile presence */
           [data-taxi-variant="hero"] .taxi-plane {
-            --plate-w: 200vw;
+            --plate-w: 210vw;
             /* lifted off the true centre: the copy block below is the taller of
                the two, and at this scale a dead-centre plate leaves a visible
                band of empty floor between the headline and the fuselage */
@@ -323,7 +330,7 @@ export function TaxiScene({
           /* the hero's paragraph is the first thing to go on a landscape phone:
              headline + buttons are what the visitor actually needs there */
           [data-taxi-variant="hero"] .taxi-plane {
-            --plate-w: 84vw;
+            --plate-w: 88vw;
             --plate-y: 26%;
           }
           [data-taxi-variant="hero"] .taxi-body {

@@ -149,11 +149,16 @@ export function BookingDock() {
           // inside it never receives the gesture — the panel looked frozen on a
           // phone. `data-lenis-prevent` is Lenis's own opt-out for exactly this.
           data-lenis-prevent
+          // Anchored just under the header, not to the bottom edge. Bottom
+          // anchoring meant a short panel opened halfway down the screen,
+          // disconnected from the top of the page; from here it always starts
+          // in the same place and simply grows downward. The top offset clears
+          // the header and leaves the close button its own row above the card.
           className={cn(
-            "absolute inset-x-0 bottom-0 mx-auto max-h-[92svh] w-full max-w-shell overflow-y-auto overscroll-contain px-gutter focus:outline-none",
-            "pb-[max(1.25rem,env(safe-area-inset-bottom))] pt-2",
+            "absolute inset-x-0 top-[4.25rem] mx-auto max-h-[calc(100svh-5rem)] w-full max-w-shell overflow-y-auto overscroll-contain px-3 focus:outline-none sm:top-[4.75rem] sm:px-gutter",
+            "pb-[max(1.25rem,env(safe-area-inset-bottom))] pt-1",
             "transition-transform duration-[650ms] ease-premium",
-            open ? "translate-y-0" : "translate-y-full"
+            open ? "translate-y-0" : "translate-y-[130%]"
           )}
           style={{ WebkitOverflowScrolling: "touch" }}
         >
