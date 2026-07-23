@@ -93,6 +93,12 @@ export function JourneyHero() {
       id="journey-0"
       data-journey-chapter="0"
       className="relative h-[130svh] overflow-hidden opacity-0"
+      // The chapter is taller than its sticky stage, so a band of the section's
+      // own background shows through beneath the sky as it scrolls away. Left
+      // transparent it revealed the page's navy and read as a hard blue block
+      // before the white taxi scene. A light wash that resolves to the studio
+      // white makes that band a seamless continuation into the next scene.
+      style={{ background: "linear-gradient(180deg,#cfe0f0 0%,#e7eff6 52%,#fbfbfd 100%)" }}
     >
       <div className="sticky top-0 stage-vh overflow-hidden">
         {/* clean brand-blue sky → warm horizon */}
@@ -103,10 +109,13 @@ export function JourneyHero() {
               "linear-gradient(180deg,#0b3d84 0%,#1559a6 30%,#3f83c4 52%,#89b6de 72%,#d9e4ee 86%,#f4ddc0 100%)",
           }}
         />
-        {/* the deeper blue Chapter 2 opens in */}
+        {/* On exit the frame brightens rather than darkens: the aircraft lifts
+            away into light and the sky whites out into the studio floor of the
+            taxi scene that follows — one continuous, brightening progression
+            instead of a cut to a blue block. */}
         <div
           className="dream-dusk absolute inset-0 opacity-0"
-          style={{ background: "linear-gradient(180deg,#07306a 0%,#0a3d7c 60%,#12509b 100%)" }}
+          style={{ background: "linear-gradient(180deg,#dbe7f2 0%,#eef3f7 52%,#fcfcfe 100%)" }}
         />
 
         {/* sun glow low on the horizon */}

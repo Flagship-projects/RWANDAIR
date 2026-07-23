@@ -35,7 +35,7 @@ export function TaxiHero() {
           </span>
         </span>
       }
-      body="Kigali to the far corners of the continent — and beyond. One of the youngest fleets in the sky, flown as though every journey were our own."
+      body="From Kigali across Africa and beyond, aboard one of the youngest fleets in the sky."
       actions={
         <>
           <Button href="/#book" variant="primary">

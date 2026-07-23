@@ -28,9 +28,44 @@ function Caret({ className }: { className?: string }) {
   );
 }
 
+/** Play glyph — signals "The Journey" is an experience to enter, not a page. */
+function PlayIcon({ className }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" fill="currentColor" className={cn("h-3 w-3", className)} aria-hidden>
+      <path d="M8 5v14l11-7z" />
+    </svg>
+  );
+}
+
+/**
+ * "The Journey" as a first-class action, not a buried nav link. It sits in the
+ * right-hand action zone beside "Book a flight" with equal weight but a distinct
+ * role: a soft blue pill with a play glyph reads as "enter the experience",
+ * where the neutral outline of Book a flight reads as the transactional CTA.
+ */
+function JourneyAction({ onClick, className }: { onClick?: () => void; className?: string }) {
+  return (
+    <a
+      href="/journey"
+      onClick={onClick}
+      className={cn(
+        "focus-ring group/journey inline-flex items-center justify-center gap-2 rounded-full border border-blue-100 bg-blue-50 text-fluid-sm font-medium text-blue-600 transition-colors duration-300 ease-premium hover:border-blue-500 hover:bg-blue-500 hover:text-white",
+        className
+      )}
+    >
+      <PlayIcon className="transition-transform duration-300 ease-premium group-hover/journey:scale-110" />
+      The Journey
+    </a>
+  );
+}
+
 export function Nav() {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
+
+  // "The Journey" is promoted to a dedicated action (right side / mobile CTA),
+  // so it comes out of the inline link row to avoid saying it twice.
+  const menuLinks = navLinks.filter((l) => l.href !== "/journey");
 
   useEffect(() => {
     function onScroll() {
@@ -71,7 +106,7 @@ export function Nav() {
 
         {/* ============ desktop: real IA with hover dropdowns ============ */}
         <nav className="hidden items-center gap-7 lg:flex">
-          {navLinks.map((link) => (
+          {menuLinks.map((link) => (
             <div key={link.label} className="group relative">
               <a
                 href={link.href}
@@ -92,7 +127,12 @@ export function Nav() {
                     "group-focus-within:pointer-events-auto group-focus-within:translate-y-0 group-focus-within:opacity-100"
                   )}
                 >
-                  <div className="min-w-[230px] rounded-2xl border border-line bg-paper/97 p-2 shadow-[0_24px_60px_-20px_rgba(3,26,58,0.25)] backdrop-blur-md">
+                  {/* bg-paper/95 (not /97): the /97 opacity class was never
+                      emitted by Tailwind, so the panel rendered fully
+                      transparent and the page bled through. /95 is a real
+                      generated step — near-opaque and legible, with the blur and
+                      a stronger border keeping the glass feel. */}
+                  <div className="min-w-[230px] rounded-2xl border border-line-strong bg-paper/95 p-2 shadow-[0_28px_64px_-18px_rgba(3,26,58,0.4)] backdrop-blur-xl">
                     {link.children.map((child) =>
                       child.external ? (
                         <a
@@ -122,7 +162,8 @@ export function Nav() {
           ))}
         </nav>
 
-        <div className="hidden lg:block">
+        <div className="hidden items-center gap-3 lg:flex">
+          <JourneyAction className="px-5 py-2.5" />
           <Button href="/#book" variant="outline" className="!px-6 !py-2.5" onClick={bookingClick()}>
             Book a flight
           </Button>
@@ -154,13 +195,13 @@ export function Nav() {
       {/* ============ mobile: grouped accordion of the same IA ============ */}
       <div
         className={cn(
-          "grid overflow-hidden bg-paper/97 backdrop-blur-md transition-[grid-template-rows] duration-500 ease-premium lg:hidden",
+          "grid overflow-hidden bg-paper/95 backdrop-blur-xl transition-[grid-template-rows] duration-500 ease-premium lg:hidden",
           open ? "grid-rows-[1fr]" : "grid-rows-[0fr]"
         )}
       >
         <div className="overflow-hidden">
           <nav className="flex max-h-[calc(100svh-72px)] flex-col overflow-y-auto px-gutter pb-8 pt-2">
-            {navLinks.map((link) => (
+            {menuLinks.map((link) => (
               <div key={link.label} className="border-b border-line py-4">
                 <a
                   href={link.href}
@@ -187,10 +228,11 @@ export function Nav() {
                 )}
               </div>
             ))}
+            <JourneyAction onClick={() => setOpen(false)} className="mt-6 w-full px-7 py-3.5" />
             <Button
               href="/#book"
               variant="primary"
-              className="mt-6 w-full"
+              className="mt-3 w-full"
               onClick={bookingClick(() => setOpen(false))}
             >
               Book a flight

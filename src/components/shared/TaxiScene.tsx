@@ -280,7 +280,7 @@ export function TaxiScene({
                 // headline. Generous leading and a touch of tracking give it
                 // the breathing room; the muted ink keeps the display type and
                 // the aircraft as the loud things on screen.
-                <p className="taxi-body mx-auto max-w-md text-fluid-body font-light leading-loose tracking-[0.015em] text-ink-muted">
+                <p className="taxi-body mx-auto max-w-md text-balance text-fluid-body font-light leading-loose tracking-[0.015em] text-ink-muted">
                   {body}
                 </p>
               ) : null}
