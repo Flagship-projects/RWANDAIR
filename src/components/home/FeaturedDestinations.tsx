@@ -107,6 +107,23 @@ export function FeaturedDestinations() {
     return () => ctx.revert();
   }, []);
 
+  // The mobile and reduced-motion branches below replace this section's ~500vh
+  // desktop scroll-jack with a short carousel/list. That swap only happens on the
+  // SECOND render (after the effect above flips the flag), and it shortens the
+  // page by roughly four viewports. By then every `once` reveal in the sections
+  // that follow (Loyalty → the footer) has already measured its "top 82%" trigger
+  // against the tall first render, so those triggers now sit ~4 screens too low:
+  // the copy stays hidden on the way down and only appears after you scroll past
+  // and back (which is the exact bug that was reported, phone-only, below this
+  // section). Once the collapsed layout has painted, re-measure every trigger so
+  // they line up with where the sections actually are.
+  useEffect(() => {
+    if (!isMobile && !reduced) return;
+    ensureGsapRegistered();
+    const id = requestAnimationFrame(() => ScrollTrigger.refresh());
+    return () => cancelAnimationFrame(id);
+  }, [isMobile, reduced]);
+
   /* ------- reduced-motion / no-JS fallback: a clean vertical list ------- */
   if (reduced) {
     return (

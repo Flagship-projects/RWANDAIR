@@ -26,6 +26,18 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className={`${display.variable} ${sans.variable}`}>
+      <head>
+        {/* The hero's LCP: the studio-floor A330 plate. Preloading it means it is
+            in flight before the client bundle mounts, so the hero isn't a blank
+            floor while the intro plays (worst on repeat visits, where the loader
+            is skipped and there's nothing else on screen). */}
+        <link
+          rel="preload"
+          as="image"
+          href="/assets/aircraft/side-view-floor-clean.jpg"
+          fetchPriority="high"
+        />
+      </head>
       <body>{children}</body>
     </html>
   );
