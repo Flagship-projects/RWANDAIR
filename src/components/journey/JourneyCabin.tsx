@@ -266,52 +266,58 @@ export function JourneyCabin() {
     const root = rootRef.current;
     const track = trackRef.current;
     if (!root || !track) return;
-    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (reduced) return;
 
     const ctx = gsap.context(() => {
-      const panels = gsap.utils.toArray<HTMLElement>(".cabin-panel", track);
-      const scrollLen = () => track.scrollWidth - window.innerWidth;
+      const mm = gsap.matchMedia();
 
-      // horizontal walk, pinned
-      const tween = gsap.to(track, {
-        x: () => -scrollLen(),
-        ease: "none",
-        scrollTrigger: {
-          trigger: root,
-          start: "top top",
-          end: () => "+=" + scrollLen(),
-          scrub: 1,
-          pin: true,
-          anticipatePin: 1,
-          invalidateOnRefresh: true,
-        },
-      });
+      // The pinned horizontal walk only runs on large screens. Below that the
+      // panels stack vertically (see the JSX) — scroll-jacking sideways on a
+      // phone is poor UX, and a full-height image beside a copy column simply
+      // doesn't fit a 375px panel, which is what was crushing the type.
+      mm.add("(min-width: 1024px) and (prefers-reduced-motion: no-preference)", () => {
+        const panels = gsap.utils.toArray<HTMLElement>(".cabin-panel", track);
+        const scrollLen = () => track.scrollWidth - window.innerWidth;
 
-      // lighting shifts between cabins as each panel reaches centre
-      panels.forEach((panel) => {
-        const bg = panel.getAttribute("data-light");
-        if (!bg) return;
-        ScrollTrigger.create({
-          trigger: panel,
-          containerAnimation: tween,
-          start: "left center",
-          end: "right center",
-          onToggle: (self) => {
-            if (self.isActive && bgRef.current) gsap.to(bgRef.current, { background: bg, duration: 1.2, ease: "power2.inOut" });
+        // horizontal walk, pinned
+        const tween = gsap.to(track, {
+          x: () => -scrollLen(),
+          ease: "none",
+          scrollTrigger: {
+            trigger: root,
+            start: "top top",
+            end: () => "+=" + scrollLen(),
+            scrub: 1,
+            pin: true,
+            anticipatePin: 1,
+            invalidateOnRefresh: true,
           },
         });
-      });
 
-      // per-panel reveal of image + copy
-      panels.forEach((panel) => {
-        gsap.from(panel.querySelectorAll(".cabin-reveal"), {
-          opacity: 0,
-          y: 40,
-          duration: 1,
-          ease: "power3.out",
-          stagger: 0.12,
-          scrollTrigger: { trigger: panel, containerAnimation: tween, start: "left 75%" },
+        // lighting shifts between cabins as each panel reaches centre
+        panels.forEach((panel) => {
+          const bg = panel.getAttribute("data-light");
+          if (!bg) return;
+          ScrollTrigger.create({
+            trigger: panel,
+            containerAnimation: tween,
+            start: "left center",
+            end: "right center",
+            onToggle: (self) => {
+              if (self.isActive && bgRef.current) gsap.to(bgRef.current, { background: bg, duration: 1.2, ease: "power2.inOut" });
+            },
+          });
+        });
+
+        // per-panel reveal of image + copy
+        panels.forEach((panel) => {
+          gsap.from(panel.querySelectorAll(".cabin-reveal"), {
+            opacity: 0,
+            y: 40,
+            duration: 1,
+            ease: "power3.out",
+            stagger: 0.12,
+            scrollTrigger: { trigger: panel, containerAnimation: tween, start: "left 75%" },
+          });
         });
       });
     }, root);
@@ -335,15 +341,16 @@ export function JourneyCabin() {
         />
       </figure>
 
-      {/* pinned horizontal walkthrough */}
-      <div ref={rootRef} className="relative h-[100svh] overflow-hidden">
-        <div ref={bgRef} className="absolute inset-0" style={{ background: CABINS[0].light }} />
+      {/* Walkthrough — a vertical stack on phones/tablets, and a pinned
+          horizontal walk from lg up (wired in the effect via gsap.matchMedia). */}
+      <div ref={rootRef} className="relative overflow-hidden lg:h-[100svh] lg:[height:100lvh]">
+        <div ref={bgRef} className="absolute inset-0 hidden lg:block" style={{ background: CABINS[0].light }} />
         <div
           ref={trackRef}
-          className="absolute inset-y-0 left-0 flex h-full items-center will-change-transform"
+          className="relative flex flex-col gap-section-md pb-section-md lg:absolute lg:inset-y-0 lg:left-0 lg:h-full lg:flex-row lg:items-center lg:gap-0 lg:pb-0 lg:will-change-transform"
         >
           {/* intro card */}
-          <div className="cabin-panel flex h-full w-[92vw] shrink-0 flex-col justify-center px-gutter sm:w-[70vw] lg:w-[46vw]">
+          <div className="cabin-panel flex w-full flex-col justify-center px-gutter lg:h-full lg:w-[46vw]">
             <p className="cabin-reveal mb-6 text-fluid-xs uppercase tracking-[0.32em] text-white/65">
               Step inside
             </p>
@@ -355,7 +362,10 @@ export function JourneyCabin() {
               one home to the next.
             </p>
             <p className="cabin-reveal mt-10 flex items-center gap-3 text-fluid-xs uppercase tracking-[0.2em] text-white/45">
-              Walk forward <span aria-hidden>→</span>
+              <span className="lg:hidden">Scroll on</span>
+              <span className="hidden lg:inline">Walk forward</span>
+              <span aria-hidden className="lg:hidden">↓</span>
+              <span aria-hidden className="hidden lg:inline">→</span>
             </p>
           </div>
 
@@ -364,10 +374,10 @@ export function JourneyCabin() {
             <div
               key={c.id}
               data-light={c.light}
-              className="cabin-panel flex h-full w-[94vw] shrink-0 items-center gap-8 px-gutter sm:w-[80vw] lg:w-[74vw] lg:gap-14"
+              className="cabin-panel flex w-full flex-col gap-6 px-gutter lg:h-full lg:w-[74vw] lg:flex-row lg:items-center lg:gap-14"
             >
-              {/* hero image */}
-              <div className="cabin-reveal relative aspect-[4/5] h-[58vh] shrink-0 overflow-hidden rounded-[28px] shadow-[0_50px_120px_-40px_rgba(2,16,40,0.8)]">
+              {/* hero image — full-width on mobile, a tall plate beside the copy on lg */}
+              <div className="cabin-reveal relative aspect-[4/3] w-full shrink-0 overflow-hidden rounded-[28px] shadow-[0_50px_120px_-40px_rgba(2,16,40,0.8)] lg:aspect-[4/5] lg:h-[58vh] lg:w-auto">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img src={c.img} alt={c.name} className="h-full w-full object-cover" />
                 <div className="pointer-events-none absolute inset-0 ring-1 ring-inset ring-white/10" />
@@ -398,7 +408,7 @@ export function JourneyCabin() {
           ))}
 
           {/* tail card */}
-          <div className="cabin-panel flex h-full w-[80vw] shrink-0 flex-col justify-center px-gutter lg:w-[40vw]">
+          <div className="cabin-panel flex w-full flex-col justify-center px-gutter lg:h-full lg:w-[40vw]">
             <p className="cabin-reveal font-display text-fluid-h3 font-light italic leading-tight text-white/75">
               And beyond the window, <br />a continent waits.
             </p>

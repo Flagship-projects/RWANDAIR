@@ -104,7 +104,7 @@ export function JourneyAfrica() {
       className="relative"
       style={{ height: `${PLACES.length * 100}vh`, background: DAYBREAK_EXIT_SKY }}
     >
-      <div className="atlas-stage relative h-[100svh] overflow-hidden">
+      <div className="atlas-stage stage-vh relative overflow-hidden">
         {PLACES.map((p) => (
           <div key={p.name} className="atlas-slide absolute inset-0">
             {/* eslint-disable-next-line @next/next/no-img-element */}

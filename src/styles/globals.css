@@ -17,6 +17,12 @@
 
 html {
   background: #f6f3ec;
+  /* Belt-and-suspenders against any child (an over-wide plate, a pinned
+     horizontal track) making the page pannable sideways and revealing the paper
+     background as a margin on the right. `clip` — never `hidden` — because the
+     pages lean on `position: sticky`, which a scroll-container ancestor breaks. */
+  overflow-x: clip;
+  max-width: 100%;
 }
 
 html.lenis {

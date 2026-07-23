@@ -32,7 +32,10 @@ export function JourneyFilm({
   return (
     <div
       className={cn(
-        "group relative aspect-video w-full overflow-hidden rounded-[24px] bg-[#041c3f]",
+        // A 16:9 plate reads as a thin letterbox strip on a tall phone, so the
+        // poster gets a taller 3:2 crop up to sm; the real 16:9 player only
+        // takes over from sm, where the width makes 16:9 look right.
+        "group relative aspect-[3/2] w-full overflow-hidden rounded-[24px] bg-[#041c3f] sm:aspect-video",
         "shadow-[0_40px_100px_-30px_rgba(2,14,36,0.8)] ring-1 ring-inset ring-white/10",
         className
       )}
@@ -72,13 +75,13 @@ export function JourneyFilm({
             </svg>
           </span>
 
-          {/* caption */}
-          <span className="pointer-events-none absolute inset-x-0 bottom-0 block p-7 sm:p-10">
-            <span className="mb-4 block text-fluid-xs uppercase tracking-[0.3em] text-gold-300/90">{kicker}</span>
-            <span className="block max-w-md font-display text-fluid-h3 font-light leading-[1.1] tracking-tight text-white">
+          {/* caption — lighter on a phone-sized plate, fuller once there's room */}
+          <span className="pointer-events-none absolute inset-x-0 bottom-0 block p-5 sm:p-10">
+            <span className="mb-2 block text-fluid-xs uppercase tracking-[0.3em] text-gold-300/90 sm:mb-4">{kicker}</span>
+            <span className="block max-w-md font-display text-fluid-lg font-light leading-[1.15] tracking-tight text-white sm:text-fluid-h3 sm:leading-[1.1]">
               {line}
             </span>
-            <span className="mt-5 inline-flex items-center gap-2 text-fluid-xs uppercase tracking-[0.22em] text-white/60">
+            <span className="mt-3 inline-flex items-center gap-2 text-fluid-xs uppercase tracking-[0.22em] text-white/60 sm:mt-5">
               Watch the film
               <span aria-hidden className="transition-transform duration-500 group-hover:translate-x-1">→</span>
             </span>

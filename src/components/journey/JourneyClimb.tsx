@@ -140,7 +140,7 @@ export function JourneyClimb() {
       data-journey-chapter="2"
       className="relative h-[560vh]"
     >
-      <div className="sticky top-0 h-[100svh] overflow-hidden">
+      <div className="sticky top-0 stage-vh overflow-hidden">
         {/* ---- the sky: one gradient, one slow deepening. Let it breathe. ---- */}
         <div
           className="absolute inset-0"

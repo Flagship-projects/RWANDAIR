@@ -94,7 +94,7 @@ export function JourneyHero() {
       data-journey-chapter="0"
       className="relative h-[130svh] overflow-hidden opacity-0"
     >
-      <div className="sticky top-0 h-[100svh] overflow-hidden">
+      <div className="sticky top-0 stage-vh overflow-hidden">
         {/* clean brand-blue sky → warm horizon */}
         <div
           className="dream-dawn absolute inset-0"

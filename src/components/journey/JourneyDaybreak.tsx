@@ -140,7 +140,7 @@ export function JourneyDaybreak() {
       className="relative"
       style={{ height: "420svh", background: DAYBREAK_EXIT_SKY }}
     >
-      <div className="dawn-stage relative h-[100svh] overflow-hidden">
+      <div className="dawn-stage stage-vh relative overflow-hidden">
         {/* ---------------- sky, stacked and cross-faded ---------------- */}
         {/* full morning — the base everything else sits on top of */}
         <div

@@ -66,7 +66,7 @@ export function JourneyArrival() {
       data-journey-chapter="6"
       className="relative h-[220vh] bg-[#07306a]"
     >
-      <div className="sticky top-0 flex h-[100svh] flex-col items-center justify-center overflow-hidden">
+      <div className="sticky top-0 flex stage-vh flex-col items-center justify-center overflow-hidden">
         {/* graded arrival sky */}
         <div className="absolute inset-0" style={{ background: "linear-gradient(180deg,#0a2a5e 0%,#25497a 40%,#6b5a7a 66%,#c98a5a 84%,#f2b878 100%)" }} />
         {/* golden horizon bloom rising from the bottom */}
