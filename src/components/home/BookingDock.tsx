@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { cn } from "@/lib/cn";
 import { setPageScrollLocked } from "@/lib/motion";
+import { registerBookingDock } from "@/lib/booking";
 import { FlightSearchCard } from "./FlightSearch";
 
 /**
@@ -59,6 +60,11 @@ export function BookingDock() {
       io.disconnect();
     };
   }, []);
+
+  /* Every "Book a flight" in the chrome opens this same panel, not just the
+     floating pill — the one in the nav used to jump to the #book anchor, which
+     on a long page reads as the button doing nothing. */
+  useEffect(() => registerBookingDock(() => setOpen(true)), []);
 
   /* --------- open state: freeze the page, trap Escape, restore focus -------- */
   useEffect(() => {
@@ -133,8 +139,10 @@ export function BookingDock() {
           aria-label="Close booking"
           onClick={() => setOpen(false)}
           className={cn(
-            "absolute inset-0 w-full cursor-default bg-ink/45 backdrop-blur-[3px] transition-opacity duration-500 ease-premium",
-            open ? "opacity-100" : "opacity-0"
+            "absolute inset-0 w-full cursor-default bg-ink/45 transition-opacity duration-500 ease-premium",
+            // the blur is gated on `open` too — a backdrop-filter left mounted
+            // over the whole page is a compositing cost with nothing to show
+            open ? "opacity-100 backdrop-blur-[3px]" : "opacity-0"
           )}
         />
 
@@ -154,11 +162,24 @@ export function BookingDock() {
           // disconnected from the top of the page; from here it always starts
           // in the same place and simply grows downward. The top offset clears
           // the header and leaves the close button its own row above the card.
+          //
+          // The closed state must NOT be a percentage translate. A percentage
+          // resolves against the element's own height, so it only hides a panel
+          // that is already about as tall as the viewport — on a desktop, where
+          // the card is wide and the form is short, 130% of ~410px left the
+          // whole thing sitting on screen. `visibility` is height-independent
+          // and genuinely removes it; it is in the transition list on purpose,
+          // because visibility steps to hidden only at the END of a transition
+          // (any interpolation involving `visible` stays visible), so the exit
+          // animation gets to play out in full and only then does the panel go
+          // away. The fixed wrapper means it never occupies layout either way.
           className={cn(
             "absolute inset-x-0 top-[4.25rem] mx-auto max-h-[calc(100svh-5rem)] w-full max-w-shell overflow-y-auto overscroll-contain px-3 focus:outline-none sm:top-[4.75rem] sm:px-gutter",
             "pb-[max(1.25rem,env(safe-area-inset-bottom))] pt-1",
-            "transition-transform duration-[650ms] ease-premium",
-            open ? "translate-y-0" : "translate-y-[130%]"
+            "transition-[opacity,transform,visibility] duration-500 ease-premium",
+            open
+              ? "visible translate-y-0 opacity-100"
+              : "invisible -translate-y-8 opacity-0"
           )}
           style={{ WebkitOverflowScrolling: "touch" }}
         >

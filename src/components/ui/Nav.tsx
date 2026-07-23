@@ -4,7 +4,21 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import { cn } from "@/lib/cn";
 import { navLinks } from "@/lib/data";
+import { openBooking } from "@/lib/booking";
 import { Button } from "./Button";
+
+/**
+ * "Book a flight" opens the booking dock wherever one is mounted. It keeps its
+ * `#book` href so it still works as a real link — for keyboard/middle-click, and
+ * on the pages that have no dock, where falling through to the in-page booking
+ * section is the right outcome.
+ */
+function bookingClick(after?: () => void) {
+  return (e: React.MouseEvent) => {
+    if (openBooking()) e.preventDefault();
+    after?.();
+  };
+}
 
 function Caret({ className }: { className?: string }) {
   return (
@@ -109,7 +123,7 @@ export function Nav() {
         </nav>
 
         <div className="hidden lg:block">
-          <Button href="/#book" variant="outline" className="!px-6 !py-2.5">
+          <Button href="/#book" variant="outline" className="!px-6 !py-2.5" onClick={bookingClick()}>
             Book a flight
           </Button>
         </div>
@@ -173,7 +187,12 @@ export function Nav() {
                 )}
               </div>
             ))}
-            <Button href="/#book" variant="primary" className="mt-6 w-full">
+            <Button
+              href="/#book"
+              variant="primary"
+              className="mt-6 w-full"
+              onClick={bookingClick(() => setOpen(false))}
+            >
               Book a flight
             </Button>
           </nav>
