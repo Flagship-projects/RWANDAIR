@@ -96,6 +96,12 @@ export function TaxiScene({
       // an intro on load and then simply holds. (The Journey scene instead
       // reveals its line mid-roll, which is a narrative beat, not a headline.)
       if (hero) {
+        // The supporting paragraph is deliberately NOT part of the load intro.
+        // It is revealed later, by the scroll — arriving with the aircraft's
+        // roll the way the Journey scene reveals its title line — so hold it
+        // hidden until the scrub calls for it below.
+        gsap.set(".taxi-body", { autoAlpha: 0, y: 14 });
+
         gsap
           .timeline({ defaults: { ease: "power3.out" } })
           // The intro must NOT touch xPercent: that channel belongs to the
@@ -117,9 +123,11 @@ export function TaxiScene({
           )
           .from(".taxi-rule", { scaleX: 0, duration: 1.1 }, 0.25)
           .from(".taxi-eyebrow", { opacity: 0, y: 12, duration: 0.9 }, 0.3)
-          .from(".taxi-head-line", { yPercent: 115, duration: 1.2, ease: "power4.out", stagger: 0.09 }, 0.4)
-          .from(".taxi-body", { opacity: 0, y: 16, duration: 0.9 }, 0.85)
-          .from(".taxi-actions", { opacity: 0, y: 16, duration: 0.9 }, 1);
+          .from(".taxi-head-line", { yPercent: 115, duration: 1.2, ease: "power4.out" }, 0.4)
+          .from(".taxi-actions", { opacity: 0, y: 16, duration: 0.9 }, 0.9)
+          // the scroll cue is the last thing to arrive — an unmistakable "there
+          // is more here, and it answers to scrolling, not dragging"
+          .from(".taxi-scroll-cue", { autoAlpha: 0, y: 6, duration: 0.9 }, 1.15);
       }
 
       const tl = gsap.timeline({
@@ -153,6 +161,23 @@ export function TaxiScene({
       );
 
       if (hero) {
+        // The paragraph arrives with the roll: as the aircraft first pulls
+        // forward it fades up into place, holds through the taxi, then leaves
+        // with its block as the booking card rises. This is the progressive,
+        // cinematic reveal — the line earns its moment instead of being handed
+        // over the instant the page loads.
+        tl.fromTo(
+          ".taxi-body",
+          { autoAlpha: 0, y: 14 },
+          { autoAlpha: 1, y: 0, duration: 0.14, ease: "power2.out" },
+          0.05
+        );
+
+        // The scroll cue's entire job is "there is more" — so it goes the
+        // instant the visitor acts on it. A short fade at the very top of the
+        // scrub means one flick of the thumb dismisses it.
+        tl.to(".taxi-scroll-cue", { autoAlpha: 0, duration: 0.05 }, 0);
+
         // The booking panel rises over the still-pinned stage, so the two blocks
         // leave at different times: the lower one clears out as the card reaches
         // it, while the headline holds above — for a beat you see the title card
@@ -240,14 +265,22 @@ export function TaxiScene({
               <p className="taxi-eyebrow mb-5 text-fluid-xs uppercase tracking-[0.34em] text-ink-muted">
                 {eyebrow}
               </p>
-              <Heading className="taxi-head mx-auto max-w-4xl font-display font-light leading-[0.98] tracking-tightest text-ink">
+              {/* max-w-5xl (not 4xl): the single-line headline at its desktop
+                  cap is almost exactly 4xl wide, so the wider shell keeps a
+                  safety margin against any glyph-width rounding clipping it. */}
+              <Heading className="taxi-head mx-auto max-w-5xl font-display font-light leading-[0.98] tracking-tightest text-ink">
                 {heading}
               </Heading>
             </div>
 
             <div className="taxi-copy taxi-copy-bottom absolute inset-x-0 bottom-[8%] z-10 mx-auto max-w-shell px-gutter text-center">
               {body ? (
-                <p className="taxi-body mx-auto max-w-xl text-fluid-lg font-light leading-relaxed text-ink-soft">
+                // Smaller, quieter and more spaced than the old subline — a
+                // premium caption under the promise rather than a second
+                // headline. Generous leading and a touch of tracking give it
+                // the breathing room; the muted ink keeps the display type and
+                // the aircraft as the loud things on screen.
+                <p className="taxi-body mx-auto max-w-md text-fluid-body font-light leading-loose tracking-[0.015em] text-ink-muted">
                   {body}
                 </p>
               ) : null}
@@ -256,6 +289,23 @@ export function TaxiScene({
                   {actions}
                 </div>
               ) : null}
+            </div>
+
+            {/* Scroll affordance — the fix for the mobile confusion where the
+                aircraft looks draggable. It names the interaction ("Scroll")
+                and a bead falls down the rail to say the movement answers to
+                the page, not to a swipe on the plane. It fades on the first
+                flick (see the scrub above), so it is only ever a first-run hint. */}
+            <div
+              className="taxi-scroll-cue pointer-events-none absolute inset-x-0 bottom-[2%] z-10 flex flex-col items-center gap-1.5"
+              aria-hidden
+            >
+              <span className="text-[10px] uppercase tracking-[0.32em] text-ink-muted">
+                Scroll
+              </span>
+              <span className="relative block h-[18px] w-px overflow-hidden rounded-full bg-ink/15">
+                <span className="taxi-scroll-bead absolute left-0 top-0 block h-2 w-px rounded-full bg-ink-soft" />
+              </span>
             </div>
           </>
         ) : (
@@ -281,10 +331,34 @@ export function TaxiScene({
           --plate-w: min(1260px, 126vw);
           --plate-y: 50%;
         }
-        /* a touch smaller than the section scale — the hero has more to say, and
-           the aircraft, not the type, is meant to be the loudest thing here */
+        /* the promise on one line. Sized in vw so "Fly the dream of Africa."
+           fills the width and stays on a single row from ~320px up, capping on
+           a desktop so it never outgrows its shell. whitespace-nowrap on the
+           line holds it together; the clamp is what keeps it from overflowing. */
         .taxi-head {
-          font-size: clamp(2.1rem, 1.2rem + 3.1vw, 4rem);
+          font-size: clamp(1.25rem, 6.3vw, 4.25rem);
+        }
+
+        /* the scroll cue's bead falls down its rail, on a loop, to read as
+           downward travel — "the page moves, not the plane" */
+        @keyframes taxi-bead {
+          0% {
+            transform: translateY(-8px);
+            opacity: 0;
+          }
+          28% {
+            opacity: 1;
+          }
+          72% {
+            opacity: 1;
+          }
+          100% {
+            transform: translateY(20px);
+            opacity: 0;
+          }
+        }
+        .taxi-scroll-bead {
+          animation: taxi-bead 1.9s cubic-bezier(0.5, 0, 0.5, 1) infinite;
         }
         /* on a narrow portrait screen a frame-width aircraft reads as a toy in a
            big empty room — go past the edges instead, so what crosses the screen
@@ -309,8 +383,10 @@ export function TaxiScene({
           [data-taxi-variant="hero"] .taxi-eyebrow {
             letter-spacing: 0.2em;
           }
+          /* lifted a little to leave a clear band at the very bottom for the
+             scroll cue — a phone has no room to spare under the two buttons */
           [data-taxi-variant="hero"] .taxi-copy-bottom {
-            bottom: 6%;
+            bottom: 8.5%;
           }
           [data-taxi-variant="hero"] .taxi-copy-top {
             top: 6%;
@@ -334,6 +410,11 @@ export function TaxiScene({
             --plate-y: 26%;
           }
           [data-taxi-variant="hero"] .taxi-body {
+            display: none;
+          }
+          /* no room for a scroll hint on a landscape phone — the headline and
+             actions are all that fit, and they already fill the frame */
+          [data-taxi-variant="hero"] .taxi-scroll-cue {
             display: none;
           }
         }

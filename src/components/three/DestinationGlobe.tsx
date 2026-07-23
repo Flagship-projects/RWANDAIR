@@ -263,12 +263,17 @@ type SpinState = { velocity: number; dragging: boolean };
 export function DestinationGlobe() {
   const wrapRef = useRef<HTMLDivElement>(null);
   const [inView, setInView] = useState(true);
-  const [coarse, setCoarse] = useState(false);
+  // Resolved synchronously (this component is client-only, ssr:false) so the
+  // Canvas mounts with the right camera framing, antialias and dpr on the very
+  // first paint rather than after a re-render — which matters because those
+  // props are read at Canvas init.
+  const [coarse] = useState(() =>
+    typeof window !== "undefined" && window.matchMedia("(pointer: coarse)").matches
+  );
   const [touched, setTouched] = useState(false);
   const spin = useRef<SpinState>({ velocity: 0, dragging: false }).current;
 
   useEffect(() => {
-    setCoarse(window.matchMedia("(pointer: coarse)").matches);
     const el = wrapRef.current;
     if (!el) return;
     const io = new IntersectionObserver(
@@ -318,7 +323,11 @@ export function DestinationGlobe() {
     >
       <Canvas
         frameloop={inView ? "always" : "never"}
-        camera={{ position: [0, 0.2, 10], fov: 30 }}
+        // Phones pull the camera in a little so the globe reads larger on a
+        // small screen without changing the desktop framing. 9.3 is as close as
+        // it goes before the outermost route arcs start to clip at the frame's
+        // top and bottom edge.
+        camera={{ position: [0, 0.2, coarse ? 9.3 : 10], fov: 30 }}
         gl={{ antialias: !coarse, alpha: true, powerPreference: "low-power" }}
         // phones do not need a 3× buffer for a dot globe, and the fill cost of
         // one is exactly where a mid-range device drops frames

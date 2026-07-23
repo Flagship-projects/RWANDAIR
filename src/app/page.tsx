@@ -32,11 +32,17 @@ export default function Home() {
             hero is still on disk at components/home/Hero.tsx, unused. */}
         <TaxiHero />
         <FlightSearch />
-        <CloudCorridor />
+        {/* Additional Services sits right under the booking widget: it's the most
+            practical, useful content for a first-time visitor, so it earns the
+            spot before the page turns cinematic. */}
+        <AdditionalServices />
         <DestinationsSection />
         <FeaturedDestinations />
+        {/* Cloud Corridor is no longer the second thing you see — it now bridges
+            the "where you can go" chapters into the DreamMiles climb, where a
+            flight-through-the-clouds beat reads as a continuation, not an ending. */}
+        <CloudCorridor />
         <Loyalty />
-        <AdditionalServices />
         <StopoverStrip />
         <FleetCabin />
         <TripPlanning />

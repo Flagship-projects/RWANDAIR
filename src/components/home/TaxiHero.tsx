@@ -19,24 +19,23 @@ export function TaxiHero() {
       variant="hero"
       eyebrow="RwandAir · The national carrier of Rwanda"
       heading={
-        <>
-          <span className="reveal-mask block overflow-hidden">
-            <span className="taxi-head-line block">Fly the dream</span>
-          </span>
-          <span className="reveal-mask block overflow-hidden">
-            <span className="taxi-head-line block">
-              of{" "}
-              {/* the sunshine from the tail fin, carried into the word it belongs
-                  to. Gradient biased to the deeper end of the gold so display
-                  type still clears contrast on a white floor. */}
-              <span className="bg-gradient-to-br from-gold-400 via-gold-500 to-[#a8690a] bg-clip-text italic text-transparent">
-                Africa.
-              </span>
+        // One line, held on one line wherever it can be: the phrase is the
+        // brand's whole promise, and breaking it across two lines cost it its
+        // balance. `taxi-head-line` is sized in the stylesheet to fit the
+        // viewport on a single row and only wraps on the very narrowest screens.
+        <span className="reveal-mask block overflow-hidden">
+          <span className="taxi-head-line block whitespace-nowrap">
+            Fly the dream of{" "}
+            {/* the sunshine from the tail fin, carried into the word it belongs
+                to. Gradient biased to the deeper end of the gold so display
+                type still clears contrast on a white floor. */}
+            <span className="bg-gradient-to-br from-gold-400 via-gold-500 to-[#a8690a] bg-clip-text italic text-transparent">
+              Africa.
             </span>
           </span>
-        </>
+        </span>
       }
-      body="From Kigali to the rest of the continent and beyond — on one of the youngest fleets in the sky, flown by people who treat every journey as their own."
+      body="Kigali to the far corners of the continent — and beyond. One of the youngest fleets in the sky, flown as though every journey were our own."
       actions={
         <>
           <Button href="/#book" variant="primary">

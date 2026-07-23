@@ -7,10 +7,19 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { ensureGsapRegistered } from "@/lib/motion";
 
 /**
- * "Fly through the clouds" — a pinned cinematic beat between the booking panel
- * and the route map. As you scroll, the camera pushes into a sea of clouds,
- * cloud banks rush past the lens and white out, a still message holds while the
- * world keeps moving (time-freeze), then the fog clears to reveal the globe.
+ * "Fly through the clouds" — a pinned cinematic beat that now sits deeper in the
+ * page, bridging the destination chapters into the DreamMiles climb. As you
+ * scroll, the camera pushes into a sea of clouds, cloud banks rush past the lens
+ * and white out, a still message holds while the world keeps moving
+ * (time-freeze), then the fog clears and hands you on.
+ *
+ * It used to read as an ending — a whited-out full stop right after booking.
+ * Two things fix that: the copy is now explicitly mid-journey ("the climb has
+ * only begun") and it previews what follows (miles becoming altitude, i.e.
+ * DreamMiles), and a "keep scrolling" cue surfaces as the fog clears so the beat
+ * hands off instead of concluding. The bottom feather resolves into the pale
+ * DreamMiles sky rather than paper, so the fly-through emerges into the very
+ * section it introduces.
  *
  * Uses CSS `position: sticky` (not a ScrollTrigger pin) so it never touches the
  * global pin/scroll bookkeeping the globe and fleet sequence rely on.
@@ -22,6 +31,7 @@ export function CloudCorridor() {
   const cloudNearRef = useRef<HTMLDivElement>(null);
   const flashRef = useRef<HTMLDivElement>(null);
   const msgRef = useRef<HTMLDivElement>(null);
+  const continueRef = useRef<HTMLDivElement>(null);
   const topFadeRef = useRef<HTMLDivElement>(null);
   const bottomFadeRef = useRef<HTMLDivElement>(null);
   const particlesRef = useRef<HTMLDivElement>(null);
@@ -66,9 +76,10 @@ export function CloudCorridor() {
       }
 
       if (reduced) {
-        // Simplified: just present the sky + message, no scrubbed camera work.
+        // Simplified: just present the sky + message + the forward cue, no
+        // scrubbed camera work.
         gsap.set([cloudFarRef.current, cloudNearRef.current, flashRef.current], { opacity: 0 });
-        gsap.set(msgRef.current, { opacity: 1 });
+        gsap.set([msgRef.current, continueRef.current], { opacity: 1 });
         gsap.set([topFadeRef.current, bottomFadeRef.current], { opacity: 0 });
         return () => drifts.forEach((t) => t.kill());
       }
@@ -105,6 +116,11 @@ export function CloudCorridor() {
       // The message holds nearly still while everything else moves (time-freeze).
       tl.fromTo(msgRef.current, { opacity: 0, yPercent: 6 }, { opacity: 1, yPercent: 0, duration: 0.16 }, 0.14)
         .to(msgRef.current, { opacity: 0, yPercent: -6, duration: 0.16 }, 0.62);
+
+      // As the message clears and the fog thins, the forward cue surfaces and
+      // stays — the beat hands you on rather than ending. It rides out with the
+      // section into the DreamMiles sky below.
+      tl.fromTo(continueRef.current, { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.12 }, 0.68);
 
       return () => drifts.forEach((t) => t.kill());
     }, root);
@@ -158,12 +174,31 @@ export function CloudCorridor() {
         {/* White-out at the core of the cloud */}
         <div ref={flashRef} className="absolute inset-0 z-40 bg-white opacity-0" aria-hidden />
 
-        {/* Still message */}
+        {/* Still message — written to read as mid-journey, not as a full stop.
+            The headline says the climb is only starting; the line under it
+            previews what the next section is about (miles becoming altitude and
+            rewards — DreamMiles), so the beat introduces rather than concludes. */}
         <div ref={msgRef} className="absolute inset-0 z-40 flex flex-col items-center justify-center px-gutter text-center opacity-0">
-          <p className="mb-5 text-fluid-xs uppercase tracking-wideish text-blue-700/80">En route</p>
+          <p className="mb-5 text-fluid-xs uppercase tracking-wideish text-blue-700/80">En route · still climbing</p>
           <h2 className="max-w-3xl font-display text-fluid-h2 font-light leading-[1.02] tracking-tightest text-blue-900">
-            Above the clouds, <span className="italic">Africa</span> draws closer.
+            Above the clouds, <span className="italic">the climb</span> has only begun.
           </h2>
+          <p className="mt-6 max-w-md text-fluid-body leading-relaxed text-blue-900/70">
+            From here, every mile you fly becomes altitude — and rewards that rise with you.
+          </p>
+        </div>
+
+        {/* Forward cue — surfaces as the fog clears so the corridor plainly
+            hands off to what's next instead of feeling like the end. */}
+        <div
+          ref={continueRef}
+          className="pointer-events-none absolute inset-x-0 bottom-[7%] z-40 flex flex-col items-center gap-2.5 opacity-0"
+          aria-hidden
+        >
+          <span className="text-fluid-xs uppercase tracking-wideish text-blue-900/70">Keep scrolling</span>
+          <svg viewBox="0 0 24 24" fill="none" className="corridor-chevron h-5 w-5 text-blue-900/55" aria-hidden>
+            <path d="M6 9l6 6 6-6" stroke="currentColor" strokeWidth={1.6} strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
         </div>
 
         {/* Edge feathers into the paper sections above / below */}
@@ -172,12 +207,22 @@ export function CloudCorridor() {
           className="pointer-events-none absolute inset-x-0 top-0 z-40 h-[40vh] bg-gradient-to-b from-paper to-transparent"
           aria-hidden
         />
+        {/* Feathers into the pale DreamMiles sky that now follows — not paper —
+            so the fly-through emerges straight into the section it sets up. */}
         <div
           ref={bottomFadeRef}
-          className="pointer-events-none absolute inset-x-0 bottom-0 z-40 h-[45vh] bg-gradient-to-t from-paper to-transparent opacity-0"
+          className="pointer-events-none absolute inset-x-0 bottom-0 z-40 h-[45vh] bg-gradient-to-t from-[#e9f3fd] to-transparent opacity-0"
           aria-hidden
         />
       </div>
+
+      <style>{`
+        @keyframes corridor-chevron {
+          0%, 100% { transform: translateY(0); opacity: 0.85; }
+          50% { transform: translateY(5px); opacity: 0.45; }
+        }
+        .corridor-chevron { animation: corridor-chevron 1.8s ease-in-out infinite; }
+      `}</style>
     </div>
   );
 }
