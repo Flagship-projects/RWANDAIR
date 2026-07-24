@@ -21,7 +21,7 @@ export function TripPlanning() {
         <div className="flex flex-wrap items-end justify-between gap-6">
           <SectionHeading
             eyebrow="Trip planning"
-            title="Trending right now"
+            title="Trending destinations"
             className="reveal-item"
           />
           <div className="reveal-item">

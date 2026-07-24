@@ -168,7 +168,7 @@ export function Loyalty() {
     <section
       ref={sectionRef}
       id="loyalty"
-      className="relative isolate overflow-hidden bg-gradient-to-b from-[#e9f3fd] via-[#f3f8fd] to-paper text-ink"
+      className="relative isolate overflow-hidden border-t border-line bg-gradient-to-b from-[#e9f3fd] via-[#f3f8fd] to-paper text-ink"
     >
       {/* ------------------------------ sky backdrop ----------------------------- */}
       <div className="pointer-events-none absolute inset-0 -z-10">

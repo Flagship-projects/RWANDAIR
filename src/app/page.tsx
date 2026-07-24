@@ -15,7 +15,9 @@ import { Loyalty } from "@/components/home/Loyalty";
 import { AdditionalServices } from "@/components/home/AdditionalServices";
 import { StopoverStrip } from "@/components/home/StopoverStrip";
 import { TripPlanning } from "@/components/home/TripPlanning";
+import { TrendingNow } from "@/components/home/TrendingNow";
 import { AwardsMarquee } from "@/components/home/AwardsMarquee";
+import { PopularFlights } from "@/components/home/PopularFlights";
 import { Footer } from "@/components/home/Footer";
 import { ClosingSignature } from "@/components/home/ClosingSignature";
 
@@ -32,21 +34,22 @@ export default function Home() {
             hero is still on disk at components/home/Hero.tsx, unused. */}
         <TaxiHero />
         <FlightSearch />
-        {/* Additional Services sits right under the booking widget: it's the most
-            practical, useful content for a first-time visitor, so it earns the
-            spot before the page turns cinematic. */}
-        <AdditionalServices />
+        {/* Cloud Corridor is the first cinematic beat after booking — a
+            fly-through that bridges the front door into the route network. */}
+        <CloudCorridor />
         <DestinationsSection />
         <FeaturedDestinations />
-        {/* Cloud Corridor is no longer the second thing you see — it now bridges
-            the "where you can go" chapters into the DreamMiles climb, where a
-            flight-through-the-clouds beat reads as a continuation, not an ending. */}
-        <CloudCorridor />
         <Loyalty />
+        <AdditionalServices />
         <StopoverStrip />
         <FleetCabin />
         <TripPlanning />
+        {/* the film — a real RwandAir minute, framed dark, straight after the
+            trending destinations it belongs beside */}
+        <TrendingNow />
         <AwardsMarquee />
+        {/* an SEO-friendly "where we fly" links block that leads into the footer */}
+        <PopularFlights />
       </main>
       <Footer />
       <ClosingSignature />

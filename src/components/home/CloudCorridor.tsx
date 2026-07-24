@@ -7,19 +7,17 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { ensureGsapRegistered } from "@/lib/motion";
 
 /**
- * "Fly through the clouds" — a pinned cinematic beat that now sits deeper in the
- * page, bridging the destination chapters into the DreamMiles climb. As you
- * scroll, the camera pushes into a sea of clouds, cloud banks rush past the lens
- * and white out, a still message holds while the world keeps moving
- * (time-freeze), then the fog clears and hands you on.
+ * "Fly through the clouds" — the first cinematic beat after the booking panel,
+ * bridging the front door into the route network. As you scroll, the camera
+ * pushes into a sea of clouds, cloud banks rush past the lens and white out, a
+ * still message holds while the world keeps moving (time-freeze), then the fog
+ * clears and hands you on to the destinations globe.
  *
- * It used to read as an ending — a whited-out full stop right after booking.
- * Two things fix that: the copy is now explicitly mid-journey ("the climb has
- * only begun") and it previews what follows (miles becoming altitude, i.e.
- * DreamMiles), and a "keep scrolling" cue surfaces as the fog clears so the beat
- * hands off instead of concluding. The bottom feather resolves into the pale
- * DreamMiles sky rather than paper, so the fly-through emerges into the very
- * section it introduces.
+ * It's written so it never reads as an ending: the copy looks forward ("a whole
+ * continent draws closer" — the map that follows) and a "keep scrolling" cue
+ * surfaces as the fog clears, so the beat plainly hands off instead of
+ * concluding. The bottom feather resolves to paper, matching the route section
+ * it introduces.
  *
  * Uses CSS `position: sticky` (not a ScrollTrigger pin) so it never touches the
  * global pin/scroll bookkeeping the globe and fleet sequence rely on.
@@ -175,16 +173,16 @@ export function CloudCorridor() {
         <div ref={flashRef} className="absolute inset-0 z-40 bg-white opacity-0" aria-hidden />
 
         {/* Still message — written to read as mid-journey, not as a full stop.
-            The headline says the climb is only starting; the line under it
-            previews what the next section is about (miles becoming altitude and
-            rewards — DreamMiles), so the beat introduces rather than concludes. */}
+            The headline looks forward to the continent, and the line under it
+            previews the very next section (the route network / globe), so the
+            beat introduces rather than concludes. */}
         <div ref={msgRef} className="absolute inset-0 z-40 flex flex-col items-center justify-center px-gutter text-center opacity-0">
-          <p className="mb-5 text-fluid-xs uppercase tracking-wideish text-blue-700/80">En route · still climbing</p>
+          <p className="mb-5 text-fluid-xs uppercase tracking-wideish text-blue-700/80">En route</p>
           <h2 className="max-w-3xl font-display text-fluid-h2 font-light leading-[1.02] tracking-tightest text-blue-900">
-            Above the clouds, <span className="italic">the climb</span> has only begun.
+            Above the clouds, <span className="italic">a whole continent</span> draws closer.
           </h2>
           <p className="mt-6 max-w-md text-fluid-body leading-relaxed text-blue-900/70">
-            From here, every mile you fly becomes altitude — and rewards that rise with you.
+            One hub in Kigali, and the map opens up. See where the dream can take you.
           </p>
         </div>
 
@@ -207,11 +205,10 @@ export function CloudCorridor() {
           className="pointer-events-none absolute inset-x-0 top-0 z-40 h-[40vh] bg-gradient-to-b from-paper to-transparent"
           aria-hidden
         />
-        {/* Feathers into the pale DreamMiles sky that now follows — not paper —
-            so the fly-through emerges straight into the section it sets up. */}
+        {/* Feathers into the paper of the destinations section that follows. */}
         <div
           ref={bottomFadeRef}
-          className="pointer-events-none absolute inset-x-0 bottom-0 z-40 h-[45vh] bg-gradient-to-t from-[#e9f3fd] to-transparent opacity-0"
+          className="pointer-events-none absolute inset-x-0 bottom-0 z-40 h-[45vh] bg-gradient-to-t from-paper to-transparent opacity-0"
           aria-hidden
         />
       </div>
