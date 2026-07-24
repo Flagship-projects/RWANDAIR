@@ -43,7 +43,7 @@ export function StopoverHero() {
   return (
     <section ref={rootRef} className="relative flex min-h-[100svh] items-end overflow-hidden bg-blue-900">
       <div ref={imgRef} className="absolute inset-0 will-change-transform">
-        <Image src="/assets/stopover/hero.jpg" alt="Kigali, Rwanda" fill priority sizes="100vw" className="object-cover" />
+        <Image src="/assets/stopover/kigali.jpg" alt="Kigali, Rwanda" fill priority sizes="100vw" className="object-cover" />
       </div>
       <div className="absolute inset-0 bg-gradient-to-t from-blue-900/90 via-blue-900/40 to-blue-900/30" />
 

@@ -28,7 +28,7 @@ export function StopoverCTA() {
   return (
     <section ref={rootRef} className="relative flex min-h-[70svh] items-center overflow-hidden bg-blue-900">
       <div ref={imgRef} className="absolute inset-0 will-change-transform">
-        <Image src="/assets/stopover/hero.jpg" alt="" fill sizes="100vw" className="object-cover" aria-hidden />
+        <Image src="/assets/stopover/kigali.jpg" alt="" fill sizes="100vw" className="object-cover" aria-hidden />
       </div>
       <div className="absolute inset-0 bg-blue-900/70" />
 

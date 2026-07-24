@@ -41,8 +41,8 @@ export function StopoverStrip() {
       <div className="relative grid lg:grid-cols-2">
         <div ref={imgRef} className="relative min-h-[300px] overflow-hidden sm:min-h-[440px]">
           <Image
-            src="/assets/stopover/hero.jpg"
-            alt="The landscapes of Rwanda"
+            src="/assets/stopover/kigali.jpg"
+            alt="Kigali, Rwanda"
             fill
             sizes="(min-width: 1024px) 50vw, 100vw"
             className="object-cover will-change-transform"
@@ -56,9 +56,11 @@ export function StopoverStrip() {
 
         <div className="flex flex-col justify-center gap-6 bg-paper-bright px-gutter py-section-md sm:gap-8">
           <div className="reveal-item">
-            <p className="text-fluid-xs uppercase tracking-wideish text-blue-500">Kigali Stopover</p>
-            <h2 className="mt-4 max-w-lg font-display text-fluid-h2 font-light leading-[1.04] tracking-tightest text-ink">
-              Plan Your Trip with Peace of Mind
+            <p className="flex items-center gap-2.5 text-fluid-xs uppercase tracking-wideish text-blue-500">
+              <span className="h-px w-8 bg-blue-500/50" /> Kigali Stopover
+            </p>
+            <h2 className="mt-5 max-w-lg font-display text-fluid-h1 font-light leading-[0.98] tracking-tightest text-ink">
+              A night in <span className="italic text-blue-500">Kigali</span>, on us.
             </h2>
           </div>
           <p className="reveal-item max-w-xl text-fluid-body text-ink/60">
