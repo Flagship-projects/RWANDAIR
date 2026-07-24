@@ -39,8 +39,11 @@ export default function Home() {
         <CloudCorridor />
         <DestinationsSection />
         <FeaturedDestinations />
-        <Loyalty />
+        {/* Additional Services sits between the featured routes and DreamMiles:
+            three light, white-toned sections in a row (destinations → services →
+            loyalty) that read as one cohesive stretch. */}
         <AdditionalServices />
+        <Loyalty />
         <StopoverStrip />
         <FleetCabin />
         <TripPlanning />

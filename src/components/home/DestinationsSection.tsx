@@ -24,7 +24,7 @@ export function DestinationsSection() {
   const ref = useScrollReveal<HTMLDivElement>({ selector: ".reveal-item", start: "top 78%" });
 
   return (
-    <section id="destinations" className="py-section-lg" ref={ref}>
+    <section id="destinations" className="bg-paper-bright py-section-lg" ref={ref}>
       <div className="mx-auto max-w-shell px-gutter">
         {/* On a phone the globe is the point of this section, so it comes second
             — straight after the heading, before the numbers — instead of being

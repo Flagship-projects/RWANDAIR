@@ -53,7 +53,7 @@ export function AdditionalServices() {
   }
 
   return (
-    <section id="services" className="border-t border-line py-section-lg" ref={ref}>
+    <section id="services" className="bg-paper-bright py-section-lg" ref={ref}>
       {/* centered header */}
       <div className="mx-auto max-w-shell px-gutter">
         <div className="mx-auto max-w-2xl text-center">

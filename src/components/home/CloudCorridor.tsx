@@ -205,10 +205,10 @@ export function CloudCorridor() {
           className="pointer-events-none absolute inset-x-0 top-0 z-40 h-[40vh] bg-gradient-to-b from-paper to-transparent"
           aria-hidden
         />
-        {/* Feathers into the paper of the destinations section that follows. */}
+        {/* Feathers into the white of the destinations section that follows. */}
         <div
           ref={bottomFadeRef}
-          className="pointer-events-none absolute inset-x-0 bottom-0 z-40 h-[45vh] bg-gradient-to-t from-paper to-transparent opacity-0"
+          className="pointer-events-none absolute inset-x-0 bottom-0 z-40 h-[45vh] bg-gradient-to-t from-white to-transparent opacity-0"
           aria-hidden
         />
       </div>
