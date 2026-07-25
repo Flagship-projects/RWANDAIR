@@ -7,6 +7,11 @@ import * as THREE from "three";
 import { destinations, type Destination } from "@/lib/data";
 
 const RADIUS = 2.15;
+// The glow shell has to stay inside the frustum or the canvas rectangle cuts it
+// off — on a phone the camera sits closer (9.3), where a sphere of 1.10 × RADIUS
+// projects to ~98% of the frame height. Anything larger reaches the canvas edge
+// and the halo reads as a rectangular panel behind the globe.
+const ATMOSPHERE = RADIUS * 1.1;
 
 function toVector(lat: number, lon: number, r = RADIUS) {
   const phi = (90 - lat) * (Math.PI / 180);
@@ -105,31 +110,45 @@ function Atmosphere() {
     () =>
       new THREE.ShaderMaterial({
         transparent: true,
-        blending: THREE.AdditiveBlending,
+        // Normal (premultiplied) rather than additive: on a paper-white page an
+        // additive halo saturates to opaque cyan-white instead of reading as a
+        // glow. Premultiplied colour keeps alpha ≤ 1 everywhere.
+        blending: THREE.NormalBlending,
+        premultipliedAlpha: true,
         side: THREE.BackSide,
         depthWrite: false,
         uniforms: { uColor: { value: new THREE.Color("#2a8fe0") } },
         vertexShader: `
           varying vec3 vNormal;
+          varying vec3 vView;
           void main() {
+            vec4 mv = modelViewMatrix * vec4(position, 1.0);
             vNormal = normalize(normalMatrix * normal);
-            gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+            vView = normalize(-mv.xyz);
+            gl_Position = projectionMatrix * mv;
           }
         `,
+        // A true per-fragment fresnel against the view vector: on the back faces
+        // this shell is made of, the term is largest just outside the globe and
+        // decays to exactly 0 at the shell's own silhouette. The old fixed-axis
+        // version bottomed out at ~0.29 instead, so the halo ended in a hard
+        // circular step — squared off by the canvas wherever it overran.
         fragmentShader: `
           varying vec3 vNormal;
+          varying vec3 vView;
           uniform vec3 uColor;
           void main() {
-            float intensity = pow(0.66 - dot(vNormal, vec3(0.0, 0.0, 1.0)), 3.0);
-            gl_FragColor = vec4(uColor, 1.0) * intensity;
+            float rim = clamp(-dot(vNormal, vView), 0.0, 1.0);
+            float alpha = clamp(pow(rim, 2.2) * 2.0, 0.0, 1.0);
+            gl_FragColor = vec4(uColor * alpha, alpha);
           }
         `,
       }),
     []
   );
   return (
-    <mesh material={material}>
-      <sphereGeometry args={[RADIUS * 1.22, 48, 48]} />
+    <mesh material={material} renderOrder={-1}>
+      <sphereGeometry args={[ATMOSPHERE, 64, 64]} />
     </mesh>
   );
 }
