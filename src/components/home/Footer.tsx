@@ -180,7 +180,20 @@ export function Footer() {
 
         <div className="mt-10 flex flex-col gap-4 border-t border-line pt-8 sm:mt-16 text-fluid-xs text-ink/40 sm:flex-row sm:items-center sm:justify-between">
           <p>© {new Date().getFullYear()} RwandAir. Concept redesign — not an official site.</p>
-          <p>Fly the Dream of Africa</p>
+          <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-6">
+            <p>Fly the Dream of Africa</p>
+            <a
+              href="https://audrin.netlify.app/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="focus-ring group inline-flex items-center gap-1 text-ink/60 transition-colors duration-300 hover:text-blue-500"
+            >
+              Developed by Audrin
+              <span aria-hidden className="transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5">
+                ↗
+              </span>
+            </a>
+          </div>
         </div>
       </div>
     </footer>
