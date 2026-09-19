@@ -21,16 +21,16 @@ import { JourneyFilm } from "./JourneyVideo";
  *
  * ── Asset swap points (single source of truth per surface) ──────────────────
  */
-const TOPVIEW_REAL = "/assets/Rwandair new assets/rwandair topview.png";
-const TOPVIEW_WIRE = "/assets/Rwandair new assets/Rwandair topview wireframe.png";
+const TOPVIEW_REAL = "/assets/Rwandair new assets/rwandair topview.webp";
+const TOPVIEW_WIRE = "/assets/Rwandair new assets/Rwandair topview wireframe.webp";
 
 const CABINS = [
   {
     id: "business",
     name: "Business Class",
     tagline: "Quiet luxury, lie-flat",
-    img: "/assets/Rwandair new assets/images (2).jpg",
-    detail: "/assets/Rwandair new assets/Serving In Business class.jpg",
+    img: "/assets/Rwandair new assets/images (2).webp",
+    detail: "/assets/Rwandair new assets/Serving In Business class.webp",
     note: "Green leather, direct aisle access, and a bed at thirty-nine thousand feet.",
     light: "linear-gradient(180deg,#0b2e28 0%,#123f33 50%,#0b2a24 100%)",
     accent: "#8bbf3c",
@@ -39,8 +39,8 @@ const CABINS = [
     id: "premium",
     name: "Premium",
     tagline: "The considered middle",
-    img: "/assets/Rwandair new assets/rwandair premium inside.jpg",
-    detail: "/assets/Rwandair new assets/rwandair premium inside..jpg",
+    img: "/assets/Rwandair new assets/rwandair premium inside.webp",
+    detail: "/assets/Rwandair new assets/rwandair premium inside..webp",
     note: "More room to think, more room to breathe, on the routes that run long.",
     light: "linear-gradient(180deg,#082f63 0%,#0d4486 50%,#082c5c 100%)",
     accent: "#20a0e0",
@@ -49,8 +49,8 @@ const CABINS = [
     id: "economy",
     name: "Economy Class",
     tagline: "Comfort, every seat",
-    img: "/assets/Rwandair new assets/Rwandair Inside.png",
-    detail: "/assets/Rwandair new assets/RWANDAIR economy.jpg",
+    img: "/assets/Rwandair new assets/Rwandair Inside.webp",
+    detail: "/assets/Rwandair new assets/RWANDAIR economy.webp",
     note: "Considered from the first row to the last — nobody rides in the back here.",
     light: "linear-gradient(180deg,#0a2c56 0%,#123e74 50%,#0a2850 100%)",
     accent: "#7fccef",
@@ -379,7 +379,7 @@ export function JourneyCabin() {
               {/* hero image — full-width on mobile, a tall plate beside the copy on lg */}
               <div className="cabin-reveal relative aspect-[4/3] w-full shrink-0 overflow-hidden rounded-[28px] shadow-[0_50px_120px_-40px_rgba(2,16,40,0.8)] lg:aspect-[4/5] lg:h-[58vh] lg:w-auto">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={c.img} alt={c.name} className="h-full w-full object-cover" />
+                <img src={c.img} alt={c.name} loading="lazy" decoding="async" className="h-full w-full object-cover" />
                 <div className="pointer-events-none absolute inset-0 ring-1 ring-inset ring-white/10" />
                 <span
                   className="absolute left-5 top-5 h-2 w-2 rounded-full"
@@ -401,7 +401,7 @@ export function JourneyCabin() {
                 {/* close-up detail */}
                 <div className="cabin-reveal mt-8 aspect-[16/10] w-full max-w-xs overflow-hidden rounded-2xl">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={c.detail} alt="" className="h-full w-full object-cover" />
+                  <img src={c.detail} alt="" loading="lazy" decoding="async" className="h-full w-full object-cover" />
                 </div>
               </div>
             </div>

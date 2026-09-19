@@ -16,19 +16,19 @@ import { JourneyFilm } from "./JourneyVideo";
  */
 const MOMENTS = [
   {
-    img: "/assets/Rwandair new assets/Serving In Business class.jpg",
+    img: "/assets/Rwandair new assets/Serving In Business class.webp",
     kicker: "The welcome",
     line: "Before you have gone anywhere, someone already knows your name.",
     align: "left",
   },
   {
-    img: "/assets/aircraft/crew-service.jpg",
+    img: "/assets/aircraft/crew-service.webp",
     kicker: "The care",
     line: "A thousand small things, arranged so you never have to think of one.",
     align: "right",
   },
   {
-    img: "/assets/aircraft/press-cabin.jpg",
+    img: "/assets/aircraft/press-cabin.webp",
     kicker: "The threshold",
     line: "You settle in. The doors close. The world narrows to this quiet.",
     align: "left",
@@ -133,7 +133,7 @@ export function JourneyDeparture() {
           >
             <div className="dep-plate relative aspect-[4/3] w-full overflow-hidden rounded-[24px] lg:w-[58%]">
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={m.img} alt="" className="dep-img absolute inset-0 h-full w-full object-cover" />
+              <img src={m.img} alt="" loading="lazy" decoding="async" className="dep-img absolute inset-0 h-full w-full object-cover" />
               <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#07306a]/60 via-transparent to-transparent" />
             </div>
             <figcaption className="dep-cap lg:w-[42%]">

@@ -32,6 +32,15 @@ export function setPageScrollLocked(locked: boolean) {
   document.documentElement.style.overflow = locked ? "hidden" : "";
 }
 
+/**
+ * Scroll the page by a distance through Lenis when it is running (so the move
+ * gets its easing and ScrollTrigger stays in step), natively otherwise.
+ */
+export function scrollPageBy(px: number) {
+  if (lenisInstance) lenisInstance.scrollTo(window.scrollY + px, { duration: 1.4 });
+  else window.scrollBy({ top: px, behavior: "smooth" });
+}
+
 /** Drives Lenis smooth scroll and keeps GSAP's ScrollTrigger in sync with it. */
 export function useSmoothScroll() {
   useEffect(() => {

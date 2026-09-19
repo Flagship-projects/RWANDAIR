@@ -6,7 +6,7 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { ensureGsapRegistered } from "@/lib/motion";
 import { Button } from "@/components/ui/Button";
 
-const PLANE = "/assets/aircraft/takeoff-cutout.png";
+const PLANE = "/assets/aircraft/takeoff-cutout.webp";
 
 /**
  * Chapter 7 — Arrival.
@@ -77,7 +77,7 @@ export function JourneyArrival() {
         {/* the settling aircraft */}
         <div className="arr-plane pointer-events-none absolute left-1/2 top-[34%] w-[clamp(280px,42vw,720px)] -translate-x-1/2">
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={PLANE} alt="" className="w-full -scale-x-100 drop-shadow-[0_30px_60px_rgba(60,30,10,0.4)]" />
+          <img src={PLANE} alt="" loading="lazy" decoding="async" className="w-full -scale-x-100 drop-shadow-[0_30px_60px_rgba(60,30,10,0.4)]" />
         </div>
 
         {/* closing */}

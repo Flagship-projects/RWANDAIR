@@ -1,6 +1,7 @@
 "use client";
 
 import { useSmoothScroll } from "@/lib/motion";
+import { ScrollCue } from "@/components/ui/ScrollCue";
 import { Nav } from "@/components/ui/Nav";
 import { CinematicFX } from "@/components/ui/CinematicFX";
 import { Loader } from "@/components/home/Loader";
@@ -55,6 +56,7 @@ export default function Home() {
         <PopularFlights />
       </main>
       <Footer />
+      <ScrollCue />
       <ClosingSignature />
       <BookingDock />
     </>

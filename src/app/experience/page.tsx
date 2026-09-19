@@ -1,6 +1,7 @@
 "use client";
 
 import { useSmoothScroll } from "@/lib/motion";
+import { ScrollCue } from "@/components/ui/ScrollCue";
 import { Nav } from "@/components/ui/Nav";
 import { CinematicFX } from "@/components/ui/CinematicFX";
 import { Footer } from "@/components/home/Footer";
@@ -38,6 +39,7 @@ export default function ExperiencePage() {
         />
       </main>
       <Footer />
+      <ScrollCue />
     </>
   );
 }

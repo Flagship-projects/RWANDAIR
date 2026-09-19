@@ -1,6 +1,7 @@
 "use client";
 
 import { useSmoothScroll } from "@/lib/motion";
+import { ScrollCue } from "@/components/ui/ScrollCue";
 import { Footer } from "@/components/home/Footer";
 import { JourneyChrome } from "@/components/journey/JourneyChrome";
 import { JourneyHero } from "@/components/journey/JourneyHero";
@@ -35,6 +36,10 @@ export default function JourneyPage() {
 
   return (
     <>
+      {/* The two hero images are the whole first frame; start fetching them
+          before hydration rather than waiting for the client bundle. */}
+      <link rel="preload" as="image" href="/assets/aircraft/rwandair-transparent.webp" fetchPriority="high" />
+      <link rel="preload" as="image" href="/assets/sky/cloud-real.webp" />
       <JourneyChrome />
       <main className="bg-[#07306a] text-white">
         <JourneyHero />
@@ -49,6 +54,7 @@ export default function JourneyPage() {
         <JourneyArrival />
       </main>
       <Footer />
+      <ScrollCue />
     </>
   );
 }

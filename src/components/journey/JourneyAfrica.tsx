@@ -17,11 +17,11 @@ import { DAYBREAK_EXIT_SKY } from "./JourneyDaybreak";
  * Swap point: PLACES[].img — drop wildlife / coastline / city footage here.
  */
 const PLACES = [
-  { name: "Kigali", country: "Rwanda", coord: "1.9°S 30.1°E", line: "A thousand hills, and the calm that lives between them.", img: "/assets/destinations/kigali.jpg" },
-  { name: "Nairobi", country: "Kenya", coord: "1.3°S 36.9°E", line: "Where the city gives way to the wild without asking.", img: "/assets/destinations/nairobi.jpg" },
-  { name: "Lagos", country: "Nigeria", coord: "6.6°N 3.3°E", line: "The pulse of the west, felt from the air.", img: "/assets/destinations/lagos.jpg" },
-  { name: "Accra", country: "Ghana", coord: "5.6°N 0.2°W", line: "A gold coast, catching the last of the light.", img: "/assets/destinations/accra.jpg" },
-  { name: "Johannesburg", country: "South Africa", coord: "26.1°S 28.2°E", line: "The city of gold, laid out below like a circuit.", img: "/assets/destinations/johannesburg.jpg" },
+  { name: "Kigali", country: "Rwanda", coord: "1.9°S 30.1°E", line: "A thousand hills, and the calm that lives between them.", img: "/assets/destinations/kigali.webp" },
+  { name: "Nairobi", country: "Kenya", coord: "1.3°S 36.9°E", line: "Where the city gives way to the wild without asking.", img: "/assets/destinations/nairobi.webp" },
+  { name: "Lagos", country: "Nigeria", coord: "6.6°N 3.3°E", line: "The pulse of the west, felt from the air.", img: "/assets/destinations/lagos.webp" },
+  { name: "Accra", country: "Ghana", coord: "5.6°N 0.2°W", line: "A gold coast, catching the last of the light.", img: "/assets/destinations/accra.webp" },
+  { name: "Johannesburg", country: "South Africa", coord: "26.1°S 28.2°E", line: "The city of gold, laid out below like a circuit.", img: "/assets/destinations/johannesburg.webp" },
 ];
 
 export function JourneyAfrica() {
@@ -108,7 +108,7 @@ export function JourneyAfrica() {
         {PLACES.map((p) => (
           <div key={p.name} className="atlas-slide absolute inset-0">
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={p.img} alt={`${p.name}, ${p.country}`} className="atlas-img absolute inset-0 h-full w-full object-cover" />
+            <img src={p.img} alt={`${p.name}, ${p.country}`} loading="lazy" decoding="async" className="atlas-img absolute inset-0 h-full w-full object-cover" />
             <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-black/40" />
 
             <div className="absolute inset-0 flex flex-col justify-end px-gutter pb-[14vh]">

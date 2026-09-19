@@ -298,6 +298,7 @@ export function TaxiScene({
                 flick (see the scrub above), so it is only ever a first-run hint. */}
             <div
               className="taxi-scroll-cue pointer-events-none absolute inset-x-0 bottom-[2%] z-10 flex flex-col items-center gap-1.5"
+              data-scroll-cue
               aria-hidden
             >
               <span className="text-[10px] uppercase tracking-[0.32em] text-ink-muted">

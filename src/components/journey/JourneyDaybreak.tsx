@@ -20,8 +20,8 @@ import { ensureGsapRegistered } from "@/lib/motion";
  * resolves onto the same flat daylight blue Africa opens on, so the chapters
  * still hand over without a seam.
  */
-const CLOUDSCAPE = "/assets/sky/cloudscape-aerial.png";
-const PLANE = "/assets/aircraft/rwandair-transparent.png";
+const CLOUDSCAPE = "/assets/sky/cloudscape-aerial.webp";
+const PLANE = "/assets/aircraft/rwandair-transparent.webp";
 
 /**
  * The end-state sky. This chapter resolves to one flat colour and JourneyAfrica
@@ -220,7 +220,7 @@ export function JourneyDaybreak() {
           aria-hidden
         >
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={CLOUDSCAPE} alt="" className="h-full w-full object-cover" />
+          <img src={CLOUDSCAPE} alt="" decoding="async" className="h-full w-full object-cover" />
           {/* night tint, always on */}
           <div className="absolute inset-0" style={{ background: "linear-gradient(180deg,rgba(10,32,66,0.72),rgba(6,20,44,0.62))" }} />
           {/* the warm pass, faded in over it at sunrise */}

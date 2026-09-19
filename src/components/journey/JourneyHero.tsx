@@ -16,8 +16,8 @@ import { ensureGsapRegistered } from "@/lib/motion";
  * grows past the lens while the copy sinks away and the frame dissolves into
  * the deep blue of Chapter 2.
  */
-const CLOUD = "/assets/sky/cloud-real.png";
-const PLANE = "/assets/aircraft/rwandair-transparent.png";
+const CLOUD = "/assets/sky/cloud-real.webp";
+const PLANE = "/assets/aircraft/rwandair-transparent.webp";
 
 export function JourneyHero() {
   const rootRef = useRef<HTMLDivElement>(null);
@@ -143,6 +143,8 @@ export function JourneyHero() {
                 <img
                   src={PLANE}
                   alt="A RwandAir Airbus A330 in profile"
+                  fetchPriority="high"
+                  decoding="async"
                   className="w-full drop-shadow-[0_60px_90px_rgba(6,26,58,0.38)]"
                 />
                 {/* mirrored reflection, dissolving downward */}

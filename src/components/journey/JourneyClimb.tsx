@@ -21,9 +21,9 @@ import { ensureGsapRegistered } from "@/lib/motion";
  * Everything is transform + opacity on one scrubbed timeline — no layout work,
  * nothing re-renders on scroll.
  */
-const PLANE_TOP = "/assets/Rwandair new assets/rwandair topview.png";
-const CLOUDSCAPE = "/assets/sky/cloudscape-aerial.png"; // real aerial sea of clouds
-const CLOUD = "/assets/sky/cloud-real.png"; // real cumulus, true alpha
+const PLANE_TOP = "/assets/Rwandair new assets/rwandair topview.webp";
+const CLOUDSCAPE = "/assets/sky/cloudscape-aerial.webp"; // real aerial sea of clouds
+const CLOUD = "/assets/sky/cloud-real.webp"; // real cumulus, true alpha
 
 /* The four altitude thoughts — each drifts up through its scroll window. */
 const BEATS = [
@@ -161,11 +161,11 @@ export function JourneyClimb() {
           aria-hidden
         >
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={CLOUDSCAPE} alt="" className="absolute inset-0 h-full w-full object-cover" />
+          <img src={CLOUDSCAPE} alt="" decoding="async" className="absolute inset-0 h-full w-full object-cover" />
         </div>
         <div className="climb-deck-mid pointer-events-none absolute inset-0" aria-hidden>
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={CLOUD} alt="" className="absolute left-[-14%] top-[46%] w-[58%] opacity-90" />
+          <img src={CLOUD} alt="" decoding="async" className="absolute left-[-14%] top-[46%] w-[58%] opacity-90" />
         </div>
 
         {/* ---- the aircraft, seen from above, climbing with you ---- */}

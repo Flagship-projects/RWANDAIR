@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { useSmoothScroll, useScrollReveal } from "@/lib/motion";
+import { ScrollCue } from "@/components/ui/ScrollCue";
 import { Nav } from "@/components/ui/Nav";
 import { CinematicFX } from "@/components/ui/CinematicFX";
 import { Footer } from "@/components/home/Footer";
@@ -148,6 +149,7 @@ export default function DestinationsPage() {
         </section>
       </main>
       <Footer />
+      <ScrollCue />
     </>
   );
 }
